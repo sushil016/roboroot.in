@@ -15,6 +15,7 @@ export type ProductPayload = {
   brand?: string;
   tags: string[];
   unitPriceCents: number;
+  discountedPriceCents?: number | null;
   stockQuantity: number;
   isBestSeller: boolean;
   isRobomaniacItem: boolean;
@@ -63,6 +64,7 @@ export function buildProductPayload(form: {
   brand: string;
   tags: string;
   unitPrice: string;
+  discountedPrice: string;
   stockQuantity: string;
   isBestSeller: boolean;
   isRobomaniacItem: boolean;
@@ -82,10 +84,16 @@ export function buildProductPayload(form: {
     brand: form.brand || undefined,
     tags: tagsToArray(form.tags),
     unitPriceCents: Math.round(Number(form.unitPrice || 0) * 100),
+    discountedPriceCents: form.discountedPrice ? Math.round(Number(form.discountedPrice) * 100) : null,
     stockQuantity: Number(form.stockQuantity || 0),
     isBestSeller: form.isBestSeller,
     isRobomaniacItem: form.isRobomaniacItem,
     isSoftware: form.isSoftware,
     isActive: form.isActive,
   };
+}
+
+export async function fetchProductById(id: string, token?: string): Promise<Product> {
+  const payload = await apiFetch<{ data: Product }>(`/api/components/${id}`, { token });
+  return payload.data;
 }

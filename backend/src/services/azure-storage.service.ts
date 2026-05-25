@@ -13,6 +13,7 @@ import {
 } from '@azure/storage-blob';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
+import fs from 'fs/promises';
 
 // Azure Blob Storage Configuration
 const AZURE_STORAGE_CONNECTION_STRING = process.env.AZURE_STORAGE_CONNECTION_STRING || '';
@@ -192,34 +193,49 @@ export async function uploadFileToAzure(
     // Generate unique filename
     const blobName = generateUniqueFilename(originalFilename, fileType);
 
-    // Get container client
-    const containerClient = await getContainerClient();
+    // Try to get container client. If it fails, fallback to local storage
+    let containerClient: ContainerClient | null = null;
+    try {
+      containerClient = await getContainerClient();
+    } catch (e: any) {
+      console.warn("Azure config failed, falling back to local storage.", e.message);
+    }
 
-    // Get block blob client
-    const blockBlobClient: BlockBlobClient = containerClient.getBlockBlobClient(blobName);
+    if (containerClient) {
+      try {
+        const blockBlobClient: BlockBlobClient = containerClient.getBlockBlobClient(blobName);
+        await blockBlobClient.uploadData(buffer, {
+          blobHTTPHeaders: { blobContentType: mimeType },
+        });
+        const url = generateBlobSASUrl(blockBlobClient);
+        return { url, filename: blobName, size: buffer.length, contentType: mimeType };
+      } catch (uploadErr: any) {
+        console.warn("Azure upload failed, falling back to local storage.", uploadErr.message);
+        containerClient = null; // trigger fallback
+      }
+    }
 
-    // Upload file
-    await blockBlobClient.uploadData(buffer, {
-      blobHTTPHeaders: {
-        blobContentType: mimeType,
-      },
-    });
+    if (!containerClient) {
+      // Local fallback
+      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+      const uploadsDir = path.join(process.cwd(), "public", "uploads", fileType);
+      await fs.mkdir(uploadsDir, { recursive: true });
+      const localFilePath = path.join(process.cwd(), "public", "uploads", blobName);
+      await fs.writeFile(localFilePath, buffer);
+      return {
+        url: `${API_BASE_URL}/uploads/${blobName}`,
+        filename: blobName,
+        size: buffer.length,
+        contentType: mimeType,
+      };
+    }
 
-    // Generate SAS URL for public access (works even when public access is disabled)
-    const url = generateBlobSASUrl(blockBlobClient);
-
-    // Return upload result
-    return {
-      url,
-      filename: blobName,
-      size: buffer.length,
-      contentType: mimeType,
-    };
+    throw new Error("Upload completely failed");
   } catch (error: any) {
-    console.error('Azure upload error:', error);
+    console.error('Upload error:', error);
     return {
       success: false,
-      error: error.message || 'Failed to upload file to Azure Blob Storage',
+      error: error.message || 'Failed to upload file',
     };
   }
 }

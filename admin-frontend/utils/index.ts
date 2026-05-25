@@ -26,6 +26,7 @@ export function productToForm(product: Product): ProductForm {
     brand: product.brand || "",
     tags: product.tags.join(", "),
     unitPrice: String(product.unitPriceCents / 100),
+    discountedPrice: product.discountedPriceCents ? String(product.discountedPriceCents / 100) : "",
     stockQuantity: String(product.stockQuantity),
     isBestSeller: product.isBestSeller,
     isRobomaniacItem: product.isRobomaniacItem,

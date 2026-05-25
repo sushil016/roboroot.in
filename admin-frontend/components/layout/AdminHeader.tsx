@@ -1,5 +1,10 @@
 "use client";
 
+import { STOREFRONT_URL } from "@/config/env";
+import { sectionItems } from "@/config/navigation";
+import type { AdminSection } from "@/types";
+import { AdminIcon } from "@/components/admin/ui/AdminIcon";
+
 export function AdminHeader({
   activeSection,
   status,
@@ -7,47 +12,55 @@ export function AdminHeader({
   userLabel,
   hasToken,
   onRefresh,
-  onLogout,
   onOpenSidebar,
 }: {
-  activeSection: string;
+  activeSection: AdminSection;
   status: string;
   isLoading: boolean;
   userLabel: string;
   hasToken: boolean;
   onRefresh: () => void;
-  onLogout: () => void;
   onOpenSidebar: () => void;
 }) {
+  const label = sectionItems.find((item) => item.id === activeSection)?.label ?? "Dashboard";
+
   return (
-    <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/95 backdrop-blur">
-      <div className="flex min-h-20 flex-col gap-4 px-5 py-4 lg:flex-row lg:items-center lg:justify-between lg:px-8">
-        <div className="flex items-center gap-3">
+    <header className="sticky top-0 z-20 border-b border-zinc-200 bg-[#F2F2F0]/90 backdrop-blur-xl">
+      <div className="flex min-h-20 flex-col gap-4 px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
+        <div className="flex items-start gap-3">
           <button
-            className="rounded-md border border-slate-300 px-3 py-2 text-sm font-black lg:hidden"
+            type="button"
+            className="grid size-10 shrink-0 place-items-center rounded-md border border-zinc-300 bg-white text-[#222222] shadow-sm lg:hidden"
             onClick={onOpenSidebar}
+            aria-label="Open sidebar"
           >
-            Menu
+            <AdminIcon name="menu" className="h-5 w-5" />
           </button>
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-blue-700">{activeSection}</p>
-            <h2 className="text-2xl font-black">Dashboard & Control Panel</h2>
-            <p className="text-sm font-semibold text-slate-500">{status}</p>
+            <p className="admin-eyebrow">{label}</p>
+            <h1 className="mt-1 text-2xl font-bold tracking-tight text-[#222222] sm:text-3xl">
+              Dashboard & Control Panel
+            </h1>
+            <p className="mt-2 max-w-2xl text-sm font-semibold leading-6 text-zinc-600">
+              Manage products, categories, projects, media and orders from one place.
+            </p>
+            {status ? <p className="mt-1 text-xs font-bold text-zinc-500">{status}</p> : null}
           </div>
         </div>
+
         <div className="flex flex-wrap items-center gap-3">
-          <button onClick={onRefresh} className="admin-action bg-white" disabled={isLoading}>
-            {isLoading ? "Loading..." : "Refresh"}
+          <button type="button" onClick={onRefresh} className="admin-button admin-button-secondary" disabled={isLoading}>
+            <AdminIcon name="refresh" className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`} />
+            {isLoading ? "Refreshing" : "Refresh"}
           </button>
-          {hasToken ? (
-            <button onClick={onLogout} className="rounded-md bg-slate-950 px-4 py-2 text-sm font-black text-white">
-              Logout {userLabel}
-            </button>
-          ) : (
-            <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-black text-amber-700">
-              Login required for edits
-            </span>
-          )}
+          <a href={STOREFRONT_URL} className="admin-button admin-button-secondary">
+            <AdminIcon name="storefront" className="h-4 w-4" />
+            Open Storefront
+          </a>
+          <span className="inline-flex min-h-10 items-center gap-2 rounded-md border border-zinc-300 bg-white px-4 text-sm font-bold text-[#222222]">
+            <span className={`h-2 w-2 rounded-full ${hasToken ? "bg-[#222222]" : "bg-zinc-400"}`} />
+            {hasToken ? userLabel || "Admin active" : "Login required"}
+          </span>
         </div>
       </div>
     </header>

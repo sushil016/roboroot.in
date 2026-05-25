@@ -18,3 +18,16 @@ export async function updateOrderStatus(
   });
   return payload.data;
 }
+
+export async function updateOrderTracking(
+  orderId: string,
+  tracking: { trackingAwb?: string; trackingUrl?: string },
+  token: string,
+): Promise<AdminOrder> {
+  const payload = await apiFetch<AdminOrderUpdateResponse>(`/api/orders/admin/${orderId}/status`, {
+    method: "PATCH",
+    body: JSON.stringify(tracking),
+    token,
+  });
+  return payload.data;
+}

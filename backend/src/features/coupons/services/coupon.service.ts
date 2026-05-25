@@ -9,6 +9,7 @@ export type CreateCouponInput = {
   minOrderCents?: number;
   maxUsageCount?: number | null;
   perUserLimit?: number | null;
+  allowedEmail?: string | null;  // null = global coupon, string = email-locked coupon
   expiresAt?: Date | null;
 };
 
@@ -29,6 +30,7 @@ export async function createCoupon(input: CreateCouponInput) {
       minOrderCents: input.minOrderCents ?? 0,
       maxUsageCount: input.maxUsageCount ?? null,
       perUserLimit: input.perUserLimit ?? null,
+      allowedEmail: input.allowedEmail?.trim().toLowerCase() || null,
       expiresAt: input.expiresAt ?? null,
     },
   });
@@ -56,6 +58,7 @@ export async function updateCoupon(id: string, input: Partial<CreateCouponInput>
       ...(input.minOrderCents !== undefined && { minOrderCents: input.minOrderCents }),
       ...(input.maxUsageCount !== undefined && { maxUsageCount: input.maxUsageCount }),
       ...(input.perUserLimit !== undefined && { perUserLimit: input.perUserLimit }),
+      ...(input.allowedEmail !== undefined && { allowedEmail: input.allowedEmail?.trim().toLowerCase() || null }),
       ...(input.expiresAt !== undefined && { expiresAt: input.expiresAt }),
       ...(input.isActive !== undefined && { isActive: input.isActive }),
     },
@@ -89,6 +92,14 @@ export async function validateAndApplyCoupon(
     throw new Error(
       `Minimum order amount of ₹${coupon.minOrderCents / 100} required for this coupon`
     );
+  }
+  // Email-restricted coupon check
+  if (coupon.allowedEmail) {
+    // Fetch the user's email to compare
+    const user = await prisma.user.findUnique({ where: { id: userId }, select: { email: true } });
+    if (!user || user.email.toLowerCase() !== coupon.allowedEmail) {
+      throw new Error("This coupon is not valid for your account");
+    }
   }
   if (coupon.perUserLimit !== null) {
     const userUsage = await prisma.order.count({

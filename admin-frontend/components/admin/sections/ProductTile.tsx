@@ -15,20 +15,22 @@ export function ProductTile({
   onArchive: (product: Product) => void;
 }) {
   return (
-    <article className="group text-center">
-      <div className="relative mx-auto flex aspect-square w-full max-w-52 items-center justify-center overflow-hidden rounded-md bg-white">
+    <article className="group admin-card overflow-hidden transition hover:border-zinc-300 hover:shadow-md">
+      <div className="relative flex aspect-square w-full items-center justify-center bg-[#F2F2F0] p-4">
         {product.isBestSeller && (
-          <span className="absolute right-2 top-2 z-10 bg-blue-600 px-2 py-1 text-xs font-black text-white">Best</span>
+          <span className="admin-pill absolute right-3 top-3 z-10 border-zinc-300 bg-white">Best</span>
         )}
         <img src={productImage(product)} alt={product.name} className="h-full w-full object-contain transition group-hover:scale-105" />
         <div className="absolute inset-x-3 bottom-3 hidden gap-2 group-hover:flex">
-          <button onClick={() => onEdit(product)} className="flex-1 rounded-md bg-slate-950 px-3 py-2 text-xs font-black text-white">Edit</button>
-          <button onClick={() => onArchive(product)} className="flex-1 rounded-md bg-white px-3 py-2 text-xs font-black text-slate-950 shadow">Archive</button>
+          <button onClick={() => onEdit(product)} className="flex-1 rounded-md bg-[#222222] px-3 py-2 text-xs font-black text-white">Edit</button>
+          <button onClick={() => onArchive(product)} className="flex-1 rounded-md bg-white px-3 py-2 text-xs font-black text-[#222222] shadow">Archive</button>
         </div>
       </div>
-      <h3 className="mt-4 text-sm font-black leading-6 text-slate-800">{product.name}</h3>
-      <p className="mt-1 text-xs font-bold text-slate-400">{product.brand || product.productType}</p>
-      <p className="mt-2 text-sm font-black text-blue-700">{priceLabel(product.unitPriceCents)}</p>
+      <div className="p-4 text-left">
+        <h3 className="line-clamp-2 min-h-11 text-sm font-bold leading-5 text-[#222222]">{product.name}</h3>
+        <p className="mt-1 truncate text-xs font-semibold text-zinc-500">{product.brand || product.productType}</p>
+        <p className="mt-3 text-sm font-extrabold text-[#222222]">{priceLabel(product.unitPriceCents)}</p>
+      </div>
     </article>
   );
 }

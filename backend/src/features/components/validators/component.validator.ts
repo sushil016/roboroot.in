@@ -182,6 +182,13 @@ export function validateCreateComponent(data: any): ValidationResult<CreateCompo
   if (data.stockQuantity !== undefined) result.stockQuantity = Math.round(data.stockQuantity);
   const isActive = parseBoolean(data.isActive);
   if (isActive !== undefined) result.isActive = isActive;
+  // Discounted price (sale price)
+  if (data.discountedPriceCents !== undefined) {
+    result.discountedPriceCents =
+      data.discountedPriceCents === null || data.discountedPriceCents === ""
+        ? null
+        : Math.round(Number(data.discountedPriceCents));
+  }
 
   return {
     success: true,
@@ -303,6 +310,13 @@ export function validateUpdateComponent(data: any): ValidationResult<UpdateCompo
   if (data.stockQuantity !== undefined) updateData.stockQuantity = Math.round(data.stockQuantity);
   const isActive = parseBoolean(data.isActive);
   if (isActive !== undefined) updateData.isActive = isActive;
+  // Discounted price (sale price)
+  if (data.discountedPriceCents !== undefined) {
+    updateData.discountedPriceCents =
+      data.discountedPriceCents === null || data.discountedPriceCents === ""
+        ? null
+        : Math.round(Number(data.discountedPriceCents));
+  }
 
   return {
     success: true,

@@ -35,6 +35,7 @@ function formatComponent(component: any): ComponentResponse {
     isRobomaniacItem: component.isRobomaniacItem,
     isSoftware: component.isSoftware,
     unitPriceCents: component.unitPriceCents,
+    discountedPriceCents: component.discountedPriceCents ?? null,
     unitPrice: component.unitPriceCents / 100, // Convert to rupees
     stockQuantity: component.stockQuantity,
     isActive: component.isActive,
@@ -75,6 +76,7 @@ export async function createComponent(data: CreateComponentRequest): Promise<Com
       isRobomaniacItem: data.isRobomaniacItem || false,
       isSoftware: data.isSoftware || false,
       unitPriceCents: data.unitPriceCents,
+      discountedPriceCents: data.discountedPriceCents ?? null,
       stockQuantity: data.stockQuantity || 0,
       isActive: data.isActive !== undefined ? data.isActive : true,
     },
@@ -205,6 +207,7 @@ export async function getComponents(
 export async function getComponentById(id: string): Promise<ComponentResponse> {
   const component = await prisma.component.findUnique({
     where: { id },
+    include: { media: true },
   });
 
   if (!component) {
@@ -220,10 +223,11 @@ export async function getComponentById(id: string): Promise<ComponentResponse> {
 export async function getComponentBySku(sku: string): Promise<ComponentResponse> {
   const component = await prisma.component.findUnique({
     where: { sku },
+    include: { media: true },
   });
 
   if (!component) {
-    throw new NotFoundError("Component not found");
+    throw new NotFoundError(`Component with SKU ${sku} not found`);
   }
 
   return formatComponent(component);

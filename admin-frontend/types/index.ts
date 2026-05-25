@@ -29,6 +29,7 @@ export type Product = {
   isRobomaniacItem: boolean;
   isSoftware: boolean;
   unitPriceCents: number;
+  discountedPriceCents: number | null;
   stockQuantity: number;
   isActive: boolean;
 };
@@ -87,8 +88,14 @@ export type AdminOrderStatus =
   | "PENDING_PAYMENT"
   | "PAID"
   | "PROCESSING"
+  | "PACKED"
   | "SHIPPED"
+  | "OUT_FOR_DELIVERY"
   | "DELIVERED"
+  | "RETURN_REQUESTED"
+  | "RETURNED"
+  | "REFUND_INITIATED"
+  | "REFUNDED"
   | "CANCELLED";
 
 export type AdminOrder = {
@@ -99,6 +106,10 @@ export type AdminOrder = {
   status: AdminOrderStatus;
   totalAmountCents: number;
   notes: string | null;
+  trackingAwb: string | null;
+  trackingUrl: string | null;
+  shippedAt: string | null;
+  deliveredAt: string | null;
   createdAt: string;
   updatedAt: string;
   user?: {
@@ -126,9 +137,15 @@ export type AdminOrder = {
   payments: {
     id: string;
     gateway: string;
+    gatewayTransactionId: string | null;
     status: string;
     amountCents: number;
+    createdAt: string;
   }[];
+  coupon?: {
+    code: string;
+    label: string;
+  } | null;
 };
 
 export type AdminOrderListResponse = {
@@ -169,6 +186,7 @@ export type ProductForm = {
   brand: string;
   tags: string;
   unitPrice: string;
+  discountedPrice: string;
   stockQuantity: string;
   isBestSeller: boolean;
   isRobomaniacItem: boolean;
@@ -204,7 +222,28 @@ export type AdminSection =
   | "catalog"
   | "products"
   | "categories"
+  | "subcategories"
   | "projects"
   | "orders"
+  | "coupons"
   | "media"
   | "settings";
+
+export type DiscountType = "PERCENTAGE" | "FLAT" | "FREE_SHIPPING";
+
+export type Coupon = {
+  id: string;
+  code: string;
+  label: string;
+  discountType: DiscountType;
+  discountValue: number;
+  minOrderCents: number;
+  maxUsageCount: number | null;
+  usageCount: number;
+  perUserLimit: number | null;
+  allowedEmail: string | null;
+  expiresAt: string | null;
+  isActive: boolean;
+  createdAt: string;
+  _count?: { orders: number };
+};

@@ -69,3 +69,8 @@ export function buildProjectBody(form: {
     isPublic: form.isPublic,
   };
 }
+
+export async function fetchProjectById(id: string, token?: string): Promise<Project> {
+  const payload = await apiFetch<{ data: Project }>(`/api/projects/${id}`, token ? { token } : undefined);
+  return payload.data;
+}

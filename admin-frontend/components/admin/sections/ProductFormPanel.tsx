@@ -8,6 +8,7 @@ import { productTypes } from "@/config/forms";
 import { compactType, productImage } from "@/utils";
 import { useAdmin } from "@/core/context/AdminContext";
 import { ProductMediaManager } from "./ProductMediaManager";
+import { API_BASE_URL } from "@/config/env";
 
 export function ProductFormPanel({
   productForm,
@@ -25,21 +26,22 @@ export function ProductFormPanel({
   const { token } = useAdmin();
 
   return (
-    <div className="space-y-5">
-      <form onSubmit={onSubmit} className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="flex flex-col gap-5">
+      <form onSubmit={onSubmit} className="admin-card">
         <div className="flex items-start justify-between gap-4">
-          <div>
-            <p className="text-sm font-black uppercase tracking-[0.18em] text-blue-700">Product Manager</p>
-            <h2 className="mt-1 text-2xl font-black">{productForm.id ? "Edit product" : "Create product"}</h2>
+          <div className="admin-card-header flex-1 border-b-0 p-5">
+            <p className="admin-eyebrow">Product Manager</p>
+            <h2 className="admin-card-title">{productForm.id ? "Edit product" : "Create product"}</h2>
+            <p className="admin-muted">Manage product data, pricing, inventory, and storefront flags.</p>
           </div>
-          <button type="button" onClick={onNew} className="admin-action">New</button>
+          <button type="button" onClick={onNew} className="admin-action m-5">New</button>
         </div>
 
-        <div className="mt-5 overflow-hidden rounded-md border border-slate-200 bg-slate-50">
+        <div className="mx-5 overflow-hidden rounded-lg border border-zinc-200 bg-[#F2F2F0]">
           <img src={productForm.imageUrl || productImage()} alt="" className="h-48 w-full object-contain" />
         </div>
 
-        <div className="mt-5 grid gap-3">
+        <div className="grid gap-3 p-5">
           <input className="admin-input" placeholder="Product name" value={productForm.name} onChange={(event) => onForm({ ...productForm, name: event.target.value })} required />
           <input className="admin-input" placeholder="SKU" value={productForm.sku} onChange={(event) => onForm({ ...productForm, sku: event.target.value })} />
           <div className="grid gap-3 sm:grid-cols-2">
@@ -52,31 +54,110 @@ export function ProductFormPanel({
           <input className="admin-input" placeholder="Brand" value={productForm.brand} onChange={(event) => onForm({ ...productForm, brand: event.target.value })} />
           <textarea className="admin-textarea" placeholder="Description" value={productForm.description} onChange={(event) => onForm({ ...productForm, description: event.target.value })} />
           <textarea className="admin-textarea" placeholder="Typical use case" value={productForm.typicalUseCase} onChange={(event) => onForm({ ...productForm, typicalUseCase: event.target.value })} />
-          <input className="admin-input" placeholder="Main image URL (thumbnail)" value={productForm.imageUrl} onChange={(event) => onForm({ ...productForm, imageUrl: event.target.value })} />
+
+          {/* Image upload */}
+          <div className="grid gap-1">
+            <label className="text-xs font-semibold text-zinc-500">Upload Product Image</label>
+            <input
+              className="admin-input"
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+              onChange={async (event) => {
+                const file = event.target.files?.[0];
+                if (file) {
+                  // Show preview
+                  const url = URL.createObjectURL(file);
+                  onForm({ ...productForm, imageUrl: url });
+                  
+                  // Upload to server
+                  const formData = new FormData();
+                  formData.append("image", file);
+                  try {
+                    const res = await fetch(`${API_BASE_URL}/api/components/upload/image`, {
+                      method: "POST",
+                      headers: { Authorization: `Bearer ${token}` },
+                      body: formData,
+                    });
+                    const json = await res.json();
+                    if (json.success) {
+                      onForm({ ...productForm, imageUrl: json.url });
+                    } else {
+                      alert("Upload failed: " + json.error);
+                    }
+                  } catch (err) {
+                    alert("Upload error.");
+                  }
+                }
+              }}
+            />
+            <p className="text-xs text-zinc-400">Recommended: 800 × 800 px, PNG/JPEG/WebP, max 7 MB</p>
+          </div>
+          <div className="grid gap-1">
+            <label className="text-xs font-semibold text-zinc-500">Or paste image URL</label>
+            <input
+              className="admin-input"
+              placeholder="https://..."
+              value={productForm.imageUrl}
+              onChange={(event) => onForm({ ...productForm, imageUrl: event.target.value })}
+            />
+          </div>
+
           <input className="admin-input" placeholder="Vendor link" value={productForm.vendorLink} onChange={(event) => onForm({ ...productForm, vendorLink: event.target.value })} />
           <input className="admin-input" placeholder="Tags, comma separated" value={productForm.tags} onChange={(event) => onForm({ ...productForm, tags: event.target.value })} />
           <div className="grid gap-3 sm:grid-cols-2">
-            <input className="admin-input" type="number" min="0" step="0.01" placeholder="Price INR" value={productForm.unitPrice} onChange={(event) => onForm({ ...productForm, unitPrice: event.target.value })} required />
-            <input className="admin-input" type="number" min="0" placeholder="Stock" value={productForm.stockQuantity} onChange={(event) => onForm({ ...productForm, stockQuantity: event.target.value })} required />
+            <div className="grid gap-1">
+              <label className="text-xs font-semibold text-zinc-500">Price INR</label>
+              <input
+                className="admin-input"
+                type="number"
+                min="0"
+                step="0.01"
+                placeholder="Price INR"
+                value={productForm.unitPrice}
+                onChange={(event) => onForm({ ...productForm, unitPrice: event.target.value })}
+                required
+              />
+            </div>
+            <div className="grid gap-1">
+              <label className="text-xs font-semibold text-zinc-500">Sale Price INR (leave empty = no discount)</label>
+              <input
+                className="admin-input"
+                type="number"
+                min="0"
+                step="0.01"
+                placeholder="Sale price (optional)"
+                value={productForm.discountedPrice}
+                onChange={(event) => onForm({ ...productForm, discountedPrice: event.target.value })}
+              />
+            </div>
           </div>
+          <input
+            className="admin-input"
+            type="number"
+            min="0"
+            placeholder="Stock"
+            value={productForm.stockQuantity}
+            onChange={(event) => onForm({ ...productForm, stockQuantity: event.target.value })}
+            required
+          />
           <div className="grid gap-2 sm:grid-cols-2">
-            {[
+            {([
               ["Best seller", "isBestSeller"],
               ["Robomaniac item", "isRobomaniacItem"],
               ["Software", "isSoftware"],
               ["Active", "isActive"],
-            ].map(([label, key]) => (
-              <label key={key} className="flex items-center gap-2 rounded-md border border-slate-200 px-3 py-2 text-sm font-bold">
+            ] as [string, keyof ProductForm][]).map(([label, key]) => (
+              <label key={key} className="admin-checkbox-row">
                 <input
                   type="checkbox"
-                  checked={Boolean(productForm[key as keyof ProductForm])}
+                  checked={Boolean(productForm[key])}
                   onChange={(event) => onForm({ ...productForm, [key]: event.target.checked })}
                 />
                 {label}
               </label>
             ))}
           </div>
-          <button className="h-11 rounded-md bg-blue-700 px-5 text-sm font-black text-white" disabled={isLoading}>
+          <button className="admin-button admin-button-primary" disabled={isLoading}>
             {productForm.id ? "Update Product" : "Create Product"}
           </button>
         </div>
@@ -84,7 +165,7 @@ export function ProductFormPanel({
 
       {/* Multi-media manager — only shown when editing an existing product */}
       {productForm.id && (
-        <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="admin-card p-5">
           <ProductMediaManager productId={productForm.id} token={token} />
         </div>
       )}

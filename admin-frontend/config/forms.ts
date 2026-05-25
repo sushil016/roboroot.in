@@ -40,8 +40,14 @@ export const orderStatuses = [
   "PENDING_PAYMENT",
   "PAID",
   "PROCESSING",
+  "PACKED",
   "SHIPPED",
+  "OUT_FOR_DELIVERY",
   "DELIVERED",
+  "RETURN_REQUESTED",
+  "RETURNED",
+  "REFUND_INITIATED",
+  "REFUNDED",
   "CANCELLED",
 ] as const;
 
@@ -59,6 +65,7 @@ export const emptyProductForm: ProductForm = {
   brand: "",
   tags: "",
   unitPrice: "",
+  discountedPrice: "",
   stockQuantity: "0",
   isBestSeller: false,
   isRobomaniacItem: false,

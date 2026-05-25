@@ -40,6 +40,7 @@ export async function handleCreateComponentWithUploads(
       isRobomaniacItem,
       isSoftware,
       unitPriceCents,
+      discountedPriceCents,
       stockQuantity,
       isActive,
     } = req.body;
@@ -72,15 +73,7 @@ export async function handleCreateComponentWithUploads(
       });
       return;
     }
-
-    // Validate at least one image is provided
-    if (!thumbnailFile && imageFiles.length === 0) {
-      res.status(400).json({
-        success: false,
-        error: 'At least one image (thumbnail or gallery image) is required',
-      });
-      return;
-    }
+    // Images are optional — admin can also use imageUrl from body
 
     // Upload thumbnail if provided
     let thumbnailUrl: string | null = null;
@@ -130,12 +123,13 @@ export async function handleCreateComponentWithUploads(
     const primaryImageUrl = thumbnailUrl || (imageUrls.length > 0 ? imageUrls[0] : null);
 
     // Build component data
-    const componentData: any = {
+    const componentData: Record<string, unknown> = {
       name,
       unitPriceCents: parseInt(unitPriceCents, 10),
-      imageUrl: primaryImageUrl,
-      imageUrls: imageUrls,
     };
+
+    // Attach image URL only when we actually uploaded something
+    if (primaryImageUrl) componentData.imageUrl = primaryImageUrl;
 
     // Add optional fields
     if (sku) componentData.sku = sku;
@@ -146,7 +140,7 @@ export async function handleCreateComponentWithUploads(
     if (subcategory) componentData.subcategory = subcategory;
     if (productType) componentData.productType = productType;
     if (brand) componentData.brand = brand;
-    if (tags) componentData.tags = tags;
+    if (tags) componentData.tags = typeof tags === 'string' ? tags.split(',').map((t: string) => t.trim()).filter(Boolean) : tags;
     if (isBestSeller !== undefined) {
       componentData.isBestSeller = isBestSeller === 'true' || isBestSeller === true;
     }
@@ -159,9 +153,16 @@ export async function handleCreateComponentWithUploads(
     }
     if (stockQuantity !== undefined) componentData.stockQuantity = parseInt(stockQuantity, 10);
     if (isActive !== undefined) componentData.isActive = isActive === 'true' || isActive === true;
+    if (discountedPriceCents !== undefined && discountedPriceCents !== '') {
+      componentData.discountedPriceCents =
+        discountedPriceCents === null ? null : parseInt(discountedPriceCents, 10);
+    } else {
+      componentData.discountedPriceCents = null;
+    }
 
     // Create component in database
-    const component = await componentService.createComponent(componentData);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const component = await componentService.createComponent(componentData as any);
 
     res.status(201).json({
       success: true,
@@ -185,6 +186,41 @@ export async function handleCreateComponentWithUploads(
       return;
     }
 
+    next(error);
+  }
+}
+
+/**
+ * Upload a single image and return its URL
+ * POST /api/components/upload/image
+ * Access: Admin only
+ */
+export async function handleSingleImageUpload(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    const file = req.file;
+    if (!file) {
+      res.status(400).json({ success: false, error: 'No image file provided' });
+      return;
+    }
+
+    const result = await uploadFileToAzure(
+      file.buffer,
+      file.originalname,
+      file.mimetype,
+      FileType.COMPONENT_IMAGE
+    );
+
+    if ('error' in result) {
+      res.status(500).json({ success: false, error: result.error });
+      return;
+    }
+
+    res.status(200).json({ success: true, url: result.url });
+  } catch (error) {
     next(error);
   }
 }

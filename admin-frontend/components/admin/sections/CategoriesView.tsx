@@ -1,119 +1,279 @@
 "use client";
 
-/* eslint-disable @next/next/no-img-element */
-
-import type { CategoryNode, Product } from "@/types";
-import { productImage } from "@/utils";
+import { useState } from "react";
+import { 
+  createCategory, 
+  updateCategory, 
+  deleteCategory, 
+  createSubcategory, 
+  updateSubcategory, 
+  deleteSubcategory,
+  type CategoryPayload 
+} from "@/api/categories";
+import { API_BASE_URL } from "@/config/env";
 
 export function CategoriesView({
   categories,
-  selectedCategory,
-  selectedSubcategory,
-  renameCategoryValue,
-  renameSubcategoryValue,
-  onSelectCategory,
-  onSelectSubcategory,
-  onRenameCategory,
-  onRenameSubcategory,
-  onRenameCategorySubmit,
-  onRenameSubcategorySubmit,
-  onCreateProduct,
-  onArchiveGroup,
+  token,
+  onReload,
 }: {
-  categories: CategoryNode[];
-  selectedCategory?: CategoryNode;
-  selectedSubcategory?: CategoryNode["subcategories"][number];
-  renameCategoryValue: string;
-  renameSubcategoryValue: string;
-  onSelectCategory: (value: string) => void;
-  onSelectSubcategory: (value: string) => void;
-  onRenameCategory: (value: string) => void;
-  onRenameSubcategory: (value: string) => void;
-  onRenameCategorySubmit: () => void;
-  onRenameSubcategorySubmit: () => void;
-  onCreateProduct: (category: string, subcategory?: string) => void;
-  onArchiveGroup: (targets: Product[], label: string) => void;
+  categories: any[];
+  token: string;
+  onReload: () => void;
 }) {
-  const categoryProducts = selectedCategory?.subcategories.flatMap((subcategory) => subcategory.products) || [];
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
+  
+  // Category Form State
+  const [categoryName, setCategoryName] = useState("");
+  const [categoryDesc, setCategoryDesc] = useState("");
+  const [categoryImage, setCategoryImage] = useState("");
+  const [isSubmittingCat, setIsSubmittingCat] = useState(false);
+
+  // Subcategory Form State
+  const [subName, setSubName] = useState("");
+  const [subDesc, setSubDesc] = useState("");
+  const [subImage, setSubImage] = useState("");
+  const [isSubmittingSub, setIsSubmittingSub] = useState(false);
+
+  const selectedCategory = categories.find(c => c.id === selectedCategoryId);
+
+  async function handleCreateCategory(e: React.FormEvent) {
+    e.preventDefault();
+    if (!categoryName) return;
+    setIsSubmittingCat(true);
+    try {
+      await createCategory({ name: categoryName, description: categoryDesc, imageUrl: categoryImage }, token);
+      setCategoryName("");
+      setCategoryDesc("");
+      setCategoryImage("");
+      onReload();
+    } catch (err) {
+      alert("Failed to create category");
+    } finally {
+      setIsSubmittingCat(false);
+    }
+  }
+
+  async function handleDeleteCategory(id: string) {
+    if (!confirm("Are you sure? This will delete the category and its subcategories.")) return;
+    try {
+      await deleteCategory(id, token);
+      if (selectedCategoryId === id) setSelectedCategoryId(null);
+      onReload();
+    } catch (err) {
+      alert("Failed to delete category");
+    }
+  }
+
+  async function handleCreateSubcategory(e: React.FormEvent) {
+    e.preventDefault();
+    if (!selectedCategoryId || !subName) return;
+    setIsSubmittingSub(true);
+    try {
+      await createSubcategory(selectedCategoryId, { name: subName, description: subDesc, imageUrl: subImage }, token);
+      setSubName("");
+      setSubDesc("");
+      setSubImage("");
+      onReload();
+    } catch (err) {
+      alert("Failed to create subcategory");
+    } finally {
+      setIsSubmittingSub(false);
+    }
+  }
+
+  async function handleDeleteSubcategory(categoryId: string, subId: string) {
+    if (!confirm("Are you sure you want to delete this subcategory?")) return;
+    try {
+      await deleteSubcategory(categoryId, subId, token);
+      onReload();
+    } catch (err) {
+      alert("Failed to delete subcategory");
+    }
+  }
 
   return (
-    <section className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_420px]">
-      <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <div>
-            <p className="text-sm font-black uppercase tracking-[0.18em] text-blue-700">Category CRUD</p>
-            <h2 className="mt-1 text-2xl font-black">Categories and subcategories</h2>
-          </div>
-          <button onClick={() => onCreateProduct(selectedCategory?.category || "New Category")} className="rounded-md bg-blue-700 px-4 py-2 text-sm font-black text-white">
-            Add product in category
-          </button>
-        </div>
-
-        <div className="mt-6 grid gap-4 md:grid-cols-2">
-          {categories.map((category) => {
-            const hero = category.subcategories.flatMap((subcategory) => subcategory.products).find((product) => product.imageUrl);
-            return (
-              <button
-                key={category.category}
-                onClick={() => onSelectCategory(category.category)}
-                className={`overflow-hidden rounded-lg border text-left transition ${
-                  selectedCategory?.category === category.category ? "border-blue-400 ring-2 ring-blue-100" : "border-slate-200 hover:border-blue-200"
+    <section className="grid gap-6 xl:grid-cols-[1fr_400px]">
+      <div className="flex flex-col gap-6">
+        <div className="admin-card p-5">
+          <h2 className="admin-card-title mb-4">Categories</h2>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {categories.map((category) => (
+              <div 
+                key={category.id} 
+                onClick={() => setSelectedCategoryId(category.id)}
+                className={`cursor-pointer overflow-hidden rounded-xl border bg-white text-left transition hover:shadow-sm ${
+                  selectedCategoryId === category.id ? "border-zinc-400 ring-2 ring-zinc-200" : "border-zinc-200 hover:border-zinc-300"
                 }`}
               >
-                <div className="relative h-32 bg-slate-900">
-                  <img src={productImage(hero)} alt="" className="h-full w-full object-cover opacity-55" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent" />
-                  <p className="absolute bottom-3 left-4 text-xl font-black text-white">{category.category}</p>
+                <div className="relative h-28 bg-[#222222]">
+                  {category.imageUrl && <img src={category.imageUrl} alt="" className="h-full w-full object-cover opacity-55" />}
+                  <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/80 to-transparent" />
+                  <p className="absolute bottom-3 left-4 text-lg font-bold text-white">{category.name}</p>
                 </div>
                 <div className="p-4">
-                  <p className="text-sm font-bold text-slate-500">{category.count} products / {category.subcategories.length} subcategories</p>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {category.subcategories.slice(0, 4).map((subcategory) => (
-                      <span key={subcategory.name} className="admin-pill">{subcategory.name}</span>
-                    ))}
+                  <p className="text-sm font-semibold text-zinc-500">{category.subcategories?.length || 0} subcategories</p>
+                  <div className="mt-4 flex justify-end">
+                    <button 
+                      onClick={(e) => { e.stopPropagation(); handleDeleteCategory(category.id); }}
+                      className="text-xs text-red-500 hover:underline"
+                    >
+                      Delete
+                    </button>
                   </div>
                 </div>
-              </button>
-            );
-          })}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="admin-card p-5">
+          <h3 className="admin-eyebrow mb-4">Create New Category</h3>
+          <form onSubmit={handleCreateCategory} className="grid gap-4 max-w-lg">
+            <input 
+              className="admin-input" 
+              placeholder="Category Name (e.g. Drones)" 
+              value={categoryName} 
+              onChange={e => setCategoryName(e.target.value)} 
+              required 
+            />
+            <input 
+              className="admin-input" 
+              placeholder="Description (Optional)" 
+              value={categoryDesc} 
+              onChange={e => setCategoryDesc(e.target.value)} 
+            />
+            <div>
+              <label className="text-xs font-semibold text-zinc-500 mb-1 block">Upload Category Image</label>
+              <input 
+                className="admin-input" 
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  const formData = new FormData();
+                  formData.append("image", file);
+                  try {
+                    const res = await fetch(`${API_BASE_URL}/api/components/upload/image`, {
+                      method: "POST",
+                      headers: { Authorization: `Bearer ${token}` },
+                      body: formData,
+                    });
+                    const json = await res.json();
+                    if (json.success) {
+                      setCategoryImage(json.url);
+                    } else {
+                      alert("Upload failed: " + json.error);
+                    }
+                  } catch (err) {
+                    alert("Upload error.");
+                  }
+                }}
+              />
+            </div>
+            {categoryImage && (
+              <input 
+                className="admin-input" 
+                placeholder="Image URL" 
+                value={categoryImage} 
+                onChange={e => setCategoryImage(e.target.value)} 
+              />
+            )}
+            <button disabled={isSubmittingCat || !categoryName} className="admin-button admin-button-primary">
+              {isSubmittingCat ? "Creating..." : "Create Category"}
+            </button>
+          </form>
         </div>
       </div>
 
-      <aside className="space-y-5">
-        <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-          <p className="text-sm font-black uppercase tracking-[0.18em] text-blue-700">Selected Category</p>
-          <h3 className="mt-1 text-2xl font-black">{selectedCategory?.category || "No category"}</h3>
-          <p className="mt-2 text-sm font-semibold text-slate-500">{categoryProducts.length} products inside this category.</p>
-          <div className="mt-5 grid gap-3">
-            <input className="admin-input" value={renameCategoryValue} onChange={(event) => onRenameCategory(event.target.value)} placeholder="Rename selected category" />
-            <button onClick={onRenameCategorySubmit} className="rounded-md bg-blue-700 px-4 py-2 text-sm font-black text-white">Rename Category</button>
-            <button onClick={() => onArchiveGroup(categoryProducts, selectedCategory?.category || "category")} className="rounded-md border border-red-200 px-4 py-2 text-sm font-black text-red-700">Archive Category Products</button>
-          </div>
-        </div>
+      <aside className="flex flex-col gap-6">
+        {selectedCategory ? (
+          <>
+            <div className="admin-card p-5">
+              <p className="admin-eyebrow">Subcategories for {selectedCategory.name}</p>
+              <div className="mt-4 flex flex-col gap-3">
+                {selectedCategory.subcategories?.map((sub: any) => (
+                  <div key={sub.id} className="flex items-center justify-between rounded-md border border-zinc-200 px-3 py-2 text-sm font-semibold">
+                    <span>{sub.name}</span>
+                    <button 
+                      onClick={() => handleDeleteSubcategory(selectedCategory.id, sub.id)}
+                      className="text-red-500 hover:underline"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                ))}
+                {(!selectedCategory.subcategories || selectedCategory.subcategories.length === 0) && (
+                  <p className="text-sm text-zinc-500">No subcategories yet.</p>
+                )}
+              </div>
+            </div>
 
-        <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-          <p className="text-sm font-black uppercase tracking-[0.18em] text-blue-700">Subcategories</p>
-          <div className="mt-4 space-y-2">
-            {selectedCategory?.subcategories.map((subcategory) => (
-              <button
-                key={subcategory.name}
-                onClick={() => onSelectSubcategory(subcategory.name)}
-                className={`flex w-full items-center justify-between rounded-md border px-3 py-2 text-left text-sm font-bold ${
-                  selectedSubcategory?.name === subcategory.name ? "border-blue-300 bg-blue-50 text-blue-700" : "border-slate-200"
-                }`}
-              >
-                <span>{subcategory.name}</span>
-                <span>{subcategory.count}</span>
-              </button>
-            ))}
+            <div className="admin-card p-5">
+              <p className="admin-eyebrow mb-4">Add Subcategory</p>
+              <form onSubmit={handleCreateSubcategory} className="grid gap-4">
+                <input 
+                  className="admin-input" 
+                  placeholder="Subcategory Name" 
+                  value={subName} 
+                  onChange={e => setSubName(e.target.value)} 
+                  required 
+                />
+                <input 
+                  className="admin-input" 
+                  placeholder="Description (Optional)" 
+                  value={subDesc} 
+                  onChange={e => setSubDesc(e.target.value)} 
+                />
+                <div>
+                  <label className="text-xs font-semibold text-zinc-500 mb-1 block">Upload Subcategory Image</label>
+                  <input 
+                    className="admin-input" 
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      const formData = new FormData();
+                      formData.append("image", file);
+                      try {
+                        const res = await fetch(`${API_BASE_URL}/api/components/upload/image`, {
+                          method: "POST",
+                          headers: { Authorization: `Bearer ${token}` },
+                          body: formData,
+                        });
+                        const json = await res.json();
+                        if (json.success) {
+                          setSubImage(json.url);
+                        } else {
+                          alert("Upload failed: " + json.error);
+                        }
+                      } catch (err) {
+                        alert("Upload error.");
+                      }
+                    }}
+                  />
+                </div>
+                {subImage && (
+                  <input 
+                    className="admin-input" 
+                    placeholder="Image URL" 
+                    value={subImage} 
+                    onChange={e => setSubImage(e.target.value)} 
+                  />
+                )}
+                <button disabled={isSubmittingSub || !subName} className="admin-button admin-button-primary">
+                  {isSubmittingSub ? "Adding..." : "Add Subcategory"}
+                </button>
+              </form>
+            </div>
+          </>
+        ) : (
+          <div className="admin-card p-5 text-center text-sm text-zinc-500">
+            Select a category to view and manage its subcategories.
           </div>
-          <div className="mt-5 grid gap-3">
-            <input className="admin-input" value={renameSubcategoryValue} onChange={(event) => onRenameSubcategory(event.target.value)} placeholder="Rename selected subcategory" />
-            <button onClick={onRenameSubcategorySubmit} className="rounded-md bg-blue-700 px-4 py-2 text-sm font-black text-white">Rename Subcategory</button>
-            <button onClick={() => onCreateProduct(selectedCategory?.category || "New Category", selectedSubcategory?.name)} className="admin-action bg-white">Add product here</button>
-            <button onClick={() => onArchiveGroup(selectedSubcategory?.products || [], selectedSubcategory?.name || "subcategory")} className="rounded-md border border-red-200 px-4 py-2 text-sm font-black text-red-700">Archive Subcategory Products</button>
-          </div>
-        </div>
+        )}
       </aside>
     </section>
   );

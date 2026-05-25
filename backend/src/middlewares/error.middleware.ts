@@ -1,4 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
+import { logger } from "../lib/logger.js";
 import { ValidationError, AuthError } from "../utils/types.js";
 
 /**
@@ -10,8 +11,7 @@ export function errorHandler(
   res: Response,
   next: NextFunction
 ): void {
-  // Log error for debugging
-  console.error("Error:", {
+  logger.error("request failed", {
     message: error.message,
     stack: error.stack,
     path: req.path,

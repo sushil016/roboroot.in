@@ -22,6 +22,13 @@ import {
   dashboardKpisHandler,
 } from "../features/admin/controllers/analytics.controller.js";
 import { authenticate, authorize } from "../middlewares/auth.middleware.js";
+import { validate } from "../middlewares/validate.middleware.js";
+import {
+  adminCustomerIdParamsSchema,
+  adminCustomerListQuerySchema,
+  adminCustomerStatusBodySchema,
+  adminRoleMutationBodySchema,
+} from "../validators/admin.validator.js";
 
 const router: RouterType = Router();
 
@@ -30,14 +37,21 @@ router.use(authenticate);
 router.use(authorize("ADMIN"));
 
 // Admin management routes
-router.post("/promote", promoteToAdminController);
-router.post("/demote", demoteFromAdminController);
+router.post("/promote", validate({ body: adminRoleMutationBodySchema }), promoteToAdminController);
+router.post("/demote", validate({ body: adminRoleMutationBodySchema }), demoteFromAdminController);
 router.get("/list", listAdminsController);
 
 // Customer management
-router.get("/customers", listCustomersHandler);
-router.get("/customers/:id", getCustomerDetailHandler);
-router.patch("/customers/:id/status", updateCustomerStatusHandler);
+router.get("/customers", validate({ query: adminCustomerListQuerySchema }), listCustomersHandler);
+router.get("/customers/:id", validate({ params: adminCustomerIdParamsSchema }), getCustomerDetailHandler);
+router.patch(
+  "/customers/:id/status",
+  validate({
+    params: adminCustomerIdParamsSchema,
+    body: adminCustomerStatusBodySchema,
+  }),
+  updateCustomerStatusHandler
+);
 
 // Analytics
 router.get("/analytics/kpis", dashboardKpisHandler);

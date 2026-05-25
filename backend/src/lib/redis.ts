@@ -1,10 +1,11 @@
 import { Redis } from "ioredis";
+import { logger } from "./logger.js";
 
 const REDIS_URL = process.env.REDIS_URL;
 
 function createRedisClient(): Redis | null {
   if (!REDIS_URL) {
-    console.warn("[Redis] REDIS_URL not set — caching disabled");
+    logger.warn("redis disabled", { reason: "REDIS_URL not set" });
     return null;
   }
 
@@ -18,11 +19,11 @@ function createRedisClient(): Redis | null {
   });
 
   client.on("error", (err: Error) => {
-    console.error("[Redis] Connection error:", err.message);
+    logger.error("redis connection error", { error: err });
   });
 
   client.on("connect", () => {
-    console.log("[Redis] Connected to Upstash");
+    logger.info("redis connected");
   });
 
   return client;

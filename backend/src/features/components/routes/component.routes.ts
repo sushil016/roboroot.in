@@ -5,7 +5,7 @@
 
 import { Router, type Router as RouterType } from "express";
 import * as componentController from "../controllers/component.controller.js";
-import { handleCreateComponentWithUploads } from "../controllers/component-upload.controller.js";
+import { handleCreateComponentWithUploads, handleSingleImageUpload } from "../controllers/component-upload.controller.js";
 import {
   getProductMediaHandler,
   addProductMediaHandler,
@@ -14,7 +14,7 @@ import {
   reorderProductMediaHandler,
 } from "../controllers/component-media.controller.js";
 import { authenticate, authorize } from "../../../middlewares/auth.middleware.js";
-import { uploadComponentImages, uploadProductMedia } from "../../../middlewares/upload.middleware.js";
+import { uploadComponentImages, uploadProductMedia, uploadSingleImage } from "../../../middlewares/upload.middleware.js";
 import { getComponentReviewsHandler } from "../../reviews/controllers/review.controller.js";
 import { cacheResponse } from "../../../middlewares/cache.middleware.js";
 
@@ -44,6 +44,7 @@ router.get("/:id", componentController.getComponentByIdHandler);
 router.get("/:id/reviews", getComponentReviewsHandler);
 
 // Product media — public read, admin write
+router.post("/upload/image", authenticate, authorize("ADMIN", "SUPER_ADMIN"), uploadSingleImage, handleSingleImageUpload);
 router.get("/:id/media", getProductMediaHandler);
 router.post("/:id/media", authenticate, authorize("ADMIN"), uploadProductMedia, addProductMediaHandler);
 router.post("/:id/media/url", authenticate, authorize("ADMIN"), addProductMediaByUrlHandler);

@@ -215,6 +215,30 @@ enum ComponentProductType {
   OTHER
 }
 
+enum RagChunkSourceType {
+  COMPONENT
+  PROJECT
+  FAQ
+  SHORT_POLICY
+}
+
+enum RagDocumentSourceType {
+  MANUAL
+  DATASHEET
+  POLICY
+  TUTORIAL
+  PROJECT_REPORT
+  COURSE_MATERIAL
+}
+
+enum ComponentRelationType {
+  COMPATIBLE_WITH
+  INCLUDES
+  UPGRADE_OF
+  FREQUENTLY_BOUGHT_WITH
+  REQUIRES
+}
+
 model User {
   id        String   @id @default(cuid())
   name      String?
@@ -508,6 +532,41 @@ model ProjectComponent {
 }
 
 // ========================================
+// CATEGORIES & SUBCATEGORIES
+// ========================================
+
+model Category {
+  id            String        @id @default(cuid())
+  name          String        @unique
+  description   String?       @db.Text
+  imageUrl      String?
+  isActive      Boolean       @default(true)
+  subcategories Subcategory[]
+  createdAt     DateTime      @default(now()) @db.Timestamptz(6)
+  updatedAt     DateTime      @updatedAt @db.Timestamptz(6)
+
+  @@index([isActive])
+}
+
+model Subcategory {
+  id          String   @id @default(cuid())
+  categoryId  String
+  name        String
+  description String?  @db.Text
+  imageUrl    String?
+  isActive    Boolean  @default(true)
+
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime @updatedAt @db.Timestamptz(6)
+
+  @@unique([categoryId, name])
+  @@index([categoryId])
+  @@index([isActive])
+}
+
+// ========================================
 // COMPONENTS & KITS
 // ========================================
 
@@ -529,9 +588,10 @@ model Component {
   isRobomaniacItem Boolean @default(false)
   isSoftware   Boolean @default(false)
 
-  unitPriceCents Int // price per unit
-  stockQuantity  Int     @default(0)
-  isActive       Boolean @default(true)
+  unitPriceCents         Int  // price per unit (original / compare-at price)
+  discountedPriceCents   Int? // sale price — null means no active discount
+  stockQuantity          Int     @default(0)
+  isActive               Boolean @default(true)
 
   createdAt DateTime @default(now()) @db.Timestamptz(6)
   updatedAt DateTime @updatedAt @db.Timestamptz(6)
@@ -543,6 +603,8 @@ model Component {
   wishlistItems     WishlistItem[]
   reviews           Review[]
   media             ProductMedia[]
+  outgoingRelations ComponentRelation[] @relation("ComponentRelationSource")
+  incomingRelations ComponentRelation[] @relation("ComponentRelationTarget")
 
   @@index([isActive])
   @@index([category, subcategory])
@@ -603,6 +665,83 @@ model KitComponent {
 
   @@unique([kitId, componentId])
   @@index([componentId])
+}
+
+// ========================================
+// COMBINED RAG, PAGEINDEX & GRAPH
+// ========================================
+
+model RagChunk {
+  id         String             @id @default(cuid())
+  sourceType RagChunkSourceType
+  sourceId   String
+  chunkText  String             @db.Text
+  metadata   Json?
+  embedding  Unsupported("vector(1024)")?
+  createdAt  DateTime           @default(now()) @db.Timestamptz(6)
+
+  @@index([sourceType, sourceId])
+  @@index([createdAt])
+}
+
+model Document {
+  id         String                @id @default(cuid())
+  title      String
+  sourceType RagDocumentSourceType
+  sourceId   String?
+  fileUrl    String?
+  metadata   Json?
+  createdAt  DateTime              @default(now()) @db.Timestamptz(6)
+  updatedAt  DateTime              @updatedAt @db.Timestamptz(6)
+
+  nodes DocumentNode[]
+
+  @@index([sourceType])
+  @@index([sourceId])
+  @@index([createdAt])
+}
+
+model DocumentNode {
+  id         String   @id @default(cuid())
+  documentId String
+  parentId   String?
+  nodeId     String
+  title      String
+  summary    String   @db.Text
+  fullText   String?  @db.Text
+  startPage  Int?
+  endPage    Int?
+  startIndex Int?
+  endIndex   Int?
+  sortOrder  Int      @default(0)
+  metadata   Json?
+  createdAt  DateTime @default(now()) @db.Timestamptz(6)
+
+  document Document       @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  parent   DocumentNode?  @relation("DocumentNodeTree", fields: [parentId], references: [id], onDelete: Cascade)
+  children DocumentNode[] @relation("DocumentNodeTree")
+
+  @@unique([documentId, nodeId])
+  @@index([documentId])
+  @@index([parentId])
+  @@index([documentId, parentId, sortOrder])
+}
+
+model ComponentRelation {
+  id                String                @id @default(cuid())
+  sourceComponentId String
+  targetComponentId String
+  type              ComponentRelationType
+  metadata          Json?
+  createdAt         DateTime              @default(now()) @db.Timestamptz(6)
+
+  sourceComponent Component @relation("ComponentRelationSource", fields: [sourceComponentId], references: [id], onDelete: Cascade)
+  targetComponent Component @relation("ComponentRelationTarget", fields: [targetComponentId], references: [id], onDelete: Cascade)
+
+  @@unique([sourceComponentId, targetComponentId, type])
+  @@index([sourceComponentId, type])
+  @@index([targetComponentId, type])
+  @@index([type])
 }
 
 // ========================================
@@ -793,6 +932,7 @@ model Coupon {
   maxUsageCount Int?
   usageCount    Int          @default(0)
   perUserLimit  Int?
+  allowedEmail  String?      // if set, coupon is only valid for this specific email
   expiresAt     DateTime?
   isActive      Boolean      @default(true)
   createdAt     DateTime     @default(now()) @db.Timestamptz(6)

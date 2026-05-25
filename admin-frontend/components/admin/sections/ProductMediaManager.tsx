@@ -94,11 +94,11 @@ export function ProductMediaManager({ productId, token }: { productId: string; t
   const isFull = mediaList.length >= MAX_MEDIA;
 
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-black text-slate-800">Product Media</p>
-          <p className="text-xs text-slate-500">
+          <p className="text-sm font-bold text-[#222222]">Product Media</p>
+          <p className="text-xs text-zinc-500">
             {mediaList.length}/{MAX_MEDIA} items · up to 10 images + 1 video
           </p>
         </div>
@@ -107,13 +107,13 @@ export function ProductMediaManager({ productId, token }: { productId: string; t
             <button
               type="button"
               onClick={() => setShowVideoForm((v) => !v)}
-              className="rounded-md border border-slate-200 px-3 py-1.5 text-xs font-bold text-slate-600 hover:border-blue-400 hover:text-blue-700 transition-colors"
+              className="admin-action"
             >
               + Video URL
             </button>
           )}
           {!isFull && (
-            <label className="cursor-pointer rounded-md bg-blue-700 px-3 py-1.5 text-xs font-bold text-white hover:bg-blue-800 transition-colors">
+            <label className="admin-button admin-button-primary min-h-9 cursor-pointer px-3 text-xs">
               {uploading ? "Uploading..." : "+ Upload Images"}
               <input
                 ref={fileRef}
@@ -143,11 +143,11 @@ export function ProductMediaManager({ productId, token }: { productId: string; t
             type="button"
             onClick={handleAddVideo}
             disabled={addingVideo || !videoUrl.trim()}
-            className="rounded-md bg-blue-700 px-3 py-1.5 text-xs font-bold text-white disabled:opacity-50"
+            className="admin-action border-[#222222] bg-[#222222] text-white disabled:opacity-50"
           >
             {addingVideo ? "Adding..." : "Add"}
           </button>
-          <button type="button" onClick={() => setShowVideoForm(false)} className="rounded-md border border-slate-200 px-3 py-1.5 text-xs font-bold text-slate-500">
+          <button type="button" onClick={() => setShowVideoForm(false)} className="admin-action">
             Cancel
           </button>
         </div>
@@ -157,11 +157,11 @@ export function ProductMediaManager({ productId, token }: { productId: string; t
       {loading ? (
         <div className="grid grid-cols-3 gap-2">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="aspect-square animate-pulse rounded-md bg-slate-100" />
+            <div key={i} className="aspect-square animate-pulse rounded-md bg-[#F2F2F0]" />
           ))}
         </div>
       ) : mediaList.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-md border border-dashed border-slate-200 py-8 text-sm text-slate-400">
+        <div className="flex flex-col items-center justify-center rounded-md border border-dashed border-zinc-200 bg-[#F2F2F0] py-8 text-sm text-zinc-500">
           No media yet. Upload images or add a video URL.
         </div>
       ) : (
@@ -169,11 +169,11 @@ export function ProductMediaManager({ productId, token }: { productId: string; t
           {mediaList
             .sort((a, b) => a.sortOrder - b.sortOrder)
             .map((m) => (
-              <div key={m.id} className="group relative aspect-square overflow-hidden rounded-md border border-slate-200 bg-slate-50">
+              <div key={m.id} className="group relative aspect-square overflow-hidden rounded-md border border-zinc-200 bg-[#F2F2F0]">
                 {m.type === "VIDEO" ? (
-                  <div className="flex h-full flex-col items-center justify-center gap-1 bg-slate-900 text-white">
+                  <div className="flex h-full flex-col items-center justify-center gap-1 bg-zinc-900 text-white">
                     <span className="text-2xl">▶</span>
-                    <span className="max-w-full truncate px-2 text-[10px] text-slate-400">{m.url}</span>
+                    <span className="max-w-full truncate px-2 text-[10px] text-zinc-400">{m.url}</span>
                   </div>
                 ) : (
                   <img src={m.url} alt="" className="h-full w-full object-contain" />
@@ -181,7 +181,7 @@ export function ProductMediaManager({ productId, token }: { productId: string; t
                 <button
                   type="button"
                   onClick={() => handleDelete(m.id)}
-                  className="absolute right-1 top-1 hidden rounded bg-red-600 px-1.5 py-0.5 text-[10px] font-bold text-white group-hover:flex"
+                  className="absolute right-1 top-1 hidden rounded bg-[#222222] px-1.5 py-0.5 text-[10px] font-bold text-white group-hover:flex"
                 >
                   ✕
                 </button>

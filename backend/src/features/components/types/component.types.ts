@@ -19,6 +19,7 @@ export interface CreateComponentRequest {
   isRobomaniacItem?: boolean;
   isSoftware?: boolean;
   unitPriceCents: number;
+  discountedPriceCents?: number | null;
   stockQuantity?: number;
   isActive?: boolean;
 }
@@ -39,6 +40,7 @@ export interface UpdateComponentRequest {
   isRobomaniacItem?: boolean;
   isSoftware?: boolean;
   unitPriceCents?: number;
+  discountedPriceCents?: number | null;
   stockQuantity?: number;
   isActive?: boolean;
 }
@@ -78,6 +80,7 @@ export interface ComponentResponse {
   isRobomaniacItem: boolean;
   isSoftware: boolean;
   unitPriceCents: number;
+  discountedPriceCents: number | null;
   unitPrice: number; // Formatted price in rupees
   stockQuantity: number;
   isActive: boolean;

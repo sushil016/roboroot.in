@@ -8,7 +8,9 @@ import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import rateLimit from "express-rate-limit";
 import cron from "node-cron";
+import { logger } from "./lib/logger.js";
 import { prisma } from "./lib/prisma.js";
+import { redis } from "./lib/redis.js";
 import { startEmailWorker, stopEmailWorker } from "./workers/email-bullmq-worker.js";
 import { startWebhookRetryWorker, stopWebhookRetryWorker } from "./workers/webhook-retry-worker.js";
 import { startStockSyncWorker, stopStockSyncWorker } from "./workers/stock-sync-worker.js";
@@ -22,12 +24,15 @@ import projectRoutes from "./features/projects/routes/project.routes.js";
 import orderRoutes from "./features/orders/routes/order.routes.js";
 import addressRoutes from "./features/addresses/routes/address.routes.js";
 import couponRoutes from "./features/coupons/routes/coupon.routes.js";
+import categoryRoutes from "./features/categories/routes/category.routes.js";
 import cartRoutes from "./features/cart/routes/cart.routes.js";
 import wishlistRoutes from "./features/wishlist/routes/wishlist.routes.js";
 import paymentRoutes from "./features/payments/routes/payment.routes.js";
 import shippingRoutes from "./features/shipping/routes/shipping.routes.js";
 import pcbRoutes from "./features/pcb/routes/pcb.routes.js";
 import reviewRoutes from "./features/reviews/routes/review.routes.js";
+import chatRoutes from "./features/ai-chat/routes/chat.routes.js";
+import reindexRoutes from "./features/embeddings/routes/reindex.routes.js";
 import { errorHandler, notFoundHandler } from "./middlewares/error.middleware.js";
 
 const app = express();
@@ -92,6 +97,11 @@ app.use(cookieParser());
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
+import path from "path";
+
+// Serve local uploads
+app.use("/uploads", express.static(path.join(process.cwd(), "public/uploads")));
+
 // Health check endpoint
 app.get("/", (req: Request, res: Response) => {
   res.json({
@@ -102,11 +112,32 @@ app.get("/", (req: Request, res: Response) => {
   });
 });
 
-app.get("/health", (req: Request, res: Response) => {
-  res.json({
-    success: true,
-    status: "healthy",
+app.get("/health", async (req: Request, res: Response) => {
+  const [database, cache] = await Promise.all([
+    checkDatabaseHealth(),
+    checkRedisHealth(),
+  ]);
+  const healthy = database.status === "healthy";
+
+  res.status(healthy ? 200 : 503).json({
+    success: healthy,
+    status: healthy ? "healthy" : "degraded",
     timestamp: new Date().toISOString(),
+    services: {
+      database,
+      cache,
+      chat: {
+        provider: getChatProviderName(),
+        enabled: isChatProviderConfigured(),
+        model: getChatModelName(),
+        embeddings: {
+          provider: getEmbeddingProviderName(),
+          enabled: isEmbeddingProviderConfigured(),
+          model: getEmbeddingModelName(),
+          dimensions: Number(process.env.EMBEDDING_DIMENSIONS ?? 1024),
+        },
+      },
+    },
   });
 });
 
@@ -146,6 +177,65 @@ const catalogLimiter = rateLimit({
   legacyHeaders: false,
 });
 
+interface ServiceHealth {
+  status: "healthy" | "degraded" | "disabled";
+  message?: string;
+}
+
+async function checkDatabaseHealth(): Promise<ServiceHealth> {
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    return { status: "healthy" };
+  } catch (error) {
+    logger.error("database health check failed", { error });
+    return { status: "degraded", message: "Database check failed" };
+  }
+}
+
+async function checkRedisHealth(): Promise<ServiceHealth> {
+  if (!redis) return { status: "disabled", message: "REDIS_URL not configured" };
+
+  try {
+    await redis.ping();
+    return { status: "healthy" };
+  } catch (error) {
+    logger.error("redis health check failed", { error });
+    return { status: "degraded", message: "Redis check failed" };
+  }
+}
+
+function getChatProviderName(): "nvidia" | "anthropic" {
+  return process.env.CHAT_LLM_PROVIDER === "nvidia" || process.env.NVIDIA_API_KEY ? "nvidia" : "anthropic";
+}
+
+function getChatModelName(): string {
+  if (getChatProviderName() === "nvidia") {
+    return process.env.NVIDIA_CHAT_MODEL ?? "deepseek-ai/deepseek-v4-pro";
+  }
+
+  return process.env.ANTHROPIC_MODEL ?? "claude-sonnet-4-20250514";
+}
+
+function isChatProviderConfigured(): boolean {
+  return getChatProviderName() === "nvidia" ? Boolean(process.env.NVIDIA_API_KEY) : Boolean(process.env.ANTHROPIC_API_KEY);
+}
+
+function getEmbeddingProviderName(): "digitalocean" | "openai" {
+  return process.env.EMBEDDING_PROVIDER === "openai" ? "openai" : "digitalocean";
+}
+
+function getEmbeddingModelName(): string {
+  if (getEmbeddingProviderName() === "openai") {
+    return process.env.OPENAI_EMBEDDING_MODEL ?? "text-embedding-3-small";
+  }
+
+  return process.env.DIGITALOCEAN_EMBEDDING_MODEL ?? "qwen3-embedding-0.6b";
+}
+
+function isEmbeddingProviderConfigured(): boolean {
+  return getEmbeddingProviderName() === "openai" ? Boolean(process.env.OPENAI_API_KEY) : Boolean(process.env.DIGITALOCEAN_TOKEN);
+}
+
 app.use("/api/auth/login", authLimiter);
 app.use("/api/auth/signup", authLimiter);
 app.use("/api/auth/forgot-password", authLimiter);
@@ -155,6 +245,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/emails", emailRoutes);
 app.use("/api/admin", adminWriteLimiter, adminRoutes);
 app.use("/api/components", catalogLimiter, componentRoutes);
+app.use("/api/categories", catalogLimiter, categoryRoutes);
 app.use("/api/projects", catalogLimiter, projectRoutes);
 app.use("/api/orders", orderLimiter, orderRoutes);
 app.use("/api/addresses", addressRoutes);
@@ -166,6 +257,8 @@ app.use("/api/payments", orderLimiter, paymentRoutes);
 app.use("/api/shipping", shippingRoutes);
 app.use("/api/pcb", pcbRoutes);
 app.use("/api/reviews", reviewRoutes);
+app.use("/api/chat", chatRoutes);
+app.use("/api/webhooks", reindexRoutes);
 
 // 404 handler
 app.use(notFoundHandler);
@@ -209,10 +302,10 @@ cron.schedule("*/5 * * * *", async () => {
           data: { status: "CANCELLED", notes: "Auto-cancelled: payment not completed within 30 minutes" },
         });
       });
-      console.log(`[OrderExpiry] Auto-cancelled order ${order.id} (stock restored)`);
+      logger.info("stale order auto-cancelled", { orderId: order.id });
     }
   } catch (err) {
-    console.error("[OrderExpiry] Failed:", err);
+    logger.error("stale order cancellation failed", { error: err });
   }
 });
 
@@ -222,9 +315,9 @@ cron.schedule("7 3 * * *", async () => {
     const result = await prisma.session.deleteMany({
       where: { expiresAt: { lt: new Date() } },
     });
-    console.log(`[SessionCleanup] Deleted ${result.count} expired sessions`);
+    logger.info("expired sessions deleted", { count: result.count });
   } catch (err) {
-    console.error("[SessionCleanup] Failed:", err);
+    logger.error("session cleanup failed", { error: err });
   }
 });
 
@@ -233,7 +326,7 @@ cron.schedule("13 * * * *", async () => {
   const stockQueue = getStockQueue();
   if (stockQueue) {
     await stockQueue.add("check-all", {}).catch((err: Error) =>
-      console.error("[StockSync] Failed to enqueue:", err.message),
+      logger.error("stock sync enqueue failed", { error: err }),
     );
   }
 });
@@ -255,17 +348,17 @@ cron.schedule("*/30 * * * *", async () => {
     }).catch(() => null);
   }
   if (shippedOrders.length > 0) {
-    console.log(`[TrackingPoll] Queued ${shippedOrders.length} shipment(s) for tracking update`);
+    logger.info("tracking poll queued", { count: shippedOrders.length });
   }
 });
 
 // Start server
 const server = app.listen(PORT, () => {
-  console.log(`
-    🚀 Server is running on http://localhost:${PORT}
-    📝 Environment: ${NODE_ENV}
-    🔐 Auth endpoints available at http://localhost:${PORT}/api/auth
-  `);
+  logger.info("server started", {
+    port: PORT,
+    environment: NODE_ENV,
+    authBasePath: `/api/auth`,
+  });
 
   startEmailWorker();
   startWebhookRetryWorker();
@@ -275,7 +368,7 @@ const server = app.listen(PORT, () => {
 
 // Graceful shutdown — drain email worker before exit
 async function shutdown(signal: string) {
-  console.log(`[Server] ${signal} received — shutting down`);
+  logger.info("server shutdown requested", { signal });
   server.close(async () => {
     await Promise.all([
       stopEmailWorker(),
