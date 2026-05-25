@@ -12,6 +12,7 @@ export const env = {
         : "http://localhost:4000",
   appUrl: process.env.NEXT_PUBLIC_APP_URL,
   adminUrl: process.env.NEXT_PUBLIC_ADMIN_URL || "http://localhost:3002",
+  chatEnabled: process.env.NEXT_PUBLIC_CHAT_ENABLED !== "false",
   sentryDsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
   nodeEnv: process.env.NODE_ENV,
 } as const;

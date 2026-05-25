@@ -28,7 +28,7 @@ export function BestSellersSection() {
   if (!isLoading && components.length === 0) return null;
 
   return (
-    <section className="border-y border-[#D8D8C4] bg-[#FAFAED]">
+    <section className="border-y border-[#D8D8C4] bg-background">
       <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 lg:grid-cols-[360px_minmax(0,1fr)]">
         {/* Left — section header */}
         <motion.div

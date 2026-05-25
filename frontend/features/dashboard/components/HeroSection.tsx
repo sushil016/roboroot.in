@@ -9,6 +9,8 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { InteractiveHoverButton } from "@/components/ui/interactive-hover-button";
 import { serviceTiles } from "@/features/dashboard/data/homepage";
 import { homeIcons } from "@/features/dashboard/components/home-icons";
+import RoborootServices from "./Services";
+import RoborootAiSection from "./Services";
 
 const descriptions = [
   "Thousands of sensors, microcontrollers, motors, power modules, and components ready to ship for any build.",
@@ -66,7 +68,7 @@ export function HeroSection() {
   const Icon = homeIcons[slide.icon];
 
   return (
-    <section className="border-b border-[#D8D8C4] bg-[#FAFAED]">
+    <section className="border-b border-[#D8D8C4] bg-background">
 
       {/* ── Full-width parallax slider ── */}
       <div
@@ -200,44 +202,8 @@ export function HeroSection() {
       </div>
 
       {/* ── Service tiles strip ── */}
-      <div className="mx-auto max-w-7xl px-4 py-8">
-        <div className="overflow-x-auto rounded-2xl border border-[#D8D8C4] bg-[#F3F3E4] shadow-sm scrollbar-hide">
-          <motion.div
-            className="grid min-w-[760px] grid-cols-4 lg:min-w-0"
-            initial="hidden"
-            animate="show"
-            variants={{ show: { transition: { staggerChildren: 0.1, delayChildren: 0.6 } } }}
-          >
-            {serviceTiles.map((item) => {
-              const TileIcon = homeIcons[item.icon];
-              return (
-                <motion.div
-                  key={item.title}
-                  variants={{
-                    hidden: { opacity: 0, y: 18 },
-                    show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } },
-                  }}
-                >
-                  <Link
-                    href={item.href}
-                    className="card-hover-bar flex min-h-44 items-center justify-between border-r border-[#D8D8C4] px-7 py-6 last:border-r-0 transition"
-                  >
-                    <span>
-                      <span className="block text-2xl font-black leading-tight text-zinc-950 md:text-3xl">
-                        {item.title}
-                      </span>
-                      <span className="mt-3 block text-base font-bold text-zinc-500">
-                        {item.copy}
-                      </span>
-                    </span>
-                    <TileIcon className="h-16 w-16 shrink-0 text-[#1CA2D1]" />
-                  </Link>
-                </motion.div>
-              );
-            })}
-          </motion.div>
-        </div>
-      </div>
+      <RoborootAiSection />
+      
     </section>
   );
 }

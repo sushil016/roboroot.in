@@ -90,7 +90,7 @@ export function Header() {
   });
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-[#D8D8C4] bg-[#FAFAED] text-zinc-950">
+    <header className="sticky top-0 z-50 w-full border-b border-[#D8D8C4] bg-background text-zinc-950">
       <AnnouncementBar />
 
       <div className="border-b border-[#D8D8C4]">
@@ -239,7 +239,7 @@ export function Header() {
 
       <div className="lg:hidden">
         {mobileMenuOpen && (
-          <div className="space-y-2 border-t border-[#D8D8C4] bg-[#FAFAED] px-4 py-4">
+          <div className="space-y-2 border-t border-[#D8D8C4] bg-background px-4 py-4">
             <form action="/components" className="flex overflow-hidden rounded-md border border-[#D8D8C4]">
               <input
                 name="search"
@@ -277,7 +277,7 @@ export function Header() {
                     <Link
                       key={cat.category}
                       href={`/components?category=${encodeURIComponent(cat.category)}`}
-                      className="rounded-md bg-[#FAFAED] px-3 py-2 text-sm font-bold text-zinc-800"
+                      className="rounded-md bg-background px-3 py-2 text-sm font-bold text-zinc-800"
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       {cat.category}
@@ -353,7 +353,7 @@ function CatalogMegaMenu({
     <div className={`absolute top-full z-50 pt-2 ${align === 'wide' ? '-left-72' : 'left-0'}`}>
       <div className="w-[960px] max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl border border-[#D8D8C4] bg-[#F3F3E4] shadow-2xl shadow-zinc-200/60">
 
-        <div className="flex items-center justify-between border-b border-[#D8D8C4] bg-[#FAFAED] px-6 py-4">
+        <div className="flex items-center justify-between border-b border-[#D8D8C4] bg-background px-6 py-4">
           <div>
             <p className="text-[10px] font-black uppercase tracking-[0.20em] text-[#1CA2D1]">
               Browse Catalog
@@ -405,7 +405,7 @@ function CatalogMegaMenu({
           ))}
         </div>
 
-        <div className="flex items-center justify-between border-t border-[#D8D8C4] bg-[#FAFAED]/80 px-6 py-3">
+        <div className="flex items-center justify-between border-t border-[#D8D8C4] bg-background/80 px-6 py-3">
           <div className="flex items-center gap-5 text-[11px] font-bold text-zinc-500">
             <Link href="/components?isBestSeller=true" onClick={onClose} className="transition-colors hover:text-[#1CA2D1]">↗ Best Sellers</Link>
             <Link href="/projects" onClick={onClose} className="transition-colors hover:text-[#1CA2D1]">↗ Projects</Link>

@@ -9,6 +9,7 @@ import { usePathname } from 'next/navigation';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { CommandPalette } from '@/components/layout/CommandPalette';
+import { ChatWidget } from '@/features/chat';
 
 const AUTH_PATHS = ['/login', '/register', '/forgot-password', '/reset-password', '/verify-email', '/callback'];
 
@@ -30,6 +31,7 @@ export function LayoutWrapper({ children }: LayoutWrapperProps) {
       <Header />
       <main className="flex-1">{children}</main>
       <Footer />
+      <ChatWidget />
     </div>
   );
 }

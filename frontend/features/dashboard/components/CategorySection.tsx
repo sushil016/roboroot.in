@@ -19,7 +19,7 @@ const cardVariants = {
 
 function CategoryCardSkeleton() {
   return (
-    <div className="rounded-2xl overflow-hidden border border-[#D8D8C4] bg-white">
+    <div className="rounded-2xl overflow-hidden border border-[#D8D8C4] bg-background">
       <Skeleton className="h-[200px] w-full rounded-none" />
       <div className="p-5 space-y-3">
         <div className="flex items-center justify-between">

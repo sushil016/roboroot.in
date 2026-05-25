@@ -7,7 +7,7 @@ import { ServicesSection } from "@/features/dashboard/components/ServicesSection
 
 export function LandingPage() {
   return (
-    <div className="bg-[#F2F2F0] text-[#222222]" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+    <div className="bg-background text-foreground" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
       <HeroSection />
       <CategorySection />
       <BestSellersSection />

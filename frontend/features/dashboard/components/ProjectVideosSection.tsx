@@ -7,7 +7,7 @@ import { projectVideoSlots } from "@/features/dashboard/data/homepage";
 
 export function ProjectVideosSection() {
   return (
-    <section className="border-b border-[#D8D8C4] bg-[#FAFAED]">
+    <section className="border-b border-[#D8D8C4] bg-background">
       <div className="mx-auto max-w-7xl px-4 py-12">
         <motion.div
           initial={{ opacity: 0, y: 22 }}

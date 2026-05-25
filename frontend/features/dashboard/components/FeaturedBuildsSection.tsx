@@ -102,7 +102,7 @@ export function FeaturedBuildsSection() {
         transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
         className="card-hover-bar rounded-2xl border border-[#D8D8C4] bg-[#F3F3E4] p-6 shadow-sm"
       >
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#FAFAED] text-[#1CA2D1]">
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-background text-[#1CA2D1]">
           <PackageCheck className="h-6 w-6" />
         </div>
         <h2 className="mt-5 text-2xl font-black text-zinc-950">Build your BOM faster</h2>
