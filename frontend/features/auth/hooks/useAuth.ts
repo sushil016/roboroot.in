@@ -40,7 +40,7 @@ export function useAuth() {
       setLoading(true);
     },
     onSuccess: (response: AuthResponse) => {
-      setAuth(response.user, response.accessToken, response.refreshToken);
+      setAuth(response.user);
       syncCartToServer();
       toast.success('Login successful!');
       const redirectTo = new URLSearchParams(window.location.search).get('redirect') || '/';
@@ -63,10 +63,11 @@ export function useAuth() {
       setLoading(true);
     },
     onSuccess: (response: AuthResponse) => {
-      setAuth(response.user, response.accessToken, response.refreshToken);
+      setAuth(response.user);
       syncCartToServer();
       toast.success('Account created successfully!');
-      router.push('/');
+      const redirectTo = new URLSearchParams(window.location.search).get('redirect') || '/';
+      router.push(redirectTo);
       router.refresh();
     },
     onError: (error: unknown) => {

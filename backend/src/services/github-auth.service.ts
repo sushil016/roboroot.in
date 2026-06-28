@@ -44,7 +44,7 @@ interface GitHubEmail {
 /**
  * Get GitHub OAuth URL for authentication
  */
-export function getGitHubAuthUrl(): string {
+export function getGitHubAuthUrl(state?: string): string {
   if (!GITHUB_CLIENT_ID) {
     throw new ValidationError("GitHub OAuth is not configured");
   }
@@ -54,6 +54,10 @@ export function getGitHubAuthUrl(): string {
     redirect_uri: GITHUB_REDIRECT_URI,
     scope: "read:user user:email",
   });
+
+  if (state) {
+    params.set("state", state);
+  }
 
   return `https://github.com/login/oauth/authorize?${params.toString()}`;
 }

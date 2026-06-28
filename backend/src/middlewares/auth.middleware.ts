@@ -125,17 +125,23 @@ export function optionalAuthenticate(
   next: NextFunction
 ): void {
   try {
+    // Same dual-source logic as authenticate — cookie first, then header
+    const cookieToken = (req.cookies as Record<string, string>)?.accessToken;
     const authHeader = req.headers.authorization;
+    let token: string | undefined;
 
-    if (authHeader) {
+    if (cookieToken) {
+      token = cookieToken;
+    } else if (authHeader) {
       const parts = authHeader.split(" ");
       if (parts.length === 2 && parts[0] === "Bearer") {
-        const token = parts[1];
-        if (token) {
-          const decoded = verifyAccessToken(token);
-          req.user = decoded;
-        }
+        token = parts[1];
       }
+    }
+
+    if (token) {
+      const decoded = verifyAccessToken(token);
+      req.user = decoded;
     }
 
     next();

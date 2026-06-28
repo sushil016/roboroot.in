@@ -68,28 +68,33 @@ export function ProductRevealCard({
         />
 
         {/* Badges */}
-        <div className="absolute left-3 top-3 z-10 flex flex-col gap-1.5">
+        <div className="absolute left-2 top-2 sm:left-3 sm:top-3 z-10 flex flex-col gap-1 sm:gap-1.5">
           {isOutOfStock && (
-            <span className="rounded-md bg-red-500 px-2 py-0.5 text-[10px] font-bold text-white">
+            <span className="rounded-md bg-red-500 px-1.5 py-0.5 text-[8px] sm:text-[10px] font-bold text-white">
               Sold Out
             </span>
           )}
           {isLowStock && !isOutOfStock && (
-            <span className="rounded-md bg-amber-500 px-2 py-0.5 text-[10px] font-bold text-white">
+            <span className="rounded-md bg-amber-500 px-1.5 py-0.5 text-[8px] sm:text-[10px] font-bold text-white">
               Only {component.stockQuantity} left
             </span>
           )}
           {component.isBestSeller && !isOutOfStock && (
             <span
-              className="rounded-md px-2 py-0.5 text-[10px] font-bold text-white"
+              className="rounded-md px-1.5 py-0.5 text-[8px] sm:text-[10px] font-bold text-white"
               style={{ backgroundColor: accent }}
             >
               Best Seller
             </span>
           )}
           {component.isRobomaniacItem && (
-            <span className="rounded-md border border-[#D8D8C4] bg-white/95 px-2 py-0.5 text-[10px] font-bold text-zinc-600">
+            <span className="rounded-md border border-[#D8D8C4] bg-white/95 px-1.5 py-0.5 text-[8px] sm:text-[10px] font-bold text-zinc-600">
               Robomaniac
+            </span>
+          )}
+          {component.discountedPriceCents && component.discountedPriceCents < component.unitPriceCents && (
+            <span className="rounded-md bg-red-500 px-1.5 py-0.5 text-[8px] sm:text-[10px] font-black text-white">
+              {Math.round((1 - component.discountedPriceCents / component.unitPriceCents) * 100)}% OFF
             </span>
           )}
         </div>
@@ -97,7 +102,7 @@ export function ProductRevealCard({
         {/* Wishlist */}
         <button
           className={cn(
-            "absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full border shadow-sm transition-all duration-200",
+            "absolute right-2 top-2 sm:right-3 sm:top-3 z-10 flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full border shadow-sm transition-all duration-200",
             isWishlisted
               ? "border-transparent bg-[#1CA2D1] text-white scale-100 opacity-100"
               : hovered
@@ -112,7 +117,7 @@ export function ProductRevealCard({
           aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
         >
           <Heart
-            className="h-3.5 w-3.5"
+            className="h-3 w-3 sm:h-3.5 sm:w-3.5"
             fill={isWishlisted ? "currentColor" : "none"}
           />
         </button>
@@ -124,12 +129,12 @@ export function ProductRevealCard({
             alt={component.name}
             animate={{ scale: hovered ? 1.06 : 1 }}
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            className="h-full w-full object-contain p-6"
+            className="h-full w-full object-contain p-3 sm:p-6"
             loading="lazy"
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center">
-            <Package className="h-16 w-16 text-zinc-200" />
+            <Package className="h-10 w-10 sm:h-16 sm:w-16 text-zinc-200" />
           </div>
         )}
 
@@ -145,10 +150,10 @@ export function ProductRevealCard({
       </Link>
 
       {/* Info area */}
-      <div className="flex flex-1 flex-col px-4 pt-3.5 pb-4">
+      <div className="flex flex-1 flex-col px-2.5 sm:px-4 pt-2.5 sm:pt-3.5 pb-3 sm:pb-4">
         {/* Category label */}
         <p
-          className="text-[10px] font-bold uppercase tracking-[0.16em] leading-none truncate"
+          className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.16em] leading-none truncate"
           style={{ color: accent }}
         >
           {component.subcategory || component.category}
@@ -157,29 +162,45 @@ export function ProductRevealCard({
         {/* Product name */}
         <Link
           href={`/components/${component.id}`}
-          className="mt-1.5 block"
+          className="mt-1 block sm:mt-1.5"
         >
-          <h3 className="line-clamp-2 text-[14px] font-bold leading-[1.4] text-[#222222] hover:text-[#1CA2D1] transition-colors">
+          <h3 className="line-clamp-2 text-xs sm:text-[14px] font-bold leading-[1.4] text-[#222222] hover:text-[#1CA2D1] transition-colors">
             {component.name}
           </h3>
         </Link>
 
         {/* Brand */}
         {component.brand && (
-          <p className="mt-1 text-[11px] font-medium text-zinc-400">{component.brand}</p>
+          <p className="mt-1 text-[10px] sm:text-[11px] font-medium text-zinc-400">{component.brand}</p>
         )}
 
         {/* Price row */}
-        <div className="mt-auto flex items-end justify-between pt-3">
+        <div className="mt-auto flex items-end justify-between pt-2 sm:pt-3">
           <div className="flex flex-col">
-            <span className="text-[18px] font-black leading-none text-[#1CA2D1]">
-              {formatPrice(component.unitPriceCents)}
-            </span>
-            <span className="mt-0.5 text-[10px] font-semibold text-emerald-600">Inc. GST</span>
+            {component.discountedPriceCents && component.discountedPriceCents < component.unitPriceCents ? (
+              <>
+                <span className="text-sm sm:text-[18px] font-black leading-none text-[#1CA2D1]">
+                  {formatPrice(component.discountedPriceCents)}
+                </span>
+                <div className="mt-0.5 flex flex-wrap items-center gap-1">
+                  <span className="text-[10px] sm:text-[11px] font-semibold text-zinc-400 line-through">
+                    {formatPrice(component.unitPriceCents)}
+                  </span>
+                  <span className="text-[9px] sm:text-[10px] font-semibold text-emerald-600">Inc. GST</span>
+                </div>
+              </>
+            ) : (
+              <>
+                <span className="text-sm sm:text-[18px] font-black leading-none text-[#1CA2D1]">
+                  {formatPrice(component.unitPriceCents)}
+                </span>
+                <span className="mt-0.5 text-[9px] sm:text-[10px] font-semibold text-emerald-600">Inc. GST</span>
+              </>
+            )}
           </div>
           <span
             className={cn(
-              "text-[10px] font-semibold",
+              "hidden xs:inline text-[9px] sm:text-[10px] font-semibold",
               isOutOfStock
                 ? "text-red-500"
                 : isLowStock
@@ -201,7 +222,7 @@ export function ProductRevealCard({
             if (!isOutOfStock) onAddToCart?.(component, 1);
           }}
           className={cn(
-            "mt-3 flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-[12px] font-bold transition-all duration-200",
+            "mt-3 flex w-full items-center justify-center gap-1.5 rounded-xl py-2 sm:py-2.5 text-[10px] sm:text-[12px] font-bold transition-all duration-200",
             isOutOfStock
               ? "cursor-not-allowed bg-zinc-100 text-zinc-400"
               : hovered
@@ -213,8 +234,8 @@ export function ProductRevealCard({
             "Out of Stock"
           ) : (
             <>
-              <ShoppingCart className="h-3.5 w-3.5 shrink-0" />
-              Add to Cart
+              <ShoppingCart className="h-3 w-3 sm:h-3.5 sm:w-3.5 shrink-0" />
+              <span>Add to Cart</span>
             </>
           )}
         </button>

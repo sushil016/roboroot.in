@@ -4,7 +4,7 @@ export const staticPages = {
     title: "About RoboRoot",
     description: "RoboRoot supplies electronics components and builds robotics, IoT, drone, AI, and custom hardware-software projects.",
     sections: [
-      { title: "What we do", body: "We support students, institutions, companies, and makers with components, project kits, custom builds, Robomaniac products, and BlockSquare software." },
+      { title: "What we do", body: "We support students, institutions, companies, and makers with components, project kits, custom builds, STEM products, and BlockSquare software." },
       { title: "Who we serve", body: "Our workflows support both B2C and B2B needs, from single sensors to complete project assemblies and lab programs." },
     ],
   },
@@ -50,7 +50,7 @@ export const staticPages = {
     description: "Common questions about RoboRoot products and project services.",
     sections: [
       { title: "Do you build student projects?", body: "Yes. RoboRoot can help with electronics, IoT, robotics, drone, AI, and software-hardware integrated projects." },
-      { title: "What is Robomaniac Store?", body: "It is the dedicated section for Robomaniac course kits, books, Lego robotics kits, and BlockSquare software." },
+      { title: "What is STEM Store?", body: "It is the dedicated section for STEM course kits, books, Lego robotics kits, and BlockSquare software." },
     ],
   },
   privacy: {

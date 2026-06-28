@@ -37,7 +37,7 @@ const googleClient = new OAuth2Client(
 /**
  * Get Google OAuth URL for authentication
  */
-export function getGoogleAuthUrl(): string {
+export function getGoogleAuthUrl(state?: string): string {
   if (!GOOGLE_CLIENT_ID) {
     throw new ValidationError("Google OAuth is not configured");
   }
@@ -47,11 +47,17 @@ export function getGoogleAuthUrl(): string {
     "https://www.googleapis.com/auth/userinfo.profile",
   ];
 
-  return googleClient.generateAuthUrl({
+  const opts: any = {
     access_type: "offline",
     scope: scopes,
     prompt: "consent",
-  });
+  };
+
+  if (state) {
+    opts.state = state;
+  }
+
+  return googleClient.generateAuthUrl(opts);
 }
 
 /**

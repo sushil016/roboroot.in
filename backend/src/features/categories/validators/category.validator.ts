@@ -9,7 +9,7 @@ import type {
 const createCategorySchema = z.object({
   name: z.string().min(1, "Name is required"),
   description: z.string().optional(),
-  imageUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
+  imageUrl: z.string().optional().nullable(),
   isActive: z.boolean().optional(),
 });
 
@@ -19,7 +19,7 @@ const createSubcategorySchema = z.object({
   categoryId: z.string().cuid("Invalid category ID"),
   name: z.string().min(1, "Name is required"),
   description: z.string().optional(),
-  imageUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
+  imageUrl: z.string().optional().nullable(),
   isActive: z.boolean().optional(),
 });
 

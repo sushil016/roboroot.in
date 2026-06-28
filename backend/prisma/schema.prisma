@@ -41,6 +41,7 @@ enum EmailEventType {
   PROJECT_APPROVED
   PAYMENT_FAILED
   LOW_STOCK_ALERT
+  CART_ABANDONED
 }
 
 enum ProjectType {

@@ -26,11 +26,11 @@ const DKBDR  = '#2A2420';   // item borders inside dark panels
 // ─── Static data ─────────────────────────────────────────────────────
 const CATEGORIES = [
   { label: 'Custom Boards',    icon: CircuitBoard,  desc: 'ESP32, STM32 & custom PCBs',           href: '/components?category=Development+Boards', count: '24+' },
-  { label: 'DIY STEM Kits',    icon: Layers,        desc: 'Complete robotics starter kits',        href: '/robomaniac-store', count: '12' },
-  { label: 'Engineering Books',icon: BookOpen,      desc: 'Robotics, AI & embedded systems',        href: '/robomaniac-store', count: '8 titles' },
-  { label: 'Blocksquare',      icon: Code2,         desc: 'Visual STEM programming software',       href: '/robomaniac-store', count: 'Pro & Edu' },
+  { label: 'DIY STEM Kits',    icon: Layers,        desc: 'Complete robotics starter kits',        href: '/stem-store', count: '12' },
+  { label: 'Engineering Books',icon: BookOpen,      desc: 'Robotics, AI & embedded systems',        href: '/stem-store', count: '8 titles' },
+  { label: 'Blocksquare',      icon: Code2,         desc: 'Visual STEM programming software',       href: '/stem-store', count: 'Pro & Edu' },
   { label: 'Sensor Modules',   icon: Microscope,    desc: 'Distance, motion & environment',         href: '/components?category=Sensors', count: '40+' },
-  { label: 'Learning Bundles', icon: GraduationCap, desc: 'Curated kits for every level',           href: '/robomaniac-store', count: '6 bundles' },
+  { label: 'Learning Bundles', icon: GraduationCap, desc: 'Curated kits for every level',           href: '/stem-store', count: '6 bundles' },
 ];
 
 const WHY = [
@@ -186,7 +186,7 @@ export function RobomaniacStorePage() {
 
           {/* Left copy */}
           <FadeUp>
-            <SectionLabel>Robomaniac STEM Store</SectionLabel>
+            <SectionLabel>STEM Store</SectionLabel>
 
             <h1 className="font-serif text-[3.8rem] font-normal leading-[1.08] tracking-tight sm:text-[5rem] lg:text-[5.5rem]">
               Build.<br />
@@ -200,7 +200,7 @@ export function RobomaniacStorePage() {
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">
-              <BorderBtn href="/robomaniac-store#kits">
+              <BorderBtn href="/stem-store#kits">
                 Explore Kits <ArrowRight className="h-4 w-4" />
               </BorderBtn>
               <BorderBtn href="/components?category=Development+Boards">
@@ -250,7 +250,7 @@ export function RobomaniacStorePage() {
               <div className="mt-4 flex items-center gap-2 border-t border-[#1A1612] pt-4">
                 <Terminal className="h-3.5 w-3.5 shrink-0 text-[#4A4438]" />
                 <span className="text-[11px] font-mono text-[#4A4438]">
-                  roboroot.in/robomaniac-store
+                  roboroot.in/stem-store
                 </span>
               </div>
             </motion.div>
@@ -433,7 +433,7 @@ export function RobomaniacStorePage() {
       {/* ── 4. WHY CHOOSE US ─────────────────────────────────────────── */}
       <section className="mx-auto max-w-[1200px] px-6 py-24">
         <FadeUp>
-          <SectionLabel>Why Robomaniac</SectionLabel>
+          <SectionLabel>Why STEM Store</SectionLabel>
           <h2 className="font-serif text-4xl font-normal">Engineering, simplified.</h2>
         </FadeUp>
 
@@ -470,7 +470,7 @@ export function RobomaniacStorePage() {
               </p>
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <BorderBtn href="/robomaniac-store" dark>
+                <BorderBtn href="/stem-store" dark>
                   Get Blocksquare <ArrowRight className="h-4 w-4" />
                 </BorderBtn>
                 <Link href="#" className="inline-flex h-11 items-center gap-2 px-5 text-sm font-semibold text-[#6A6458] transition-colors hover:text-[#8A8478]">
@@ -515,7 +515,7 @@ export function RobomaniacStorePage() {
             Learning never stops.
           </h2>
           <p className="mt-3 max-w-lg text-sm leading-7 text-[#6A6458]">
-            From first circuit to final-year project — Robomaniac has the tutorials, documentation,
+            From first circuit to final-year project — STEM Store has the tutorials, documentation,
             and community to take you further.
           </p>
         </FadeUp>
@@ -552,7 +552,7 @@ export function RobomaniacStorePage() {
             </p>
             <h2 className="font-serif text-4xl font-normal">Start your STEM journey.</h2>
             <p className="mx-auto mt-4 max-w-md text-sm leading-7 text-[#6A6458]">
-              Browse the full Robomaniac catalog — boards, kits, books, and software — all in one place.
+              Browse the full STEM catalog — boards, kits, books, and software — all in one place.
             </p>
             <div className="mt-8 flex justify-center gap-3">
               <BorderBtn href="/components?isRobomaniacItem=true">

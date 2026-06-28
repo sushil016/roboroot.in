@@ -20,11 +20,8 @@ export const useAuthStore = create<AuthStore>()(
       isLoading: false,
 
       // Actions
-      setAuth: (user: User, accessToken: string, refreshToken: string) => {
-        // Tokens are in httpOnly cookies — no localStorage storage needed
-        // accessToken + refreshToken params kept for interface compatibility
-        void accessToken;
-        void refreshToken;
+      setAuth: (user: User) => {
+        // Tokens live in httpOnly cookies — never stored client-side
         set({
           user,
           accessToken: null,

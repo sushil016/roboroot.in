@@ -36,7 +36,7 @@ const NAV_ITEMS = [
   { label: "Browse Components", href: "/components", icon: Cpu, group: "nav" },
   { label: "All Categories", href: "/categories", icon: Layers, group: "nav" },
   { label: "Projects", href: "/projects", icon: BookOpen, group: "nav" },
-  { label: "Robomaniac Store", href: "/robomaniac-store", icon: Box, group: "nav" },
+  { label: "STEM Store", href: "/stem-store", icon: Box, group: "nav" },
   { label: "Cart", href: "/cart", icon: ShoppingCart, group: "nav" },
   { label: "Wishlist", href: "/wishlist", icon: Heart, group: "nav" },
   { label: "My Orders", href: "/orders", icon: PackageCheck, group: "nav" },
@@ -254,14 +254,14 @@ export function CommandPalette() {
             <span className="font-medium">Starter Builds</span>
           </CommandItem>
           <CommandItem
-            value="robomaniac store kits courses books learning"
-            onSelect={() => run(() => router.push("/robomaniac-store"))}
+            value="stem store kits courses books learning"
+            onSelect={() => run(() => router.push("/stem-store"))}
             className="gap-3 cursor-pointer"
           >
             <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-rose-50 shrink-0">
               <BookOpen className="h-3.5 w-3.5 text-rose-500" />
             </div>
-            <span className="font-medium">Robomaniac Store</span>
+            <span className="font-medium">STEM Store</span>
           </CommandItem>
         </CommandGroup>
       </CommandList>

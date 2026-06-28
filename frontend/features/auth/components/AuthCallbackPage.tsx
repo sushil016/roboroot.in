@@ -32,7 +32,7 @@ function OAuthCallbackContent() {
         // Just fetch the current user — if cookies are valid, this succeeds.
         const user = await authApi.getCurrentUser();
 
-        setAuth(user, "", "");
+        setAuth(user);
         syncCartToServer();
 
         toast.success("Signed in successfully!", {

@@ -22,15 +22,17 @@ interface OAuthButtonsProps {
 
 export function OAuthButtons({ isLoading = false }: OAuthButtonsProps) {
   const handleGoogleLogin = () => {
-    // Redirect to backend which will initiate Google OAuth
-    // Backend will redirect back to /api/auth/google/callback
-    // Backend should then redirect to frontend /callback with auth data
-    window.location.href = `${API_BASE_URL}/api/auth/google`;
+    const searchParams = new URLSearchParams(window.location.search);
+    const redirectTo = searchParams.get("redirect");
+    const redirectQuery = redirectTo ? `?redirect=${encodeURIComponent(redirectTo)}` : "";
+    window.location.href = `${API_BASE_URL}/api/auth/google${redirectQuery}`;
   };
 
   const handleGitHubLogin = () => {
-    // Redirect to backend which will initiate GitHub OAuth
-    window.location.href = `${API_BASE_URL}/api/auth/github`;
+    const searchParams = new URLSearchParams(window.location.search);
+    const redirectTo = searchParams.get("redirect");
+    const redirectQuery = redirectTo ? `?redirect=${encodeURIComponent(redirectTo)}` : "";
+    window.location.href = `${API_BASE_URL}/api/auth/github${redirectQuery}`;
   };
 
   return (

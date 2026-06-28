@@ -121,6 +121,8 @@ export type ComponentProductType =
 
 export interface ComponentCategoryNode {
   category: string;
+  imageUrl?: string | null;
+  description?: string | null;
   count: number;
   subcategories: {
     name: string;

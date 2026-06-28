@@ -14,7 +14,7 @@ const footerGroups = [
       ["Browse Components", "/components"],
       ["Browse Categories", "/categories"],
       ["Featured Projects", "/projects"],
-      ["Robomaniac Store", "/robomaniac-store"],
+      ["STEM Store", "/stem-store"],
       ["About Us", "/about"],
       ["Contact", "/contact"],
     ],

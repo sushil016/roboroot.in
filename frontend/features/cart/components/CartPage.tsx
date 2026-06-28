@@ -95,51 +95,51 @@ export function CartPage() {
                       gradientOpacity={0.05}
                     >
                       <div className="p-5">
-                        <div className="grid gap-4 sm:grid-cols-[108px_minmax(0,1fr)]">
+                        <div className="grid gap-3 grid-cols-[80px_minmax(0,1fr)] sm:grid-cols-[108px_minmax(0,1fr)]">
                           <Link href={`/components/${item.component.id}`}>
-                            <div className="aspect-square overflow-hidden rounded-xl bg-[#F3F3E4]">
+                            <div className="aspect-square overflow-hidden rounded-xl bg-[#F3F3E4] w-20 h-20 sm:w-28 sm:h-28">
                               <ProductImage
                                 src={item.component.imageUrl}
                                 alt={item.component.name}
                                 className="h-full w-full"
-                                imageClassName="object-contain"
+                                imageClassName="object-contain p-1 sm:p-2"
                               />
                             </div>
                           </Link>
-                          <div className="min-w-0 flex flex-col gap-3">
+                          <div className="min-w-0 flex flex-col gap-2 sm:gap-3 justify-between">
                             <div>
                               <Link
                                 href={`/components/${item.component.id}`}
-                                className="text-base font-bold text-[#222222] hover:text-[#1CA2D1] transition-colors line-clamp-2"
+                                className="text-sm sm:text-base font-bold text-[#222222] hover:text-[#1CA2D1] transition-colors line-clamp-2"
                               >
                                 {item.component.name}
                               </Link>
-                              <p className="mt-0.5 text-xs text-zinc-400">
+                              <p className="mt-0.5 text-[10px] sm:text-xs text-zinc-400">
                                 {item.component.category}
                                 {item.component.subcategory && ` / ${item.component.subcategory}`}
                               </p>
                               {item.component.sku && (
-                                <p className="text-[10px] font-semibold text-zinc-400 mt-0.5">
+                                <p className="text-[9px] sm:text-[10px] font-semibold text-zinc-400 mt-0.5">
                                   SKU: {item.component.sku}
                                 </p>
                               )}
                             </div>
-                            <div className="flex flex-wrap items-center justify-between gap-3">
+                            <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
                               {/* Qty selector */}
                               <div className="flex items-center overflow-hidden rounded-xl border border-[#D8D8C4]">
                                 <button
                                   onClick={() => updateQuantity(item.component.id, item.quantity - 1)}
                                   disabled={item.quantity <= 1}
-                                  className="h-9 w-9 flex items-center justify-center text-zinc-600 hover:bg-[#EAEADB] disabled:opacity-40 transition-colors"
+                                  className="h-7 w-7 sm:h-9 sm:w-9 flex items-center justify-center text-zinc-600 hover:bg-[#EAEADB] disabled:opacity-40 transition-colors"
                                 >
-                                  <Minus className="h-3.5 w-3.5" />
+                                  <Minus className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                                 </button>
                                 <input
                                   value={item.quantity}
                                   onChange={(e) =>
                                     updateQuantity(item.component.id, Number(e.target.value) || 1)
                                   }
-                                  className="w-12 h-9 text-center text-sm font-bold text-[#222222] bg-white outline-none border-x border-[#D8D8C4]"
+                                  className="w-10 sm:w-12 h-7 sm:h-9 text-center text-xs sm:text-sm font-bold text-[#222222] bg-white outline-none border-x border-[#D8D8C4]"
                                   type="number"
                                   min="1"
                                   max={item.component.stockQuantity}
@@ -147,26 +147,27 @@ export function CartPage() {
                                 <button
                                   onClick={() => updateQuantity(item.component.id, item.quantity + 1)}
                                   disabled={item.quantity >= item.component.stockQuantity}
-                                  className="h-9 w-9 flex items-center justify-center text-zinc-600 hover:bg-[#EAEADB] disabled:opacity-40 transition-colors"
+                                  className="h-7 w-7 sm:h-9 sm:w-9 flex items-center justify-center text-zinc-600 hover:bg-[#EAEADB] disabled:opacity-40 transition-colors"
                                 >
-                                  <Plus className="h-3.5 w-3.5" />
+                                  <Plus className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                                 </button>
                               </div>
-                              <div className="flex items-center gap-4">
-                                <p className="text-xl font-bold text-[#1CA2D1]">
+                              <div className="flex items-center gap-3 sm:gap-4">
+                                <p className="text-base sm:text-xl font-bold text-[#1CA2D1]">
                                   {formatPrice(item.component.unitPriceCents * item.quantity)}
                                 </p>
                                 <button
                                   onClick={() => handleRemove(item.component.id, item.component.name)}
-                                  className="flex items-center gap-1 text-xs font-semibold text-zinc-400 hover:text-red-500 transition-colors"
+                                  className="flex items-center gap-1 text-[11px] sm:text-xs font-semibold text-zinc-400 hover:text-red-500 transition-colors"
+                                  aria-label="Remove item"
                                 >
                                   <Trash2 className="h-3.5 w-3.5" />
-                                  Remove
+                                  <span className="hidden sm:inline">Remove</span>
                                 </button>
                               </div>
                             </div>
                             {item.component.stockQuantity < item.quantity && (
-                              <p className="text-xs font-semibold text-red-500">
+                              <p className="text-[10px] sm:text-xs font-semibold text-red-500 mt-1">
                                 Only {item.component.stockQuantity} left in stock
                               </p>
                             )}

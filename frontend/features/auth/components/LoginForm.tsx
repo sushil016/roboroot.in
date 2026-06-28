@@ -104,7 +104,14 @@ export function LoginForm() {
 
       <p className="mt-6 text-center text-sm text-zinc-500">
         Don&apos;t have an account?{" "}
-        <Link href="/register" className="font-bold text-[#1CA2D1] hover:underline">
+        <Link
+          href={
+            typeof window !== "undefined" && new URLSearchParams(window.location.search).get("redirect")
+              ? `/register?redirect=${encodeURIComponent(new URLSearchParams(window.location.search).get("redirect")!)}`
+              : "/register"
+          }
+          className="font-bold text-[#1CA2D1] hover:underline"
+        >
           Create one free
         </Link>
       </p>

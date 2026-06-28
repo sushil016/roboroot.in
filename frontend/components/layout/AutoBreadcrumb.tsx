@@ -26,7 +26,8 @@ const SEGMENT_LABELS: Record<string, string> = {
   shipping:          'Shipping Policy',
   returns:           'Returns',
   'refund-policy':   'Refund Policy',
-  'robomaniac-store':'Robomaniac Store',
+  'robomaniac-store':'STEM Store',
+  'stem-store':      'STEM Store',
 };
 
 // Context-aware labels when the segment is a DB id

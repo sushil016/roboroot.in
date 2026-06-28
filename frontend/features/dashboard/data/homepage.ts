@@ -24,7 +24,7 @@ export const homeHero = {
   eyebrow: "B2C and B2B electronics builds",
   title: "Complete robotics, IoT, drone, and AI project builds.",
   description:
-    "Buy electronics parts, course kits, Robomaniac books, BlockSquare software, or get a custom hardware-software project built for student, institution, or company needs.",
+    "Buy electronics parts, course kits, STEM books, BlockSquare software, or get a custom hardware-software project built for student, institution, or company needs.",
   image: "/homepage/components.png",
   primaryCta: { label: "Browse All Categories", href: "/categories" },
   secondaryCta: { label: "Custom Project Services", href: "/projects" },
@@ -46,9 +46,9 @@ export const serviceTiles = [
     tone: "bg-cyan-50 text-cyan-800",
   },
   {
-    title: "Robomaniac Store",
-    copy: "Kits, books, and BlockSquare",
-    href: "/robomaniac-store",
+    title: "STEM Store",
+    copy: "Kits, books, and Lego",
+    href: "/stem-store",
     icon: "store",
     tone: "bg-sky-50 text-sky-800",
   },
@@ -109,7 +109,7 @@ export const services = [
     icon: "microscope",
   },
   {
-    title: "Robomaniac Products",
+    title: "STEM Store Products",
     copy: "Lego robotics kits, robotics course kits, AI books, and BlockSquare software.",
     icon: "store",
   },

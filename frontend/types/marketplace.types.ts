@@ -28,6 +28,7 @@ export interface Component {
   isRobomaniacItem: boolean;
   isSoftware: boolean;
   unitPriceCents: number;
+  discountedPriceCents?: number | null;
   stockQuantity: number;
   isActive: boolean;
   createdAt: string;
@@ -75,6 +76,8 @@ export interface ComponentListResponse {
 
 export interface ComponentCategoryNode {
   category: string;
+  imageUrl?: string | null;
+  description?: string | null;
   count: number;
   subcategories: {
     name: string;

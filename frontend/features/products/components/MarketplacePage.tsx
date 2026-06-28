@@ -193,7 +193,7 @@ export function MarketplacePage() {
 
           {/* Skeleton grid */}
           {componentsQuery.isLoading && (
-            <div className="mt-8 grid gap-5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+            <div className="mt-8 grid gap-3 sm:gap-5 grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
               {Array.from({ length: 12 }).map((_, i) => (
                 <ProductRevealCardSkeleton key={i} />
               ))}
@@ -221,7 +221,7 @@ export function MarketplacePage() {
           {/* Product grid */}
           {!!componentsQuery.data?.components.length && (
             <>
-              <div className="mt-8 grid gap-5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+              <div className="mt-8 grid gap-3 sm:gap-5 grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
                 {componentsQuery.data.components.map((component) => (
                   <ProductCard key={component.id} component={component} />
                 ))}

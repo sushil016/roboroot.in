@@ -57,10 +57,16 @@ export async function signupController(req: Request, res: Response): Promise<voi
     // Create user
     const result = await signupWithEmail(validatedData);
 
+    // Set httpOnly cookies (tokens never exposed in JSON body)
+    setAuthCookies(res, result.accessToken, result.refreshToken);
+
     res.status(201).json({
       success: true,
       message: "User created successfully",
-      data: result,
+      data: {
+        user: result.user,
+        expiresIn: result.expiresIn,
+      },
     });
   } catch (error) {
     if (error instanceof AuthError) {
@@ -81,26 +87,40 @@ export async function signupController(req: Request, res: Response): Promise<voi
   }
 }
 
-function setAuthCookies(res: Response, accessToken: string, refreshToken: string) {
+/**
+ * Build shared cookie options so set and clear always use identical flags.
+ * COOKIE_DOMAIN env var enables cross-subdomain sharing in production
+ * (e.g. ".roboroot.in" lets roboroot.in and api.roboroot.in share cookies).
+ */
+function getCookieOptions(overrides: Record<string, unknown> = {}) {
   const isProd = process.env.NODE_ENV === "production";
-  res.cookie("accessToken", accessToken, {
+  const base: Record<string, unknown> = {
     httpOnly: true,
     secure: isProd,
     sameSite: isProd ? "strict" : "lax",
+  };
+  // Only set domain in production when explicitly configured
+  const cookieDomain = process.env.COOKIE_DOMAIN?.trim();
+  if (isProd && cookieDomain) {
+    base.domain = cookieDomain;
+  }
+  return { ...base, ...overrides };
+}
+
+function setAuthCookies(res: Response, accessToken: string, refreshToken: string) {
+  res.cookie("accessToken", accessToken, getCookieOptions({
     maxAge: 15 * 60 * 1000, // 15 minutes
-  });
-  res.cookie("refreshToken", refreshToken, {
-    httpOnly: true,
-    secure: isProd,
-    sameSite: isProd ? "strict" : "lax",
+  }));
+  res.cookie("refreshToken", refreshToken, getCookieOptions({
     path: "/api/auth/refresh",
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-  });
+  }));
 }
 
 function clearAuthCookies(res: Response) {
-  res.clearCookie("accessToken");
-  res.clearCookie("refreshToken", { path: "/api/auth/refresh" });
+  // Must pass identical options (minus maxAge) for the browser to delete the cookie
+  res.clearCookie("accessToken", getCookieOptions());
+  res.clearCookie("refreshToken", getCookieOptions({ path: "/api/auth/refresh" }));
 }
 
 /**
@@ -114,13 +134,16 @@ export async function loginController(req: Request, res: Response): Promise<void
     // Authenticate user
     const result = await loginWithEmail(validatedData);
 
-    // Set httpOnly cookies (XSS-safe)
+    // Set httpOnly cookies (XSS-safe — tokens never exposed in JSON body)
     setAuthCookies(res, result.accessToken, result.refreshToken);
 
     res.status(200).json({
       success: true,
       message: "Login successful",
-      data: result,
+      data: {
+        user: result.user,
+        expiresIn: result.expiresIn,
+      },
     });
   } catch (error) {
     if (error instanceof AuthError) {
@@ -163,7 +186,10 @@ export async function refreshTokenController(req: Request, res: Response): Promi
     res.status(200).json({
       success: true,
       message: "Token refreshed successfully",
-      data: result,
+      data: {
+        user: result.user,
+        expiresIn: result.expiresIn,
+      },
     });
   } catch (error) {
     if (error instanceof AuthError) {
@@ -306,7 +332,8 @@ export async function updateMeController(req: Request, res: Response): Promise<v
  */
 export async function googleAuthController(req: Request, res: Response): Promise<void> {
   try {
-    const authUrl = getGoogleAuthUrl();
+    const { redirect } = req.query;
+    const authUrl = getGoogleAuthUrl(typeof redirect === "string" ? redirect : undefined);
     res.redirect(authUrl);
   } catch (error) {
     if (error instanceof AuthError) {
@@ -332,7 +359,7 @@ export async function googleAuthController(req: Request, res: Response): Promise
  */
 export async function googleCallbackController(req: Request, res: Response): Promise<void> {
   try {
-    const { code } = req.query as { code?: string };
+    const { code, state } = req.query as { code?: string; state?: string };
 
     if (!code) {
       throw new ValidationError("Authorization code is required");
@@ -344,7 +371,8 @@ export async function googleCallbackController(req: Request, res: Response): Pro
     setAuthCookies(res, result.accessToken, result.refreshToken);
 
     const frontendUrl = getFrontendUrl();
-    res.redirect(`${frontendUrl}/callback?provider=google`);
+    const redirectQuery = state ? `&redirect=${encodeURIComponent(state)}` : "";
+    res.redirect(`${frontendUrl}/callback?provider=google${redirectQuery}`);
   } catch (error) {
     if (error instanceof AuthError) {
       // Redirect to frontend with error
@@ -364,7 +392,8 @@ export async function googleCallbackController(req: Request, res: Response): Pro
  */
 export async function githubAuthController(req: Request, res: Response): Promise<void> {
   try {
-    const authUrl = getGitHubAuthUrl();
+    const { redirect } = req.query;
+    const authUrl = getGitHubAuthUrl(typeof redirect === "string" ? redirect : undefined);
     res.redirect(authUrl);
   } catch (error) {
     if (error instanceof AuthError) {
@@ -390,7 +419,7 @@ export async function githubAuthController(req: Request, res: Response): Promise
  */
 export async function githubCallbackController(req: Request, res: Response): Promise<void> {
   try {
-    const { code } = req.query as { code?: string };
+    const { code, state } = req.query as { code?: string; state?: string };
 
     if (!code) {
       throw new ValidationError("Authorization code is required");
@@ -402,7 +431,8 @@ export async function githubCallbackController(req: Request, res: Response): Pro
     setAuthCookies(res, result.accessToken, result.refreshToken);
 
     const frontendUrl = getFrontendUrl();
-    res.redirect(`${frontendUrl}/callback?provider=github`);
+    const redirectQuery = state ? `&redirect=${encodeURIComponent(state)}` : "";
+    res.redirect(`${frontendUrl}/callback?provider=github${redirectQuery}`);
   } catch (error) {
     if (error instanceof AuthError) {
       // Redirect to frontend with error

@@ -53,9 +53,17 @@ export async function updateCategory(id: string, data: UpdateCategoryRequest) {
     }
   }
 
+  const updateData: any = { ...data };
+  if (updateData.imageUrl === "") {
+    updateData.imageUrl = null;
+  }
+  if (updateData.description === "") {
+    updateData.description = null;
+  }
+
   return prisma.category.update({
     where: { id },
-    data,
+    data: updateData,
     include: {
       subcategories: true,
     },
@@ -67,6 +75,15 @@ export async function deleteCategory(id: string) {
   if (!existing) {
     throw new NotFoundError("Category not found");
   }
+
+  // Update components referencing this category to defaults
+  await prisma.component.updateMany({
+    where: { category: { equals: existing.name, mode: "insensitive" } },
+    data: {
+      category: "Electronics Components",
+      subcategory: "General",
+    },
+  });
 
   await prisma.category.delete({ where: { id } });
   return { message: "Category deleted" };
@@ -135,6 +152,14 @@ export async function deleteSubcategory(id: string) {
   if (!existing) {
     throw new NotFoundError("Subcategory not found");
   }
+
+  // Update components referencing this subcategory to defaults
+  await prisma.component.updateMany({
+    where: { subcategory: { equals: existing.name, mode: "insensitive" } },
+    data: {
+      subcategory: "General",
+    },
+  });
 
   await prisma.subcategory.delete({ where: { id } });
   return { message: "Subcategory deleted" };

@@ -15,6 +15,7 @@ const gradientPairs: Record<string, [string, string]> = {
   "Power & Batteries":  ["#10b981", "#34d399"],
   "Drones & Aerospace": ["#8b5cf6", "#a78bfa"],
   "Robomaniac Store":   ["#f43f5e", "#fb7185"],
+  "STEM Store":         ["#f43f5e", "#fb7185"],
   "Tools & Prototyping":["#64748b", "#94a3b8"],
 };
 
@@ -27,6 +28,7 @@ const imageBgColors: Record<string, string> = {
   "Power & Batteries":  "#f0fdf4",
   "Drones & Aerospace": "#f5f3ff",
   "Robomaniac Store":   "#fff1f2",
+  "STEM Store":         "#fff1f2",
   "Tools & Prototyping":"#f8fafc",
 };
 
@@ -44,6 +46,7 @@ export interface CategoryCardProps {
   subcategories: CategorySubcategory[];
   totalCount?: number;
   productImages?: string[];
+  imageUrl?: string | null;
 }
 
 export function CategoryCard({
@@ -54,6 +57,7 @@ export function CategoryCard({
   subcategories,
   totalCount,
   productImages = [],
+  imageUrl,
 }: CategoryCardProps) {
   const [gradFrom, gradTo] = gradientPairs[name] ?? ["#1CA2D1", "#38bdf8"];
   const bgColor = imageBgColors[name] ?? "#eff6ff";
@@ -80,10 +84,10 @@ export function CategoryCard({
         uses our beige (#F3F3E4) instead of the page background (#f2f2f0).
       */}
       <div
-        className="h-full rounded-2xl"
+        className="h-full rounded-xl sm:rounded-2xl"
         style={{ "--color-background": "#F3F3E4" } as React.CSSProperties}
       >
-        <Link href={href} className="block h-full rounded-2xl group">
+        <Link href={href} className="block h-full rounded-xl sm:rounded-2xl group">
           <MagicCard
             className={`
               h-full
@@ -97,44 +101,50 @@ export function CategoryCard({
             gradientColor={`${gradFrom}15`}
             gradientOpacity={1}
           >
-            {/* ── Image area — always 200 px tall ── */}
+            {/* ── Image area ── */}
             <div
-              className="relative flex items-center justify-center overflow-hidden shrink-0"
-              style={{ backgroundColor: bgColor, height: "200px" }}
+              className="relative flex items-center justify-center overflow-hidden shrink-0 h-24 xs:h-28 sm:h-[200px]"
+              style={{ backgroundColor: bgColor }}
             >
-              {images.length === 0 ? (
+              {imageUrl ? (
+                <div className="relative h-full w-full transition-transform duration-500 group-hover:scale-105">
+                  <Image
+                    src={imageUrl}
+                    alt={name}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 640px) 160px, 350px"
+                  />
+                </div>
+              ) : images.length === 0 ? (
                 <span
-                  className="text-8xl font-black select-none"
+                  className="text-4xl xs:text-5xl sm:text-8xl font-black select-none"
                   style={{ color: `${gradFrom}28` }}
                 >
                   {name[0]}
                 </span>
               ) : images.length === 1 ? (
-                <div className="relative h-36 w-36 transition-transform duration-500 group-hover:scale-105">
+                <div className="relative h-16 w-16 xs:h-20 xs:w-20 sm:h-36 sm:w-36 transition-transform duration-500 group-hover:scale-105">
                   <Image
                     src={images[0]}
                     alt={name}
                     fill
                     className="object-contain drop-shadow-lg"
-                    sizes="144px"
+                    sizes="(max-width: 640px) 80px, 144px"
                   />
                 </div>
               ) : (
-                <div className="flex items-end justify-center gap-3 px-4">
+                <div className="flex items-end justify-center gap-1.5 sm:gap-3 px-2 sm:px-4">
                   {images.map((src, i) => {
-                    const w = [88, 110, 88];
-                    const h = [88, 110, 88];
-                    const rot = [-6, 0, 6];
-                    const y = [12, 0, 16];
+                    const isSide = i !== 1;
                     return (
                       <div
                         key={i}
-                        className="relative shrink-0 transition-transform duration-500 group-hover:scale-105"
+                        className={`relative shrink-0 transition-transform duration-500 group-hover:scale-105 ${
+                          isSide ? "w-10 h-10 xs:w-12 xs:h-12 sm:w-[88px] sm:h-[88px]" : "w-14 h-14 xs:w-16 xs:h-16 sm:w-[110px] sm:h-[110px]"
+                        }`}
                         style={{
-                          width: w[i] ?? 88,
-                          height: h[i] ?? 88,
-                          transform: `rotate(${rot[i] ?? 0}deg) translateY(${y[i] ?? 0}px)`,
-                          transitionDelay: `${i * 40}ms`,
+                          transform: !isSide ? "none" : i === 0 ? "rotate(-6deg) translateY(4px)" : "rotate(6deg) translateY(6px)",
                         }}
                       >
                         <Image
@@ -142,7 +152,7 @@ export function CategoryCard({
                           alt=""
                           fill
                           className="object-contain drop-shadow-md"
-                          sizes="110px"
+                          sizes="(max-width: 640px) 64px, 110px"
                         />
                       </div>
                     );
@@ -151,27 +161,27 @@ export function CategoryCard({
               )}
             </div>
 
-            {/* ── Content — fills remaining height ── */}
-            <div className="flex flex-col flex-1 p-5 gap-3">
+            {/* ── Content ── */}
+            <div className="flex flex-col flex-1 p-3 xs:p-4 sm:p-5 gap-1.5 sm:gap-3">
               {/* Title + count */}
-              <div className="flex items-start justify-between gap-2">
-                <h3 className="text-base font-bold text-[#222222] leading-snug line-clamp-1 flex-1">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1">
+                <h3 className="text-xs sm:text-base font-bold text-[#222222] leading-tight text-center sm:text-left line-clamp-2 sm:line-clamp-1 flex-1">
                   {name}
                 </h3>
                 {totalCount !== undefined && (
-                  <span className="shrink-0 text-[11px] font-semibold text-gray-400 tabular-nums mt-0.5">
+                  <span className="hidden sm:inline shrink-0 text-[11px] font-semibold text-gray-400 tabular-nums mt-0.5">
                     {totalCount.toLocaleString()} items
                   </span>
                 )}
               </div>
 
-              {/* Description — always 2 lines */}
-              <p className="text-sm text-gray-500 leading-relaxed line-clamp-2 flex-1">
+              {/* Description — hidden on mobile */}
+              <p className="hidden sm:block text-sm text-gray-500 leading-relaxed line-clamp-2 flex-1">
                 {displayDescription}
               </p>
 
-              {/* CTA */}
-              <div>
+              {/* CTA — hidden on mobile */}
+              <div className="hidden sm:block">
                 <span className="inline-flex items-center gap-1.5 rounded-xl bg-[#EAEADB] px-4 py-2 text-sm font-semibold text-gray-700 group-hover:bg-[#222222] group-hover:text-white transition-colors duration-200">
                   View Products
                   <ArrowRight className="h-3.5 w-3.5" />

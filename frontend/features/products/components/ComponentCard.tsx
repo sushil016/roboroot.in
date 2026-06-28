@@ -113,7 +113,7 @@ export function ComponentCard({ component }: ComponentCardProps) {
             )}
             {component.isRobomaniacItem && (
               <span className="rounded-full bg-violet-100 px-2 py-1 text-xs font-semibold text-violet-700">
-                Robomaniac
+                STEM Store
               </span>
             )}
           </div>
@@ -126,10 +126,24 @@ export function ComponentCard({ component }: ComponentCardProps) {
           )}
 
           {/* Price */}
-          <div className="flex items-baseline gap-2 mb-4">
-            <span className="text-2xl font-bold text-[#1CA2D1]">
-              {formatPrice(component.unitPriceCents)}
-            </span>
+          <div className="flex items-baseline gap-2 mb-1">
+            {component.discountedPriceCents && component.discountedPriceCents < component.unitPriceCents ? (
+              <>
+                <span className="text-2xl font-bold text-[#1CA2D1]">
+                  {formatPrice(component.discountedPriceCents)}
+                </span>
+                <span className="text-sm text-muted-foreground line-through">
+                  {formatPrice(component.unitPriceCents)}
+                </span>
+                <span className="rounded bg-red-500 px-1.5 py-0.5 text-[10px] font-black text-white">
+                  {Math.round((1 - component.discountedPriceCents / component.unitPriceCents) * 100)}% OFF
+                </span>
+              </>
+            ) : (
+              <span className="text-2xl font-bold text-[#1CA2D1]">
+                {formatPrice(component.unitPriceCents)}
+              </span>
+            )}
             <span className="text-sm text-muted-foreground">per unit</span>
           </div>
           <p className="mb-3 text-xs font-black text-emerald-700">Inc. GST</p>

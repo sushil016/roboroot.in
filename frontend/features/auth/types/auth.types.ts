@@ -38,8 +38,6 @@ export interface RefreshTokenRequest {
 
 export interface AuthResponse {
   user: User;
-  accessToken: string;
-  refreshToken: string;
   expiresIn: number; // in seconds
 }
 
@@ -66,7 +64,7 @@ export interface AuthState {
 }
 
 export interface AuthActions {
-  setAuth: (user: User, accessToken: string, refreshToken: string) => void;
+  setAuth: (user: User) => void;
   setUser: (user: User) => void;
   setTokens: (accessToken: string, refreshToken: string) => void;
   clearAuth: () => void;

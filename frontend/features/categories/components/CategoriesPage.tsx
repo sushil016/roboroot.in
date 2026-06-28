@@ -33,6 +33,8 @@ export function CategoriesPage() {
     return {
       index,
       name: c.category,
+      description: c.description || undefined,
+      imageUrl: c.imageUrl,
       href: `/components?category=${encodeURIComponent(c.category)}`,
       totalCount: c.count,
       productImages,
@@ -215,7 +217,7 @@ export function CategoriesPage() {
           )}
 
           {isLoading && (
-            <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="grid gap-3 sm:gap-5 grid-cols-2 sm:grid-cols-2 xl:grid-cols-3">
               {Array.from({ length: 6 }).map((_, i) => (
                 <div key={i} className="rounded-2xl border border-[#D8D8C4] overflow-hidden bg-white">
                   <Skeleton className="h-[200px] w-full rounded-none" />
@@ -241,7 +243,7 @@ export function CategoriesPage() {
           )}
 
           {filtered.length > 0 && (
-            <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="grid gap-3 sm:gap-5 grid-cols-2 sm:grid-cols-2 xl:grid-cols-3">
               {filtered.map((cat, i) => (
                 <div key={cat.name} className="h-full">
                   <CategoryCard {...cat} index={i} />

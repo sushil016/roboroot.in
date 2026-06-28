@@ -3,7 +3,7 @@ import { initSentry, Sentry } from "./lib/sentry.js";
 initSentry(); // Must be first
 
 import express, { type Request, type Response } from "express";
-import cors from "cors";
+import cors, { type CorsOptions } from "cors";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import rateLimit from "express-rate-limit";
@@ -34,6 +34,7 @@ import reviewRoutes from "./features/reviews/routes/review.routes.js";
 import chatRoutes from "./features/ai-chat/routes/chat.routes.js";
 import reindexRoutes from "./features/embeddings/routes/reindex.routes.js";
 import { errorHandler, notFoundHandler } from "./middlewares/error.middleware.js";
+import { csrfProtection, csrfTokenHandler } from "./middlewares/csrf.middleware.js";
 
 const app = express();
 
@@ -49,44 +50,90 @@ app.use(helmet({
 // CORS configuration
 const configuredOrigins = (process.env.CORS_ALLOWED_ORIGINS || "")
   .split(",")
-  .map((origin) => origin.trim())
+  .map(normalizeOrigin)
   .filter(Boolean);
 
 const vercelOrigin = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "";
 
-const allowedOrigins = [
+const allowedOrigins = Array.from(new Set([
   process.env.FRONTEND_URL || "http://localhost:3000",
   process.env.ADMIN_FRONTEND_URL || "http://localhost:3002",
   "https://robo-gig.vercel.app",
+  "https://roboroot.in",
+  "https://www.roboroot.in",
+  "https://roboroot.sushilsahani.dev",
+  "https://www.roboroot.sushilsahani.dev",
   vercelOrigin,
   ...configuredOrigins,
+  "http://localhost:3000",
   "http://localhost:3001",
   "http://localhost:3002",
+  "http://localhost:5173",
   "http://127.0.0.1:3000",
   "http://127.0.0.1:3001",
   "http://127.0.0.1:3002",
-].filter(Boolean);
+  "http://127.0.0.1:5173",
+].map(normalizeOrigin).filter(Boolean)));
 
-function isAllowedVercelPreview(origin: string) {
+function normalizeOrigin(origin: string) {
+  const trimmed = origin.trim().replace(/\/$/, "");
+  if (!trimmed) return "";
+
+  try {
+    const parsed = new URL(trimmed);
+    return `${parsed.protocol}//${parsed.host}`;
+  } catch {
+    return trimmed;
+  }
+}
+
+function isAllowedLocalDevOrigin(origin: string) {
+  if (NODE_ENV === "production") return false;
+
   try {
     const { hostname, protocol } = new URL(origin);
-    return protocol === "https:" && hostname.endsWith(".vercel.app") && hostname.includes("robo-gig");
+    const isLocalHost = hostname === "localhost" || hostname === "127.0.0.1" || hostname === "[::1]";
+    return isLocalHost && (protocol === "http:" || protocol === "https:");
   } catch {
     return false;
   }
 }
 
-const corsOptions = {
+function isAllowedVercelPreview(origin: string) {
+  try {
+    const { hostname, protocol } = new URL(origin);
+    const isKnownProject = hostname.includes("robo-gig") || hostname.includes("roboroot");
+    return protocol === "https:" && hostname.endsWith(".vercel.app") && isKnownProject;
+  } catch {
+    return false;
+  }
+}
+
+function isAllowedOrigin(origin: string | undefined) {
+  if (!origin) return true;
+
+  const normalizedOrigin = normalizeOrigin(origin);
+  return (
+    allowedOrigins.includes(normalizedOrigin) ||
+    isAllowedLocalDevOrigin(normalizedOrigin) ||
+    isAllowedVercelPreview(normalizedOrigin)
+  );
+}
+
+const corsOptions: CorsOptions = {
   origin(origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) {
-    if (!origin || allowedOrigins.includes(origin) || isAllowedVercelPreview(origin)) {
+    if (isAllowedOrigin(origin)) {
       callback(null, true);
       return;
     }
 
-    callback(new Error(`CORS blocked origin: ${origin}`));
+    logger.warn("CORS blocked origin", { origin });
+    callback(null, false);
   },
   credentials: true,
+  methods: ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   optionsSuccessStatus: 200,
+  maxAge: 86400,
 };
 app.use(cors(corsOptions));
 
@@ -96,6 +143,12 @@ app.use(cookieParser());
 // Body parsing middleware
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+
+// CSRF token endpoint (must be BEFORE csrfProtection middleware)
+app.get("/api/auth/csrf-token", csrfTokenHandler);
+
+// CSRF protection — validates state-changing requests in production
+app.use(csrfProtection);
 
 import path from "path";
 
@@ -349,6 +402,16 @@ cron.schedule("*/30 * * * *", async () => {
   }
   if (shippedOrders.length > 0) {
     logger.info("tracking poll queued", { count: shippedOrders.length });
+  }
+});
+
+// Abandoned cart reminder — scan every 30 minutes for carts idle 2+ hours
+import { processAbandonedCarts } from "./services/abandoned-cart.service.js";
+cron.schedule("*/30 * * * *", async () => {
+  try {
+    await processAbandonedCarts();
+  } catch (err) {
+    logger.error("abandoned cart cron failed", { error: err });
   }
 });
 

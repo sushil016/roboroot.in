@@ -19,16 +19,12 @@ const cardVariants = {
 
 function CategoryCardSkeleton() {
   return (
-    <div className="rounded-2xl overflow-hidden border border-[#D8D8C4] bg-background">
-      <Skeleton className="h-[200px] w-full rounded-none" />
-      <div className="p-5 space-y-3">
-        <div className="flex items-center justify-between">
-          <Skeleton className="h-5 w-3/4" />
-          <Skeleton className="h-4 w-12" />
-        </div>
-        <Skeleton className="h-4 w-full" />
-        <Skeleton className="h-4 w-2/3" />
-        <Skeleton className="h-9 w-32 rounded-xl" />
+    <div className="rounded-xl sm:rounded-2xl overflow-hidden border border-[#D8D8C4] bg-[#F3F3E4]">
+      <Skeleton className="h-14 xs:h-20 sm:h-[200px] w-full rounded-none" />
+      <div className="p-2 sm:p-5 space-y-2">
+        <Skeleton className="h-3 sm:h-5 w-3/4 mx-auto sm:mx-0" />
+        <Skeleton className="hidden sm:block h-4 w-full" />
+        <Skeleton className="hidden sm:block h-9 w-32 rounded-xl" />
       </div>
     </div>
   );
@@ -42,23 +38,23 @@ export function CategorySection() {
   });
 
   return (
-    <section className="mx-auto max-w-7xl px-4 py-12">
+    <section className="mx-auto max-w-7xl px-4 py-8">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
+        className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between"
       >
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#1CA2D1]">
+          <p className="text-xs sm:text-sm font-semibold uppercase tracking-[0.18em] text-[#1CA2D1]">
             Shop By Category
           </p>
-          <h2 className="mt-2 text-3xl font-bold text-[#222222]">All electronics categories</h2>
+          <h2 className="mt-1.5 text-xl sm:text-3xl font-bold text-[#222222]">All electronics categories</h2>
         </div>
         <Link
           href="/categories"
-          className="inline-flex h-10 w-fit items-center justify-center rounded-xl bg-[#222222] px-5 text-sm font-semibold text-white transition hover:bg-[#1CA2D1]"
+          className="inline-flex h-9 sm:h-10 w-fit items-center justify-center rounded-xl bg-[#222222] px-4 sm:px-5 text-xs sm:text-sm font-semibold text-white transition hover:bg-[#1CA2D1]"
         >
           Browse All →
         </Link>
@@ -69,7 +65,7 @@ export function CategorySection() {
         initial="hidden"
         whileInView="show"
         viewport={{ once: true, margin: "-60px" }}
-        className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
+        className="grid gap-3 sm:gap-5 grid-cols-2 sm:grid-cols-2 lg:grid-cols-4"
       >
         {isLoading
           ? Array.from({ length: 8 }).map((_, i) => (
@@ -89,6 +85,8 @@ export function CategorySection() {
                   <CategoryCard
                     index={i}
                     name={node.category}
+                    description={node.description || undefined}
+                    imageUrl={node.imageUrl}
                     href={`/components?category=${encodeURIComponent(node.category)}`}
                     totalCount={node.count}
                     productImages={productImages}

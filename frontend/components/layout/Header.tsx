@@ -23,6 +23,9 @@ import {
   UserRound,
   Wrench,
   X,
+  Info,
+  Users,
+  Layers,
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -168,24 +171,35 @@ export function Header() {
               </Link>
             )}
 
+            {/* Mobile Search Button */}
             <Button
               variant="ghost"
               size="icon"
+              onClick={openCommandPalette}
               className="lg:hidden border border-transparent hover:border-zinc-950 hover:shadow-sm transition-all"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Search"
+            >
+              <Search className="h-5 w-5" />
+            </Button>
+
+            <Button
+              variant="ghost"
+              className="lg:hidden flex items-center gap-1.5 border border-transparent hover:border-zinc-950 hover:shadow-sm transition-all px-2.5 h-10"
+              onClick={() => setMobileMenuOpen(true)}
               aria-label="Open menu"
             >
-              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              <Menu className="h-5 w-5" />
+              <span className="text-xs font-black uppercase tracking-wider text-zinc-800">Menu</span>
             </Button>
           </div>
         </div>
       </div>
 
       <div className="hidden border-b border-[#D8D8C4] lg:block">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 relative">
           <nav className="flex h-14 items-center text-sm font-bold text-zinc-800">
             <div
-              className="relative flex h-full items-center"
+              className="flex h-full items-center"
               onMouseEnter={() => setOpenMenu('catalog')}
               onMouseLeave={() => setOpenMenu(null)}
             >
@@ -204,30 +218,20 @@ export function Header() {
             <Link href="/projects" className="flex h-full items-center px-5 link-underline-left transition hover:text-zinc-950">
               Projects
             </Link>
-            <div
-              className="relative flex h-full items-center"
-              onMouseEnter={() => setOpenMenu('shop')}
-              onMouseLeave={() => setOpenMenu(null)}
-            >
-              <Link href="/components" className="flex h-full items-center gap-1 px-5 link-underline-left transition hover:text-zinc-950" onClick={() => setOpenMenu(null)}>
-                Shop Parts
-                <ChevronDown className="h-4 w-4" />
-              </Link>
-              {openMenu === 'shop' && (
-                <CatalogMegaMenu categories={categoryTree} align="wide" onClose={() => setOpenMenu(null)} />
-              )}
-            </div>
-            <Link href="/categories" className="flex h-full items-center px-5 link-underline-left transition hover:text-zinc-950">
-              Categories
+            <Link href="/stem-store" className="flex h-full items-center px-5 link-underline-left transition hover:text-zinc-950">
+              STEM Store
             </Link>
-            <Link href="/projects?difficulty=BEGINNER" className="flex h-full items-center px-5 link-underline-left transition hover:text-zinc-950">
-              Starter Builds
+            <Link href="/track-order" className="flex h-full items-center px-5 link-underline-left transition hover:text-zinc-950">
+              Track your order
             </Link>
-            <Link href="/robomaniac-store" className="flex h-full items-center px-5 link-underline-left transition hover:text-zinc-950">
-              Robomaniac Store
+            <Link href="/bulk-order" className="flex h-full items-center px-5 link-underline-left transition hover:text-zinc-950">
+              Bulk Order
             </Link>
-            <Link href="/projects?category=ROBOTICS" className="flex h-full items-center px-5 link-underline-left transition hover:text-zinc-950">
-              Robotics Kits
+            <Link href="/about" className="flex h-full items-center px-5 link-underline-left transition hover:text-zinc-950">
+              About Us
+            </Link>
+            <Link href="/careers" className="flex h-full items-center px-5 link-underline-left transition hover:text-zinc-950">
+              Careers
             </Link>
           </nav>
           <Link href="/components" className="btn-underline-white flex h-14 items-center gap-2 border-x border-[#D8D8C4] bg-[#1CA2D1] px-5 text-sm font-bold text-white transition hover:opacity-90">
@@ -237,121 +241,163 @@ export function Header() {
         </div>
       </div>
 
-      <div className="lg:hidden">
+      {/* Mobile Drawer Slide-in from Right */}
+      <AnimatePresence>
         {mobileMenuOpen && (
-          <div className="space-y-2 border-t border-[#D8D8C4] bg-background px-4 py-4">
-            <form action="/components" className="flex overflow-hidden rounded-md border border-[#D8D8C4]">
-              <input
-                name="search"
-                aria-label="Search components"
-                placeholder="Search parts"
-                className="h-11 min-w-0 flex-1 bg-[#F3F3E4] px-3 text-sm outline-none"
-              />
-              <button className="bg-[#1CA2D1] px-4 text-sm font-bold text-white">
-                <Search className="h-4 w-4" />
-              </button>
-            </form>
-            <Link
-              href="/components"
-              className="flex items-center gap-3 rounded-md px-3 py-3 text-sm font-bold text-zinc-800 hover:text-zinc-950"
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.5 }}
+              exit={{ opacity: 0 }}
               onClick={() => setMobileMenuOpen(false)}
+              className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm lg:hidden"
+            />
+            {/* Right Slide-in Panel */}
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 220 }}
+              className="fixed bottom-0 right-0 top-0 z-50 w-80 max-w-[85vw] bg-background p-6 shadow-2xl border-l border-[#D8D8C4] lg:hidden flex flex-col justify-between h-full"
             >
-              <Cpu className="h-4 w-4" />
-              Components
-            </Link>
-            <Link
-              href="/categories"
-              className="flex items-center gap-3 rounded-md px-3 py-3 text-sm font-bold text-zinc-800 hover:text-zinc-950"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              <Menu className="h-5 w-5" />
-              All Categories
-            </Link>
-            {categoryTree.length > 0 && (
-              <div className="rounded-md border border-[#D8D8C4] bg-[#F3F3E4] p-3">
-                <p className="mb-2 text-xs font-black uppercase tracking-wide text-[#1CA2D1]">
-                  Category tree
-                </p>
-                <div className="grid gap-2">
-                  {categoryTree.slice(0, 5).map((cat) => (
+              <div className="flex flex-col h-full justify-between">
+                <div>
+                  {/* Drawer Header */}
+                  <div className="flex items-center justify-between pb-4 border-b border-[#D8D8C4]">
+                    <div className="flex items-center gap-2">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#1CA2D1]/10 text-[#1CA2D1]">
+                        <Menu className="h-4 w-4" />
+                      </div>
+                      <span className="text-sm font-black uppercase tracking-wider text-zinc-950">Menu</span>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="h-8 w-8 rounded-lg border border-[#D8D8C4] hover:border-zinc-950"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+
+                  {/* Drawer Body (Scrollable) */}
+                  <div className="mt-6 space-y-2.5 overflow-y-auto max-h-[calc(100vh-200px)] pr-1">
                     <Link
-                      key={cat.category}
-                      href={`/components?category=${encodeURIComponent(cat.category)}`}
-                      className="rounded-md bg-background px-3 py-2 text-sm font-bold text-zinc-800"
+                      href="/components"
+                      className="flex items-center gap-3 rounded-xl border border-[#D8D8C4]/60 bg-[#FAFAED]/40 px-4 py-3 text-sm font-bold text-zinc-800 hover:bg-[#1CA2D1]/5 hover:text-[#1CA2D1] hover:border-[#1CA2D1]/30 transition-all"
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      {cat.category}
+                      <Cpu className="h-4 w-4 text-[#1CA2D1]" />
+                      Components
                     </Link>
-                  ))}
+                    <Link
+                      href="/projects"
+                      className="flex items-center gap-3 rounded-xl border border-[#D8D8C4]/60 bg-[#FAFAED]/40 px-4 py-3 text-sm font-bold text-zinc-800 hover:bg-[#1CA2D1]/5 hover:text-[#1CA2D1] hover:border-[#1CA2D1]/30 transition-all"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <BookOpen className="h-4 w-4 text-[#1CA2D1]" />
+                      Projects
+                    </Link>
+                    <Link
+                      href="/stem-store"
+                      className="flex items-center gap-3 rounded-xl border border-[#D8D8C4]/60 bg-[#FAFAED]/40 px-4 py-3 text-sm font-bold text-zinc-800 hover:bg-[#1CA2D1]/5 hover:text-[#1CA2D1] hover:border-[#1CA2D1]/30 transition-all"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <ShoppingBag className="h-4 w-4 text-[#1CA2D1]" />
+                      STEM Store
+                    </Link>
+                    <Link
+                      href="/track-order"
+                      className="flex items-center gap-3 rounded-xl border border-[#D8D8C4]/60 bg-[#FAFAED]/40 px-4 py-3 text-sm font-bold text-zinc-800 hover:bg-[#1CA2D1]/5 hover:text-[#1CA2D1] hover:border-[#1CA2D1]/30 transition-all"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <PackageCheck className="h-4 w-4 text-[#1CA2D1]" />
+                      Track your order
+                    </Link>
+                    <Link
+                      href="/bulk-order"
+                      className="flex items-center gap-3 rounded-xl border border-[#D8D8C4]/60 bg-[#FAFAED]/40 px-4 py-3 text-sm font-bold text-zinc-800 hover:bg-[#1CA2D1]/5 hover:text-[#1CA2D1] hover:border-[#1CA2D1]/30 transition-all"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <Layers className="h-4 w-4 text-[#1CA2D1]" />
+                      Bulk Order
+                    </Link>
+                    <Link
+                      href="/about"
+                      className="flex items-center gap-3 rounded-xl border border-[#D8D8C4]/60 bg-[#FAFAED]/40 px-4 py-3 text-sm font-bold text-zinc-800 hover:bg-[#1CA2D1]/5 hover:text-[#1CA2D1] hover:border-[#1CA2D1]/30 transition-all"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <Info className="h-4 w-4 text-[#1CA2D1]" />
+                      About Us
+                    </Link>
+                    <Link
+                      href="/careers"
+                      className="flex items-center gap-3 rounded-xl border border-[#D8D8C4]/60 bg-[#FAFAED]/40 px-4 py-3 text-sm font-bold text-zinc-800 hover:bg-[#1CA2D1]/5 hover:text-[#1CA2D1] hover:border-[#1CA2D1]/30 transition-all"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <Users className="h-4 w-4 text-[#1CA2D1]" />
+                      Careers
+                    </Link>
+                    <Link
+                      href="/cart"
+                      className="flex items-center gap-3 rounded-xl border border-[#D8D8C4]/60 bg-[#FAFAED]/40 px-4 py-3 text-sm font-bold text-zinc-800 hover:bg-[#1CA2D1]/5 hover:text-[#1CA2D1] hover:border-[#1CA2D1]/30 transition-all"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <ShoppingCart className="h-4 w-4 text-[#1CA2D1]" />
+                      Cart
+                    </Link>
+                  </div>
+                </div>
+
+                {/* Drawer Footer */}
+                <div className="pt-4 border-t border-[#D8D8C4] space-y-3">
+                  {!isAuthenticated ? (
+                    <div className="grid grid-cols-2 gap-2">
+                      <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="block">
+                        <Button variant="outline" className="w-full border-[#D8D8C4] rounded-xl font-bold">
+                          Login
+                        </Button>
+                      </Link>
+                      <Link href="/register" onClick={() => setMobileMenuOpen(false)} className="block">
+                        <Button className="w-full bg-[#1CA2D1] text-white rounded-xl font-bold hover:bg-[#1CA2D1]/90">
+                          Sign Up
+                        </Button>
+                      </Link>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-3 p-3 rounded-xl bg-[#FAFAED]/60 border border-[#D8D8C4]/60">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#1CA2D1] text-sm font-black text-white">
+                        {(user?.name || user?.email || "?")[0].toUpperCase()}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-bold text-zinc-950 truncate">{user?.name || "User"}</p>
+                        <p className="text-[11px] font-medium text-zinc-400 truncate">{user?.email}</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
-            )}
-            <Link
-              href="/robomaniac-store"
-              className="flex items-center gap-3 rounded-md px-3 py-3 text-sm font-bold text-zinc-800 hover:text-zinc-950"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              <ShoppingBag className="h-4 w-4" />
-              Robomaniac Store
-            </Link>
-            <Link
-              href="/projects"
-              className="flex items-center gap-3 rounded-md px-3 py-3 text-sm font-bold text-zinc-800 hover:text-zinc-950"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              <Wrench className="h-4 w-4" />
-              Projects
-            </Link>
-            <Link
-              href="/projects?difficulty=BEGINNER"
-              className="flex items-center gap-3 rounded-md px-3 py-3 text-sm font-bold text-zinc-800 hover:text-zinc-950"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              <PackageCheck className="h-4 w-4" />
-              Starter Builds
-            </Link>
-            <Link
-              href="/cart"
-              className="flex items-center gap-3 rounded-md px-3 py-3 text-sm font-bold text-zinc-800 hover:text-zinc-950"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              <ShoppingCart className="h-4 w-4" />
-              Cart
-            </Link>
-
-            {!isAuthenticated && (
-              <div className="grid grid-cols-2 gap-2 pt-2">
-                <Link href="/login" className="block">
-                  <Button variant="outline" className="w-full border-[#D8D8C4]">
-                    Login
-                  </Button>
-                </Link>
-                <Link href="/register" className="block">
-                  <Button className="w-full bg-[#1CA2D1] text-white">Sign Up</Button>
-                </Link>
-              </div>
-            )}
-          </div>
+            </motion.div>
+          </>
         )}
-      </div>
+      </AnimatePresence>
     </header>
   );
 }
 
 function CatalogMegaMenu({
   categories,
-  align = 'left',
   onClose,
 }: {
   categories: ComponentCategoryNode[];
-  align?: 'left' | 'wide';
   onClose: () => void;
 }) {
   const totalSubcategories = categories.reduce((acc, c) => acc + c.subcategories.length, 0);
 
   return (
-    <div className={`absolute top-full z-50 pt-2 ${align === 'wide' ? '-left-72' : 'left-0'}`}>
-      <div className="w-[960px] max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl border border-[#D8D8C4] bg-[#F3F3E4] shadow-2xl shadow-zinc-200/60">
+    <div className="absolute top-full left-4 right-4 z-50 pt-2">
+      <div className="w-full overflow-hidden rounded-xl border border-[#D8D8C4] bg-[#F3F3E4] shadow-2xl shadow-zinc-200/60">
 
         <div className="flex items-center justify-between border-b border-[#D8D8C4] bg-background px-6 py-4">
           <div>
@@ -359,7 +405,7 @@ function CatalogMegaMenu({
               Browse Catalog
             </p>
             <p className="mt-0.5 text-sm font-semibold text-zinc-600">
-              Categories, subcategories, and Robomaniac products.
+              Explore all categories and STEM products.
             </p>
           </div>
           <Link
@@ -371,37 +417,26 @@ function CatalogMegaMenu({
           </Link>
         </div>
 
-        <div className="grid gap-6 p-6 md:grid-cols-4">
+        <div className="grid gap-4 p-5 md:grid-cols-4 max-h-[360px] overflow-y-auto">
           {categories.map((cat, idx) => (
-            <div key={cat.category}>
-              <Link
-                href={`/components?category=${encodeURIComponent(cat.category)}`}
-                onClick={onClose}
-                className="group/cat flex items-center gap-2 pb-0.5"
-              >
-                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#1CA2D1]/15 text-[9px] font-black text-[#1CA2D1]">
-                  {idx + 1}
-                </span>
-                <span className="text-sm font-black text-zinc-950 transition-colors group-hover/cat:text-[#1CA2D1]">
+            <Link
+              key={cat.category}
+              href={`/components?category=${encodeURIComponent(cat.category)}`}
+              onClick={onClose}
+              className="group/cat flex items-center gap-3 rounded-xl border border-[#D8D8C4] bg-background/40 p-3 transition-all hover:bg-[#1CA2D1]/10 hover:border-[#1CA2D1]/30"
+            >
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#1CA2D1]/10 text-xs font-bold text-[#1CA2D1] group-hover/cat:bg-[#1CA2D1] group-hover/cat:text-white transition-colors">
+                {idx + 1}
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-bold text-zinc-950 truncate transition-colors group-hover/cat:text-[#1CA2D1]">
                   {cat.category}
-                </span>
-              </Link>
-              <p className="mb-3 pl-7 text-[11px] font-medium leading-4 text-zinc-400">
-                {cat.count} products
-              </p>
-              <div className="space-y-0.5 pl-1">
-                {cat.subcategories.map((sub) => (
-                  <Link
-                    key={sub.name}
-                    href={`/components?category=${encodeURIComponent(cat.category)}&subcategory=${encodeURIComponent(sub.name)}`}
-                    onClick={onClose}
-                    className="block rounded-lg px-3 py-1.5 text-[11.5px] font-semibold text-zinc-600 transition-all hover:bg-[#1CA2D1]/10 hover:text-[#1CA2D1]"
-                  >
-                    {sub.name}
-                  </Link>
-                ))}
+                </p>
+                <p className="text-[10px] font-medium text-zinc-400 mt-0.5">
+                  {cat.count} products
+                </p>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
 
@@ -409,7 +444,7 @@ function CatalogMegaMenu({
           <div className="flex items-center gap-5 text-[11px] font-bold text-zinc-500">
             <Link href="/components?isBestSeller=true" onClick={onClose} className="transition-colors hover:text-[#1CA2D1]">↗ Best Sellers</Link>
             <Link href="/projects" onClick={onClose} className="transition-colors hover:text-[#1CA2D1]">↗ Projects</Link>
-            <Link href="/robomaniac-store" onClick={onClose} className="transition-colors hover:text-[#1CA2D1]">↗ Robomaniac Store</Link>
+            <Link href="/stem-store" onClick={onClose} className="transition-colors hover:text-[#1CA2D1]">↗ STEM Store</Link>
             <Link href="/projects?difficulty=BEGINNER" onClick={onClose} className="transition-colors hover:text-[#1CA2D1]">↗ Starter Builds</Link>
           </div>
           <span className="text-[10px] font-semibold text-zinc-400">

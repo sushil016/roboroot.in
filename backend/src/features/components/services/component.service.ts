@@ -237,47 +237,106 @@ export async function getComponentBySku(sku: string): Promise<ComponentResponse>
  * Get category > subcategory > products tree for browse-all-categories.
  */
 export async function getComponentCategoryTree(): Promise<ComponentCategoryNode[]> {
-  const components = await prisma.component.findMany({
+  // Get all active categories and their subcategories
+  const dbCategories = await prisma.category.findMany({
     where: { isActive: true },
-    orderBy: [{ category: "asc" }, { subcategory: "asc" }, { name: "asc" }],
+    include: {
+      subcategories: {
+        where: { isActive: true },
+        orderBy: { name: "asc" },
+      },
+    },
+    orderBy: { name: "asc" },
   });
 
-  const categoryMap = new Map<string, ComponentCategoryNode>();
+  // Get all active components
+  const components = await prisma.component.findMany({
+    where: { isActive: true },
+  });
 
+  const categoryTree: ComponentCategoryNode[] = [];
+
+  for (const dbCat of dbCategories) {
+    const subnodes = dbCat.subcategories.map((sub) => {
+      // Find components matching this subcategory AND category name
+      const matchingComponents = components
+        .filter(
+          (c) =>
+            c.category.toLowerCase() === dbCat.name.toLowerCase() &&
+            c.subcategory.toLowerCase() === sub.name.toLowerCase()
+        )
+        .map(formatComponent);
+
+      return {
+        name: sub.name,
+        count: matchingComponents.length,
+        products: matchingComponents,
+      };
+    });
+
+    // Also count products in the category as a whole
+    const totalCatCount = subnodes.reduce((acc, s) => acc + s.count, 0);
+
+    categoryTree.push({
+      category: dbCat.name,
+      imageUrl: dbCat.imageUrl,
+      description: dbCat.description,
+      count: totalCatCount,
+      subcategories: subnodes,
+    });
+  }
+
+  // Fallback: Check if there are components that belong to categories/subcategories NOT in the DB table
   for (const component of components) {
     const formatted = formatComponent(component);
     const categoryName = formatted.category || "Electronics Components";
     const subcategoryName = formatted.subcategory || "General";
 
-    if (!categoryMap.has(categoryName)) {
-      categoryMap.set(categoryName, {
+    // Check if category is already in our tree
+    let catNode = categoryTree.find(
+      (n) => n.category.toLowerCase() === categoryName.toLowerCase()
+    );
+    if (!catNode) {
+      catNode = {
         category: categoryName,
+        imageUrl: null,
+        description: null,
         count: 0,
         subcategories: [],
-      });
+      };
+      categoryTree.push(catNode);
     }
 
-    const categoryNode = categoryMap.get(categoryName)!;
-    categoryNode.count += 1;
-
-    let subcategoryNode = categoryNode.subcategories.find(
-      (subcategory) => subcategory.name === subcategoryName
+    let subNode = catNode.subcategories.find(
+      (s) => s.name.toLowerCase() === subcategoryName.toLowerCase()
     );
-
-    if (!subcategoryNode) {
-      subcategoryNode = {
+    if (!subNode) {
+      subNode = {
         name: subcategoryName,
         count: 0,
         products: [],
       };
-      categoryNode.subcategories.push(subcategoryNode);
+      catNode.subcategories.push(subNode);
     }
 
-    subcategoryNode.count += 1;
-    subcategoryNode.products.push(formatted);
+    // If this product was not already added, add it
+    if (!subNode.products.some((p) => p.id === formatted.id)) {
+      subNode.products.push(formatted);
+      subNode.count += 1;
+      catNode.count += 1;
+    }
   }
 
-  return Array.from(categoryMap.values());
+  // Sort everything alphabetically
+  categoryTree.sort((a, b) => a.category.localeCompare(b.category));
+  for (const node of categoryTree) {
+    node.subcategories.sort((a, b) => a.name.localeCompare(b.name));
+    for (const sub of node.subcategories) {
+      sub.products.sort((a, b) => a.name.localeCompare(b.name));
+    }
+  }
+
+  return categoryTree;
 }
 
 /**

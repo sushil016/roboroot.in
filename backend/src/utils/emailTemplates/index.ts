@@ -12,6 +12,7 @@ export { orderPaidTemplate } from "./orderPaid.js";
 export { orderShippedTemplate } from "./orderShipped.js";
 export { mentorSessionBookedTemplate } from "./mentorSessionBooked.js";
 export { aiProjectGeneratedTemplate } from "./aiProjectGenerated.js";
+export { cartAbandonedTemplate } from "./cartAbandoned.js";
 
 import { EmailEventType } from "../../generated/prisma/client.js";
 import type { EmailTemplate } from "./base.js";
@@ -23,6 +24,7 @@ import { orderPaidTemplate } from "./orderPaid.js";
 import { orderShippedTemplate } from "./orderShipped.js";
 import { mentorSessionBookedTemplate } from "./mentorSessionBooked.js";
 import { aiProjectGeneratedTemplate } from "./aiProjectGenerated.js";
+import { cartAbandonedTemplate } from "./cartAbandoned.js";
 
 /**
  * Type for email template data
@@ -102,6 +104,9 @@ export function getEmailTemplate(
         html: `<h1>Low Stock Alert</h1><p>${data.component?.name} is running low. Order now!</p>`,
         text: `${data.component?.name} is running low. Order now!`,
       };
+
+    case EmailEventType.CART_ABANDONED:
+      return cartAbandonedTemplate(data);
 
     default:
       return {

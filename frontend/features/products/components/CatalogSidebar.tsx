@@ -20,7 +20,7 @@ type CatalogSidebarProps = {
 const QUICK_FILTERS = [
   { label: "In Stock", key: "inStock" as const },
   { label: "Best Sellers", key: "isBestSeller" as const },
-  { label: "Robomaniac", key: "isRobomaniacItem" as const },
+  { label: "STEM Store", key: "isRobomaniacItem" as const },
 ];
 
 function SidebarSection({

@@ -120,7 +120,7 @@ export function FeaturedBuildsSection() {
             <span className="text-[#1CA2D1]">IoT, AI, UAV</span>
           </div>
           <div className="flex items-center justify-between">
-            <span>Robomaniac products</span>
+            <span>STEM products</span>
             <span className="text-[#1CA2D1]">Kits + software</span>
           </div>
         </div>
