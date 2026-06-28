@@ -13,7 +13,7 @@ const defaultBackendUrl =
   process.env.VERCEL_URL
     ? `https://${process.env.VERCEL_URL}/_/backend`
     : process.env.NODE_ENV === "production"
-      ? "https://robo-gig.vercel.app/_/backend"
+      ? "https://roboroot.in/_/backend"
       : "http://localhost:4000";
 
 function isLocalhostUrl(url?: string) {

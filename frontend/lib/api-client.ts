@@ -12,8 +12,13 @@ import axios, { type AxiosError, type InternalAxiosRequestConfig } from "axios";
 import { env } from "@/lib/env";
 import { getAuthState } from "@/store/user.store";
 
+const isServer = typeof window === "undefined";
+const baseURL = isServer
+  ? (process.env.NODE_ENV === "production" ? "https://roboroot.in/_/backend" : "http://localhost:4000")
+  : env.apiUrl;
+
 const apiClient = axios.create({
-  baseURL: env.apiUrl,
+  baseURL,
   headers: { "Content-Type": "application/json" },
   timeout: 30000,
   withCredentials: true,
