@@ -83,15 +83,24 @@ export async function chatHandler(req: Request, res: Response): Promise<void> {
     // ── Stream structured action/product events first ────────────────────────
     // These arrive before the text delta so the frontend can render cards
     // while the text is still being "typed" in.
+    const streamedProductIds = new Set<string>();
     for (const event of events) {
+      if (event.type === "product" && event.product?.id) {
+        streamedProductIds.add(event.product.id);
+      }
       streamSseEvent(res, event);
     }
 
     // Stream catalog product cards from RAG hits (knowledge path)
     if (retrieval && retrieval.catalogHits.length > 0) {
-      const productEvents = buildProductEventsFromRagHits(retrieval.catalogHits);
-      for (const event of productEvents) {
-        streamSseEvent(res, event);
+      const uniqueCatalogHits = retrieval.catalogHits.filter(
+        (hit) => !streamedProductIds.has(hit.id)
+      );
+      if (uniqueCatalogHits.length > 0) {
+        const productEvents = buildProductEventsFromRagHits(uniqueCatalogHits);
+        for (const event of productEvents) {
+          streamSseEvent(res, event);
+        }
       }
     }
 

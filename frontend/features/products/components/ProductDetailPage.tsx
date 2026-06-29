@@ -32,6 +32,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ProductRevealCard } from "@/components/ui/product-reveal-card";
 import { ProductImageGallery } from "@/features/products/components/ProductImageGallery";
 import { cn } from "@/lib/utils";
+import { ProductReviewsSection } from "./ProductReviewsSection";
 
 /* ------------------------------------------------------------------ */
 /* Loading skeleton                                                     */
@@ -624,6 +625,9 @@ export function ProductDetailPage() {
 
           </div>
         </div>
+
+        {/* ── Product Reviews & Ratings ── */}
+        <ProductReviewsSection componentId={component.id} productName={component.name} />
 
         {/* ── Related Products ── */}
         {related.length > 0 && (

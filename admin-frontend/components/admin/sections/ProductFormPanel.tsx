@@ -23,7 +23,42 @@ export function ProductFormPanel({
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
   onNew: () => void;
 }) {
-  const { token } = useAdmin();
+  const { token, setStatus, setIsLoading } = useAdmin();
+
+  async function handleAiGenerate() {
+    if (!productForm.name.trim() || !token) return;
+    setIsLoading(true);
+    setStatus("AI is generating product details...");
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/admin/products/ai-generate`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ name: productForm.name }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Generation failed");
+
+      const data = json.data;
+      onForm({
+        ...productForm,
+        description: data.description || productForm.description,
+        typicalUseCase: data.typicalUseCase || productForm.typicalUseCase,
+        category: data.category || productForm.category,
+        subcategory: data.subcategory || productForm.subcategory,
+        brand: data.brand || productForm.brand,
+        tags: Array.isArray(data.tags) ? data.tags.join(", ") : productForm.tags,
+        unitPrice: data.suggestedPriceINR ? data.suggestedPriceINR.toString() : productForm.unitPrice,
+      });
+      setStatus("Product details auto-filled by AI!");
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : "AI generation failed");
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   return (
     <div className="flex flex-col gap-5">
@@ -42,7 +77,17 @@ export function ProductFormPanel({
         </div>
 
         <div className="grid gap-3 p-5">
-          <input className="admin-input" placeholder="Product name" value={productForm.name} onChange={(event) => onForm({ ...productForm, name: event.target.value })} required />
+          <div className="flex gap-2">
+            <input className="admin-input flex-1" placeholder="Product name" value={productForm.name} onChange={(event) => onForm({ ...productForm, name: event.target.value })} required />
+            <button
+              type="button"
+              disabled={!productForm.name.trim() || isLoading}
+              onClick={handleAiGenerate}
+              className="admin-button border border-zinc-300 bg-white text-[#222222] hover:bg-zinc-50 disabled:opacity-50 shrink-0 text-sm py-2 px-3"
+            >
+              ✨ AI Auto-Fill
+            </button>
+          </div>
           <input className="admin-input" placeholder="SKU" value={productForm.sku} onChange={(event) => onForm({ ...productForm, sku: event.target.value })} />
           <div className="grid gap-3 sm:grid-cols-2">
             <input className="admin-input" placeholder="Category" value={productForm.category} onChange={(event) => onForm({ ...productForm, category: event.target.value })} required />

@@ -40,7 +40,7 @@ export async function createReview(
 }
 
 export async function getComponentReviews(componentId: string, page: number, limit: number) {
-  const [reviews, total] = await Promise.all([
+  const [reviews, total, agg, starCounts] = await Promise.all([
     prisma.review.findMany({
       where: { componentId, isApproved: true },
       include: { user: { select: { name: true, avatarUrl: true } } },
@@ -49,12 +49,24 @@ export async function getComponentReviews(componentId: string, page: number, lim
       take: limit,
     }),
     prisma.review.count({ where: { componentId, isApproved: true } }),
+    prisma.review.aggregate({
+      where: { componentId, isApproved: true },
+      _avg: { rating: true },
+      _count: { id: true },
+    }),
+    prisma.review.groupBy({
+      by: ["rating"],
+      where: { componentId, isApproved: true },
+      _count: { id: true },
+    }),
   ]);
 
-  const agg = await prisma.review.aggregate({
-    where: { componentId, isApproved: true },
-    _avg: { rating: true },
-    _count: { id: true },
+  const breakdown = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+  starCounts.forEach((group) => {
+    const r = group.rating;
+    if (r >= 1 && r <= 5) {
+      breakdown[r as 1 | 2 | 3 | 4 | 5] = group._count.id;
+    }
   });
 
   return {
@@ -65,6 +77,7 @@ export async function getComponentReviews(componentId: string, page: number, lim
     totalPages: Math.ceil(total / limit),
     averageRating: agg._avg.rating ?? 0,
     reviewCount: agg._count.id,
+    breakdown,
   };
 }
 

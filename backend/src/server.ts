@@ -33,6 +33,7 @@ import pcbRoutes from "./features/pcb/routes/pcb.routes.js";
 import reviewRoutes from "./features/reviews/routes/review.routes.js";
 import chatRoutes from "./features/ai-chat/routes/chat.routes.js";
 import reindexRoutes from "./features/embeddings/routes/reindex.routes.js";
+import bulkRoutes from "./routes/bulkRoutes.js";
 import { errorHandler, notFoundHandler } from "./middlewares/error.middleware.js";
 import { csrfProtection, csrfTokenHandler } from "./middlewares/csrf.middleware.js";
 
@@ -263,10 +264,9 @@ function getChatProviderName(): "nvidia" | "anthropic" {
 
 function getChatModelName(): string {
   if (getChatProviderName() === "nvidia") {
-    return process.env.NVIDIA_CHAT_MODEL ?? "deepseek-ai/deepseek-v4-pro";
+    return process.env.NVIDIA_CHAT_MODEL ?? "meta/llama-3.1-70b-instruct";
   }
-
-  return process.env.ANTHROPIC_MODEL ?? "claude-sonnet-4-20250514";
+  return process.env.ANTHROPIC_MODEL ?? "claude-3-5-sonnet-20241022";
 }
 
 function isChatProviderConfigured(): boolean {
@@ -303,6 +303,7 @@ app.use("/api/projects", catalogLimiter, projectRoutes);
 app.use("/api/orders", orderLimiter, orderRoutes);
 app.use("/api/addresses", addressRoutes);
 app.use("/api/admin/coupons", adminWriteLimiter, couponRoutes);
+app.use("/api/admin/products", adminWriteLimiter, bulkRoutes);
 app.use("/api/coupons", couponRoutes);
 app.use("/api/cart", orderLimiter, cartRoutes);
 app.use("/api/wishlist", wishlistRoutes);

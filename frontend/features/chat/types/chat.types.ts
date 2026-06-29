@@ -77,6 +77,7 @@ export interface ChatMessage {
   isRateLimited?: boolean;
   retryContent?: string;
   isOfflineQueued?: boolean;
+  isCancelled?: boolean;
 }
 
 export interface ChatStreamEvent {

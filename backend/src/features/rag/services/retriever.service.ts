@@ -57,6 +57,6 @@ export function classifyRetrievalMode(query: string): RetrievalMode {
 
   if (hasDocument && (hasCatalog || hasAction)) return "combined";
   if (hasDocument) return "document";
-  if (hasCatalog) return "catalog";
-  return "combined";
+  // Default to catalog for product queries and general requests
+  return "catalog";
 }

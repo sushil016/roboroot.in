@@ -65,6 +65,8 @@ export async function signupController(req: Request, res: Response): Promise<voi
       message: "User created successfully",
       data: {
         user: result.user,
+        accessToken: result.accessToken,
+        refreshToken: result.refreshToken,
         expiresIn: result.expiresIn,
       },
     });
@@ -109,11 +111,11 @@ function getCookieOptions(overrides: Record<string, unknown> = {}) {
 
 function setAuthCookies(res: Response, accessToken: string, refreshToken: string) {
   res.cookie("accessToken", accessToken, getCookieOptions({
-    maxAge: 15 * 60 * 1000, // 15 minutes
+    maxAge: 60 * 60 * 1000, // 1 hour
   }));
   res.cookie("refreshToken", refreshToken, getCookieOptions({
     path: "/api/auth/refresh",
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    maxAge: 24 * 60 * 60 * 1000, // 1 day
   }));
 }
 
@@ -142,6 +144,8 @@ export async function loginController(req: Request, res: Response): Promise<void
       message: "Login successful",
       data: {
         user: result.user,
+        accessToken: result.accessToken,
+        refreshToken: result.refreshToken,
         expiresIn: result.expiresIn,
       },
     });
@@ -188,6 +192,8 @@ export async function refreshTokenController(req: Request, res: Response): Promi
       message: "Token refreshed successfully",
       data: {
         user: result.user,
+        accessToken: result.accessToken,
+        refreshToken: result.refreshToken,
         expiresIn: result.expiresIn,
       },
     });

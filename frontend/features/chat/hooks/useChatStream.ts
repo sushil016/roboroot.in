@@ -315,7 +315,24 @@ export function useChatStream() {
     abortRef.current?.abort();
     setIsStreaming(false);
     setStatus(null);
-  }, [clearStreamAnimation]);
+    setMessages((current) => {
+      if (current.length === 0) return current;
+      const lastMsg = current[current.length - 1];
+      if (lastMsg && lastMsg.role === "assistant" && lastMsg.content === "") {
+        return current.map((msg, idx) => {
+          if (idx === current.length - 1) {
+            return {
+              ...msg,
+              content: "Chat cancelled. Edit if you want.",
+              isCancelled: true,
+            };
+          }
+          return msg;
+        });
+      }
+      return current;
+    });
+  }, [clearStreamAnimation, setMessages]);
 
   const regenerate = useCallback(() => {
     if (isStreaming) return;

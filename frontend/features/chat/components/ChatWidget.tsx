@@ -123,6 +123,46 @@ export function ChatWidget() {
     clearHistory,
   } = useChatStream();
 
+  const [externalInputValue, setExternalInputValue] = useState("");
+
+  const handleEditLastQuery = useCallback(() => {
+    const lastUserMsg = [...messages].reverse().find((m) => m.role === "user");
+    if (lastUserMsg) {
+      setExternalInputValue(lastUserMsg.content);
+    }
+  }, [messages]);
+
+  const panelRef = useRef<HTMLElement | null>(null);
+
+  // Disable body scroll when in fullscreen mode
+  useEffect(() => {
+    if (widgetMode === "fullscreen") {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [widgetMode]);
+
+  // Close chat on click outside when in panel (popup) mode
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (widgetMode !== "panel") return;
+      if (panelRef.current && !panelRef.current.contains(event.target as Node)) {
+        const target = event.target as HTMLElement;
+        // Ignore clicks on toggle buttons or modal portals
+        if (target.closest("[data-chat-toggle]")) return;
+        setWidgetMode("fab");
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [widgetMode]);
+
   useEffect(() => {
     if (widgetMode === "panel" || widgetMode === "fullscreen") {
       setActiveTab(messages.length > 0 ? "messages" : "home");
@@ -249,6 +289,7 @@ export function ChatWidget() {
 
   const handleDragStart = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
     if (e.button !== 0) return;
+    if (typeof window !== "undefined" && window.innerWidth < 640) return;
     const target = e.target as HTMLElement;
     if (target.closest("button, input, textarea, a, svg")) return;
 
@@ -290,6 +331,7 @@ export function ChatWidget() {
   const handleResizeStart = useCallback((e: React.PointerEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
+    if (typeof window !== "undefined" && window.innerWidth < 640) return;
     setIsSnapping(false);
 
     const startX = e.clientX;
@@ -334,6 +376,7 @@ export function ChatWidget() {
           gradientSize={150}
         >
           <button
+            data-chat-toggle="true"
             type="button"
             onClick={() => setWidgetMode("panel")}
             className="group relative flex h-14 items-center gap-3.5 rounded-full bg-[url(/background-section1.png)] bg-cover bg-center px-6 text-white font-sans overflow-hidden border border-white/10"
@@ -359,7 +402,15 @@ export function ChatWidget() {
                 alt="RoboRoot"
                 width={95}
                 height={26}
-                className="h-6 w-auto object-contain brightness-0 invert"
+                className="hidden sm:block h-6 w-auto object-contain brightness-0 invert"
+                priority
+              />
+              <Image
+                src="/logo-roboroot.png"
+                alt="RoboRoot Icon"
+                width={26}
+                height={26}
+                className="block sm:hidden h-6 w-auto object-contain brightness-0 invert"
                 priority
               />
             </div>
@@ -384,14 +435,15 @@ export function ChatWidget() {
         <div className="flex items-center gap-2">
           {/* Clickable Area to Expand */}
           <div
+            data-chat-toggle="true"
             onClick={() => setWidgetMode("panel")}
             className="flex flex-1 min-w-0 items-center gap-2.5 pl-2"
           >
-            <div className="relative shrink-0 flex size-8 items-center justify-center rounded-full bg-[#1CA2D1]/15 border border-border">
-              <Bot className="size-4 text-[#1CA2D1]" />
+            <div className="relative shrink-0 flex size-8 items-center justify-center rounded-full bg-black text-white border border-black shadow-xs">
+              <Bot className="size-4 text-white" />
             </div>
             <div className="flex-1 min-w-0 text-left">
-              <p className="text-[10px] font-black tracking-wider text-[#1CA2D1] uppercase">RoboRoot AI</p>
+              <p className="text-[10px] font-black tracking-wider text-black uppercase">RoboRoot AI</p>
               <p className="truncate text-xs font-semibold text-foreground/80">
                 {lastAssistantMsg ? lastAssistantMsg.content : "Ask me anything..."}
               </p>
@@ -426,11 +478,12 @@ export function ChatWidget() {
         />
       )}
       <section
+        ref={panelRef}
         className={cn(
           "z-50 flex flex-col bg-white text-zinc-900 shadow-[0_16px_48px_-12px_rgba(0,0,0,0.12),_0_0_1px_rgba(0,0,0,0.06)] font-sans transition-all duration-300",
           isFullscreen
             ? "fixed inset-y-0 left-1/2 -translate-x-1/2 w-full max-w-[700px] h-screen border-l border-r border-zinc-200/80"
-            : "fixed border border-zinc-150 rounded-[28px] overflow-hidden"
+            : "fixed border border-zinc-150 rounded-[28px] overflow-hidden max-sm:!left-0 max-sm:!top-0 max-sm:!right-0 max-sm:!bottom-0 max-sm:!w-full max-sm:!h-full max-sm:!rounded-none"
         )}
         style={
           isFullscreen
@@ -457,7 +510,7 @@ export function ChatWidget() {
               {/* Drawer Panel */}
               <div className="absolute inset-y-0 left-0 w-64 bg-white border-r border-zinc-200 z-40 flex flex-col p-4 shadow-2xl animate-in slide-in-from-left duration-200 text-zinc-900">
                 <div className="flex items-center justify-between border-b border-zinc-100 pb-3">
-                  <h3 className="text-sm font-black flex items-center gap-1.5 uppercase tracking-wider text-[#1CA2D1]">
+                  <h3 className="text-sm font-black flex items-center gap-1.5 uppercase tracking-wider text-black">
                     <History className="size-4" /> History
                   </h3>
                   <button
@@ -477,7 +530,7 @@ export function ChatWidget() {
                     setHistoryOpen(false);
                     setActiveTab("messages");
                   }}
-                  className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-[#1CA2D1] py-2.5 text-xs font-bold text-white hover:bg-[#1CA2D1]/90 transition cursor-pointer"
+                  className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-black py-2.5 text-xs font-bold text-white hover:bg-black/90 transition-all cursor-pointer"
                 >
                   <Plus className="size-3.5" /> New Chat
                 </button>
@@ -503,7 +556,7 @@ export function ChatWidget() {
                           }}
                           className="flex-1 min-w-0 pr-6 text-left"
                         >
-                          <p className={cn("truncate", isActive ? "text-[#1CA2D1] font-bold" : "text-zinc-700")}>
+                          <p className={cn("truncate", isActive ? "text-black font-black" : "text-zinc-700")}>
                             {session.title}
                           </p>
                           <p className="text-[10px] text-zinc-400 mt-0.5">
@@ -539,13 +592,21 @@ export function ChatWidget() {
                 <div className="flex items-center justify-between w-full">
                   {/* Left Side: Brand Identity */}
                   <div className="flex items-center">
-                    <Link href="/" className="relative flex h-8 w-28 shrink-0 items-center select-none">
+                    <Link href="/" className="relative flex h-8 sm:w-28 w-7 shrink-0 items-center select-none">
                       <Image
                         src="/roboroot-logo.png"
                         alt="RoboRoot Logo"
                         width={110}
                         height={30}
-                        className="h-7 w-auto object-contain brightness-0 invert"
+                        className="hidden sm:block h-7 w-auto object-contain brightness-0 invert"
+                        priority
+                      />
+                      <Image
+                        src="/logo-roboroot.png"
+                        alt="RoboRoot Logo Icon"
+                        width={28}
+                        height={28}
+                        className="block sm:hidden h-7 w-auto object-contain brightness-0 invert"
                         priority
                       />
                     </Link>
@@ -611,7 +672,7 @@ export function ChatWidget() {
                     <span className="bg-white/10 backdrop-blur-md border border-white/20 px-4 py-2 rounded-full text-sm font-bold text-white shadow-sm flex items-center gap-1 hover:bg-white/15 transition-colors">
                       ⚖️ Compare components
                     </span>
-                    <span className="bg-[#1CA2D1]/20 backdrop-blur-md border border-[#1CA2D1]/40 px-4 py-2 rounded-full text-sm font-extrabold text-[#1CA2D1] shadow-sm flex items-center gap-1 animate-pulse">
+                    <span className="bg-white/10 backdrop-blur-md border border-white/20 px-4 py-2 rounded-full text-sm font-extrabold text-white shadow-sm flex items-center gap-1">
                       ✨ All in one chat
                     </span>
                   </div>
@@ -629,15 +690,15 @@ export function ChatWidget() {
                   className="w-full bg-white rounded-[20px] shadow-[0_8px_30px_rgba(0,0,0,0.06),_0_0_1px_rgba(0,0,0,0.1)] border border-zinc-150 hover:-translate-y-0.5 hover:shadow-[0_12px_40px_rgba(0,0,0,0.12)] transition-all duration-300 p-5 cursor-pointer flex items-center justify-between mt-4 group select-none shrink-0"
                 >
                   <div className="flex flex-col text-left">
-                    <h2 className="text-base font-black text-zinc-900 group-hover:text-[#1CA2D1] transition-colors flex items-center gap-1.5 leading-none">
+                    <h2 className="text-base font-black text-zinc-900 group-hover:text-black transition-colors flex items-center gap-1.5 leading-none">
                       Start a new chat
                     </h2>
                     <p className="text-xs text-zinc-500 font-bold mt-2">
                       Get instant insight of all components
                     </p>
                   </div>
-                  <div className="flex size-10 items-center justify-center rounded-full bg-zinc-50 group-hover:bg-[#1CA2D1]/10 group-hover:text-[#1CA2D1] text-zinc-950 transition-colors shadow-inner border border-zinc-100">
-                    <BotMessageSquare size={18} className="rotate-45 text-[#1CA2D1]" />
+                  <div className="flex size-10 items-center justify-center rounded-full bg-zinc-50 group-hover:bg-black/5 group-hover:text-black text-zinc-950 transition-colors shadow-inner border border-zinc-100">
+                    <BotMessageSquare size={18} className="rotate-45 text-black" />
                   </div>
                 </div>
 
@@ -654,8 +715,8 @@ export function ChatWidget() {
                           <div
                             key={session.id}
                             className={cn(
-                              "group relative flex items-center justify-between rounded-[16px] px-4 py-3 text-left text-xs font-bold transition bg-zinc-50/60 border hover:bg-zinc-100/80 cursor-pointer",
-                              isActive ? "bg-zinc-100/90 border-[#1CA2D1]/30 shadow-xs" : "border-zinc-100"
+                              "group relative flex items-center justify-between rounded-[16px] px-4 py-3 text-left text-xs font-bold transition bg-zinc-50/60 border hover:bg-black/5 cursor-pointer",
+                              isActive ? "bg-black/5 border-black/25 shadow-xs" : "border-zinc-100"
                             )}
                             onClick={() => {
                               loadSession(session.id);
@@ -663,7 +724,7 @@ export function ChatWidget() {
                             }}
                           >
                             <div className="flex-1 min-w-0 pr-6">
-                              <p className={cn("truncate text-sm font-black", isActive ? "text-[#1CA2D1]" : "text-zinc-800")}>
+                              <p className={cn("truncate text-sm font-black", isActive ? "text-black" : "text-zinc-800")}>
                                 {session.title}
                               </p>
                               <p className="text-[11px] text-zinc-400 font-bold mt-1.5">
@@ -793,6 +854,9 @@ export function ChatWidget() {
                   onRegenerate={regenerate}
                   onRetry={sendMessage}
                   isStreaming={isStreaming}
+                  status={status}
+                  onEdit={setExternalInputValue}
+                  onEditLastQuery={handleEditLastQuery}
                 />
                 {messages.length === 0 ? (
                   <QuickReplies disabled={isStreaming} onSelect={sendMessage} />
@@ -806,6 +870,7 @@ export function ChatWidget() {
                   isStreaming={isStreaming}
                   onSend={sendMessage}
                   onStop={stop}
+                  inputValue={externalInputValue}
                 />
               </div>
             </div>
@@ -848,7 +913,7 @@ export function ChatWidget() {
           {!isFullscreen && (
             <button
               type="button"
-              className="absolute bottom-1 right-1 z-50 grid size-5 cursor-nwse-resize place-items-center rounded text-zinc-300 hover:text-zinc-600 pointer-events-auto"
+              className="absolute bottom-1 right-1 z-50 max-sm:hidden grid size-5 cursor-nwse-resize place-items-center rounded text-zinc-300 hover:text-zinc-600 pointer-events-auto"
               aria-label="Resize panel"
               onPointerDown={handleResizeStart}
             >

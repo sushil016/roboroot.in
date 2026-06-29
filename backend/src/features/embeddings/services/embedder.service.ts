@@ -3,7 +3,7 @@ const DEFAULT_DIGITALOCEAN_BASE_URL = "https://inference.do-ai.run";
 const DEFAULT_OPENAI_EMBEDDING_MODEL = "text-embedding-3-small";
 const OPENAI_BASE_URL = "https://api.openai.com";
 
-type EmbeddingProvider = "digitalocean" | "openai";
+type EmbeddingProvider = "digitalocean" | "openai" | "nvidia";
 
 interface EmbeddingItem {
   index: number;
@@ -26,11 +26,11 @@ export async function embedTexts(texts: string[], options: EmbedOptions = {}): P
   const provider = options.provider ?? getEmbeddingProvider();
   const apiKey = options.apiKey ?? getEmbeddingApiKey(provider);
   if (!apiKey) {
-    throw new Error(`${provider === "digitalocean" ? "DIGITALOCEAN_TOKEN" : "OPENAI_API_KEY"} is required to generate embeddings`);
+    throw new Error(`${provider === "digitalocean" ? "DIGITALOCEAN_TOKEN" : provider === "nvidia" ? "NVIDIA_API_KEY" : "OPENAI_API_KEY"} is required to generate embeddings`);
   }
 
   const model = options.model ?? getEmbeddingModel(provider);
-  const response = await fetch(`${getEmbeddingBaseUrl(provider).replace(/\/$/, "")}/v1/embeddings`, {
+  const response = await fetch(`${getEmbeddingBaseUrl(provider).replace(/\/$/, "")}/embeddings`, {
     method: "POST",
     headers: {
       "Authorization": `Bearer ${apiKey}`,
@@ -56,16 +56,22 @@ export async function embedTexts(texts: string[], options: EmbedOptions = {}): P
 
 function getEmbeddingProvider(): EmbeddingProvider {
   if (process.env.EMBEDDING_PROVIDER === "openai") return "openai";
+  if (process.env.EMBEDDING_PROVIDER === "nvidia") return "nvidia";
   return "digitalocean";
 }
 
 function getEmbeddingApiKey(provider: EmbeddingProvider): string | undefined {
-  return provider === "digitalocean" ? process.env.DIGITALOCEAN_TOKEN : process.env.OPENAI_API_KEY;
+  if (provider === "digitalocean") return process.env.DIGITALOCEAN_TOKEN;
+  if (provider === "nvidia") return process.env.NVIDIA_API_KEY;
+  return process.env.OPENAI_API_KEY;
 }
 
 function getEmbeddingModel(provider: EmbeddingProvider): string {
   if (provider === "digitalocean") {
     return process.env.DIGITALOCEAN_EMBEDDING_MODEL ?? DEFAULT_DIGITALOCEAN_EMBEDDING_MODEL;
+  }
+  if (provider === "nvidia") {
+    return process.env.NVIDIA_EMBEDDING_MODEL ?? "nvidia/nv-embedqa-e5-v5";
   }
 
   return process.env.OPENAI_EMBEDDING_MODEL ?? DEFAULT_OPENAI_EMBEDDING_MODEL;
@@ -74,6 +80,9 @@ function getEmbeddingModel(provider: EmbeddingProvider): string {
 function getEmbeddingBaseUrl(provider: EmbeddingProvider): string {
   if (provider === "digitalocean") {
     return process.env.DIGITALOCEAN_INFERENCE_BASE_URL ?? DEFAULT_DIGITALOCEAN_BASE_URL;
+  }
+  if (provider === "nvidia") {
+    return process.env.NVIDIA_EMBEDDING_BASE_URL ?? "https://integrate.api.nvidia.com/v1";
   }
 
   return OPENAI_BASE_URL;
@@ -85,6 +94,10 @@ function buildEmbeddingRequest(provider: EmbeddingProvider, model: string, input
     input,
     encoding_format: "float",
   };
+
+  if (provider === "nvidia") {
+    request.input_type = "query";
+  }
 
   const dimensions = Number(process.env.EMBEDDING_DIMENSIONS ?? 1024);
   if (provider === "openai" && Number.isInteger(dimensions) && dimensions > 0) {

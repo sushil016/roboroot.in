@@ -9,13 +9,14 @@ function createRedisClient(): Redis | null {
     return null;
   }
 
-  // Upstash requires TLS; ensure tls:{} is passed regardless of scheme
+  const isLocal = REDIS_URL.includes("localhost") || REDIS_URL.includes("127.0.0.1");
+  
   const client = new Redis(REDIS_URL, {
-    tls: {},
+    ...(isLocal ? {} : { tls: {} }),
     lazyConnect: true,
     maxRetriesPerRequest: 2,
     retryStrategy: (times: number) => (times > 3 ? null : Math.min(times * 200, 2000)),
-    enableOfflineQueue: false,
+    enableOfflineQueue: true,
   });
 
   client.on("error", (err: Error) => {
@@ -38,8 +39,10 @@ export const redis = createRedisClient();
  */
 export function createBullMQConnection(): Redis {
   if (!REDIS_URL) throw new Error("REDIS_URL is required for BullMQ email queue");
+  const isLocal = REDIS_URL.includes("localhost") || REDIS_URL.includes("127.0.0.1");
+  
   return new Redis(REDIS_URL, {
-    tls: {},
+    ...(isLocal ? {} : { tls: {} }),
     maxRetriesPerRequest: null, // required by BullMQ
     retryStrategy: (times: number) => Math.min(times * 500, 10_000),
     enableOfflineQueue: true,

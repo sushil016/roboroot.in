@@ -17,7 +17,7 @@ import type {
 const ANTHROPIC_MESSAGES_URL = "https://api.anthropic.com/v1/messages";
 const DEFAULT_ANTHROPIC_MODEL = "claude-sonnet-4-20250514";
 const DEFAULT_NVIDIA_BASE_URL = "https://integrate.api.nvidia.com/v1";
-const DEFAULT_NVIDIA_MODEL = "deepseek-ai/deepseek-v4-pro";
+const DEFAULT_NVIDIA_MODEL = "meta/llama-3.1-70b-instruct";
 
 type ClaudeContentBlock =
   | { type: "text"; text: string }

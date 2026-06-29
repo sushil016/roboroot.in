@@ -11,6 +11,9 @@ interface MessageListProps {
   onRegenerate?: () => void;
   onRetry?: (content: string) => void;
   isStreaming?: boolean;
+  status?: string | null;
+  onEdit?: (content: string) => void;
+  onEditLastQuery?: () => void;
 }
 
 const EXAMPLE_PROMPTS = [
@@ -19,7 +22,15 @@ const EXAMPLE_PROMPTS = [
   { icon: "🔌", text: "Compare ESP32 vs Arduino Nano", label: "Comparison" },
 ];
 
-export function MessageList({ messages, onRegenerate, onRetry, isStreaming }: MessageListProps) {
+export function MessageList({
+  messages,
+  onRegenerate,
+  onRetry,
+  isStreaming,
+  status,
+  onEdit,
+  onEditLastQuery,
+}: MessageListProps) {
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const endRef = useRef<HTMLDivElement | null>(null);
   const [showScrollButton, setShowScrollButton] = useState(false);
@@ -74,6 +85,9 @@ export function MessageList({ messages, onRegenerate, onRetry, isStreaming }: Me
               onRegenerate={idx === lastAssistantIdx ? onRegenerate : undefined}
               onRetry={onRetry}
               isStreaming={isStreaming}
+              status={status}
+              onEdit={onEdit}
+              onEditLastQuery={onEditLastQuery}
             />
           ))
         )}

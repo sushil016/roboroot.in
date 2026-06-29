@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Check, Copy, RefreshCw, ThumbsDown, ThumbsUp, ExternalLink, Bot, HelpCircle } from "lucide-react";
+import { Check, Copy, RefreshCw, ThumbsDown, ThumbsUp, ExternalLink, Bot, HelpCircle, Pencil } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { ChatFeedback, ChatMessage } from "../types/chat.types";
 import { MessageContent } from "./MessageContent";
@@ -17,9 +17,31 @@ interface MessageBubbleProps {
   onRegenerate?: () => void;
   onRetry?: (content: string) => void;
   isStreaming?: boolean;
+  status?: string | null;
+  onEdit?: (content: string) => void;
+  onEditLastQuery?: () => void;
 }
 
-export function MessageBubble({ message, isLast, onRegenerate, onRetry, isStreaming }: MessageBubbleProps) {
+function getStatusLabel(status: string | null | undefined): string {
+  if (!status) return "Thinking...";
+  if (status === "connecting") return "Connecting...";
+  if (status === "classifying") return "Analyzing request...";
+  if (status === "retrieving") return "Searching components...";
+  if (status === "thinking") return "Gathering product info...";
+  if (status === "writing") return "Formulating answer...";
+  return "Thinking...";
+}
+
+export function MessageBubble({
+  message,
+  isLast,
+  onRegenerate,
+  onRetry,
+  isStreaming,
+  status,
+  onEdit,
+  onEditLastQuery,
+}: MessageBubbleProps) {
   const isUser = message.role === "user";
   const [copied, setCopied] = useState(false);
   const [feedback, setFeedback] = useState<ChatFeedback>(message.feedback ?? null);
@@ -36,15 +58,15 @@ export function MessageBubble({ message, isLast, onRegenerate, onRetry, isStream
   }
 
   const timestamp = formatTimestamp(message.createdAt);
-  const isTyping = !isUser && message.content === "";
+  const isTyping = !isUser && message.content === "" && !message.isCancelled;
   const isErrorState = message.isError || message.isRateLimited;
 
   return (
     <div className={cn("group relative flex gap-3 max-w-full font-sans", isUser ? "justify-end" : "justify-start")}>
       {/* Bot Icon for assistant */}
       {!isUser && (
-        <div className="mt-1 flex size-8 shrink-0 items-center justify-center rounded-full bg-zinc-150 border border-zinc-200 shadow-xs">
-          <Bot className="size-4 text-zinc-600" />
+        <div className="mt-1 flex size-8 shrink-0 items-center justify-center rounded-full bg-black border border-black text-white shadow-md">
+          <Bot className="size-4 text-white" />
         </div>
       )}
 
@@ -52,18 +74,37 @@ export function MessageBubble({ message, isLast, onRegenerate, onRetry, isStream
         {/* Bubble */}
         <div
           className={cn(
-            "relative rounded-[18px] px-4 py-3 text-sm leading-6 transition-all duration-200 shadow-xs",
+            "relative rounded-[18px] px-4 py-3 text-sm leading-6 transition-all duration-300 shadow-xs",
             isUser
-              ? "rounded-tr-sm bg-zinc-900 text-white"
-              : "rounded-tl-sm bg-zinc-100 text-zinc-900 border-none",
-            isErrorState && !isUser && "border border-red-200 bg-red-50 text-red-700",
+              ? "rounded-tr-sm bg-black text-white"
+              : "rounded-tl-sm bg-[#1CA2D1]/5 border border-[#1CA2D1]/10 hover:border-[#1CA2D1]/25 text-black",
+            isErrorState && !isUser && "border border-red-200 bg-red-50/80 text-red-700",
           )}
         >
           {isTyping ? (
-            <div className="flex items-center gap-1.5 py-1.5 pl-1" aria-label="Assistant is thinking">
-              <span className="size-2 animate-bounce rounded-full bg-[#1CA2D1]" style={{ animationDelay: "0ms" }} />
-              <span className="size-2 animate-bounce rounded-full bg-[#1CA2D1]/70" style={{ animationDelay: "150ms" }} />
-              <span className="size-2 animate-bounce rounded-full bg-[#1CA2D1]/40" style={{ animationDelay: "300ms" }} />
+            <div className="flex items-center gap-2 py-1.5 pl-1" aria-label="Assistant is thinking">
+              <div className="flex items-center gap-1 shrink-0">
+                <span className="size-1.5 animate-bounce rounded-full bg-black" style={{ animationDelay: "0ms" }} />
+                <span className="size-1.5 animate-bounce rounded-full bg-black/70" style={{ animationDelay: "150ms" }} />
+                <span className="size-1.5 animate-bounce rounded-full bg-black/40" style={{ animationDelay: "300ms" }} />
+              </div>
+              <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest animate-pulse ml-1 select-none">
+                {getStatusLabel(status)}
+              </span>
+            </div>
+          ) : message.isCancelled ? (
+            <div className="flex flex-col gap-2">
+              <p className="text-zinc-500 italic">Chat cancelled.</p>
+              {onEditLastQuery && (
+                <button
+                  type="button"
+                  onClick={onEditLastQuery}
+                  className="mt-1.5 self-start inline-flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-2.5 py-1.5 text-xs font-bold text-black hover:bg-black/5 transition-all cursor-pointer shadow-xs"
+                >
+                  <Pencil className="size-3 text-black" />
+                  <span>Edit query</span>
+                </button>
+              )}
             </div>
           ) : isUser ? (
             <p className="whitespace-pre-wrap font-medium">{message.content}</p>
@@ -116,13 +157,13 @@ export function MessageBubble({ message, isLast, onRegenerate, onRetry, isStream
 
           {/* Citations / Links */}
           {message.citations.length > 0 && (
-            <div className="mt-4 space-y-1.5 border-t border-border pt-2.5">
+            <div className="mt-4 space-y-1.5 border-t border-[#1CA2D1]/10 pt-2.5">
               {message.citations.map((citation) => (
                 <p
                   key={`${citation.sourceType}-${citation.title}-${citation.pageLabel ?? ""}`}
-                  className="flex items-center gap-2 text-[10px] text-muted-foreground font-semibold"
+                  className="flex items-center gap-2 text-[10px] text-zinc-500 font-semibold"
                 >
-                  <span className="rounded bg-muted border border-border px-1.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wider text-muted-foreground">
+                  <span className="rounded bg-[#1CA2D1]/5 border border-[#1CA2D1]/15 px-1.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wider text-[#1CA2D1]">
                     {citation.sourceType === "product" ? "Product" : citation.sourceType === "document" ? "Manual" : "Project"}
                   </span>
                   {citation.href ? (
@@ -150,7 +191,7 @@ export function MessageBubble({ message, isLast, onRegenerate, onRetry, isStream
               href={message.actionHref}
               className={cn(
                 "mt-3 inline-flex min-h-9 items-center justify-center gap-2 rounded-xl px-4 text-xs font-bold transition hover:scale-[1.02] cursor-pointer",
-                isUser ? "bg-white text-zinc-950 hover:bg-zinc-100" : "bg-[#1CA2D1] text-white hover:bg-[#1CA2D1]/90",
+                isUser ? "bg-white text-black hover:bg-white/90" : "bg-black text-white hover:bg-[#1CA2D1]",
               )}
             >
               {message.actionLabel}
@@ -162,7 +203,7 @@ export function MessageBubble({ message, isLast, onRegenerate, onRetry, isStream
             <button
               type="button"
               onClick={() => onRetry(message.retryContent!)}
-              className="mt-2.5 flex items-center gap-1.5 text-xs font-bold text-red-400 hover:text-red-300 transition-colors cursor-pointer"
+              className="mt-2.5 flex items-center gap-1.5 text-xs font-bold text-red-500 hover:text-red-600 transition-colors cursor-pointer"
             >
               <RefreshCw className="size-3" />
               Try again
@@ -173,23 +214,35 @@ export function MessageBubble({ message, isLast, onRegenerate, onRetry, isStream
         {/* Hover Micro-Actions Toolbar */}
         <div
           className={cn(
-            "flex items-center gap-1 opacity-0 transition-all duration-200 group-hover:opacity-100",
+            "flex items-center gap-1 opacity-0 transition-all duration-300 group-hover:opacity-100",
             isUser ? "justify-end pr-1" : "justify-start pl-1",
           )}
         >
-          <span className="text-[10px] text-zinc-500 font-semibold select-none">{timestamp}</span>
+          <span className="text-[10px] text-zinc-400 font-semibold select-none">{timestamp}</span>
 
-          {!isUser && !isTyping && (
+          {isUser && onEdit && (
+            <button
+              type="button"
+              onClick={() => onEdit(message.content)}
+              className="grid size-6 place-items-center rounded-lg text-zinc-400 hover:bg-black/5 hover:text-black transition-all ml-1 cursor-pointer"
+              aria-label="Edit message"
+              title="Edit"
+            >
+              <Pencil className="size-3" />
+            </button>
+          )}
+
+          {!isUser && !isTyping && !message.isCancelled && (
             <>
               {/* Copy message text */}
               <button
                 type="button"
                 onClick={copyMessage}
-                className="grid size-6 place-items-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition"
+                className="grid size-6 place-items-center rounded-lg text-zinc-400 hover:bg-black/5 hover:text-black transition-all"
                 aria-label="Copy message content"
                 title="Copy"
               >
-                {copied ? <Check className="size-3 text-emerald-400" /> : <Copy className="size-3" />}
+                {copied ? <Check className="size-3 text-emerald-500" /> : <Copy className="size-3" />}
               </button>
 
               {/* Thumbs up */}
@@ -197,10 +250,10 @@ export function MessageBubble({ message, isLast, onRegenerate, onRetry, isStream
                 type="button"
                 onClick={() => handleFeedback("up")}
                 className={cn(
-                  "grid size-6 place-items-center rounded-lg transition",
+                  "grid size-6 place-items-center rounded-lg transition-all",
                   feedback === "up"
-                    ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                    ? "bg-emerald-500/10 text-emerald-600 border border-emerald-500/25"
+                    : "text-zinc-400 hover:bg-[#1CA2D1]/5 hover:text-[#1CA2D1]",
                 )}
                 aria-label="Thumbs up"
                 title="Helpful"
@@ -213,10 +266,10 @@ export function MessageBubble({ message, isLast, onRegenerate, onRetry, isStream
                 type="button"
                 onClick={() => handleFeedback("down")}
                 className={cn(
-                  "grid size-6 place-items-center rounded-lg transition",
+                  "grid size-6 place-items-center rounded-lg transition-all",
                   feedback === "down"
-                    ? "bg-red-500/10 text-red-400 border border-red-500/20"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                    ? "bg-red-500/10 text-red-500 border border-red-500/25"
+                    : "text-zinc-400 hover:bg-red-50/50 hover:text-red-500",
                 )}
                 aria-label="Thumbs down"
                 title="Not helpful"
@@ -229,7 +282,7 @@ export function MessageBubble({ message, isLast, onRegenerate, onRetry, isStream
                 <button
                   type="button"
                   onClick={onRegenerate}
-                  className="grid size-6 place-items-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition"
+                  className="grid size-6 place-items-center rounded-lg text-zinc-400 hover:bg-[#1CA2D1]/10 hover:text-[#1CA2D1] transition-all"
                   aria-label="Regenerate last response"
                   title="Regenerate"
                 >
@@ -242,7 +295,7 @@ export function MessageBubble({ message, isLast, onRegenerate, onRetry, isStream
                 href="/support"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="ml-1 flex items-center gap-1 rounded-lg px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-muted-foreground border border-border bg-card hover:bg-background hover:text-[#1CA2D1] transition"
+                className="ml-1 flex items-center gap-1 rounded-lg px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-zinc-500 border border-zinc-200 bg-white hover:bg-[#1CA2D1]/10 hover:text-[#1CA2D1] hover:border-[#1CA2D1]/20 transition-all"
                 title="Talk to a support specialist"
               >
                 <HelpCircle className="size-2.5" />

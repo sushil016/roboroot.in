@@ -28,6 +28,7 @@ interface InputBarProps {
   isStreaming: boolean;
   onSend: (message: string) => void;
   onStop: () => void;
+  inputValue?: string;
 }
 
 // Web Speech API types
@@ -64,7 +65,7 @@ declare global {
   }
 }
 
-export function InputBar({ disabled, isStreaming, onSend, onStop }: InputBarProps) {
+export function InputBar({ disabled, isStreaming, onSend, onStop, inputValue }: InputBarProps) {
   const [value, setValue] = useState("");
   const [isListening, setIsListening] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -81,6 +82,14 @@ export function InputBar({ disabled, isStreaming, onSend, onStop }: InputBarProp
     el.style.height = "auto";
     el.style.height = `${Math.min(el.scrollHeight, 160)}px`;
   }, [value]);
+
+  // Listen to external input value changes (e.g. from editing a message)
+  useEffect(() => {
+    if (inputValue !== undefined) {
+      setValue(inputValue);
+      textareaRef.current?.focus();
+    }
+  }, [inputValue]);
 
   // Show slash popup when input starts with /
   useEffect(() => {
@@ -253,7 +262,7 @@ export function InputBar({ disabled, isStreaming, onSend, onStop }: InputBarProp
               type="button"
               onClick={() => fileInputRef.current?.click()}
               disabled={disabled}
-              className="grid size-8 place-items-center rounded-full text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700 transition disabled:opacity-40 cursor-pointer"
+              className="grid size-8 place-items-center rounded-full text-zinc-400 hover:bg-black/5 hover:text-black transition disabled:opacity-40 cursor-pointer"
               aria-label="Attach hardware image"
               title="Attach image"
             >
@@ -264,7 +273,7 @@ export function InputBar({ disabled, isStreaming, onSend, onStop }: InputBarProp
             <button
               type="button"
               disabled={disabled}
-              className="grid size-8 place-items-center rounded-full text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700 transition disabled:opacity-40 cursor-pointer"
+              className="grid size-8 place-items-center rounded-full text-zinc-400 hover:bg-black/5 hover:text-black transition disabled:opacity-40 cursor-pointer"
               aria-label="Add emoji"
               title="Emoji"
             >
@@ -279,7 +288,7 @@ export function InputBar({ disabled, isStreaming, onSend, onStop }: InputBarProp
               aria-label="Add GIF"
               title="GIF"
             >
-              <span className="text-[9px] font-black tracking-wider uppercase bg-zinc-50 text-zinc-500 hover:bg-zinc-150 hover:text-zinc-700 border border-zinc-200 rounded px-1.5 py-0.5 leading-none transition select-none">
+              <span className="text-[9px] font-black tracking-wider uppercase bg-white text-zinc-500 hover:bg-black/5 hover:text-black border border-zinc-200 rounded px-1.5 py-0.5 leading-none transition select-none">
                 GIF
               </span>
             </button>
@@ -293,7 +302,7 @@ export function InputBar({ disabled, isStreaming, onSend, onStop }: InputBarProp
                 "grid size-8 place-items-center rounded-full transition disabled:opacity-40 cursor-pointer",
                 isListening
                   ? "bg-red-500 text-white animate-pulse"
-                  : "text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700",
+                  : "text-zinc-400 hover:bg-black/5 hover:text-black",
               )}
               aria-label={isListening ? "Stop speech" : "Speech to text"}
               title={isListening ? "Stop listening" : "Speech to text"}
@@ -307,7 +316,7 @@ export function InputBar({ disabled, isStreaming, onSend, onStop }: InputBarProp
             <button
               type="button"
               onClick={onStop}
-              className="grid size-8 place-items-center rounded-full bg-zinc-950 text-white hover:bg-zinc-900 hover:scale-105 transition cursor-pointer shadow-xs shrink-0"
+              className="grid size-8 place-items-center rounded-full bg-black text-white hover:bg-black/90 hover:scale-105 transition cursor-pointer shadow-xs shrink-0"
               aria-label="Stop generation"
               title="Stop generation"
             >
@@ -320,7 +329,7 @@ export function InputBar({ disabled, isStreaming, onSend, onStop }: InputBarProp
               className={cn(
                 "grid size-8 place-items-center rounded-full transition shadow-xs shrink-0",
                 value.trim() && !isOverLimit
-                  ? "bg-zinc-950 text-white hover:bg-zinc-900 hover:scale-105 cursor-pointer"
+                  ? "bg-black text-white hover:bg-black/90 hover:scale-105 cursor-pointer"
                   : "bg-zinc-100 text-zinc-400 cursor-not-allowed"
               )}
               aria-label="Send message"

@@ -20,9 +20,9 @@ interface ProductCardProps {
 }
 
 const STOCK_CONFIG: Record<StockStatus, { label: string; className: string }> = {
-  inStock: { label: "In Stock", className: "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" },
-  lowStock: { label: "Low Stock", className: "bg-amber-500/10 text-amber-400 border border-amber-500/20" },
-  outOfStock: { label: "Out of Stock", className: "bg-red-500/10 text-red-400 border border-red-500/20" },
+  inStock: { label: "In Stock", className: "bg-transparent text-zinc-700 border border-zinc-200" },
+  lowStock: { label: "Low Stock", className: "bg-transparent text-amber-700 border border-amber-500/30" },
+  outOfStock: { label: "Out of Stock", className: "bg-transparent text-red-700 border border-red-500/30" },
 };
 
 export function ProductCard({ product }: ProductCardProps) {
@@ -54,7 +54,7 @@ export function ProductCard({ product }: ProductCardProps) {
   }
 
   return (
-    <div className="mt-3 overflow-hidden rounded-xl border border-border bg-card shadow-md transition-all duration-200 hover:border-[#1CA2D1]/50 hover:shadow-lg font-sans">
+    <div className="mt-3 overflow-hidden rounded-xl border border-border bg-white shadow-xs transition-all duration-300 hover:border-black/30 hover:shadow-md font-sans">
       {/* Primary Info row */}
       <div className="flex gap-3.5 p-3">
         {/* Product image */}
@@ -64,10 +64,10 @@ export function ProductCard({ product }: ProductCardProps) {
             <img
               src={product.imageUrl}
               alt={product.name}
-              className="h-16 w-16 rounded-lg object-cover border border-border transition-transform duration-200 group-hover:scale-105"
+              className="h-16 w-16 rounded-lg object-cover border border-border transition-transform duration-300 group-hover:scale-102"
             />
           ) : (
-            <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-muted border border-border text-2xl transition-transform duration-200 group-hover:scale-105 select-none">
+            <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-muted border border-border text-2xl transition-transform duration-300 group-hover:scale-102 select-none">
               🤖
             </div>
           )}
@@ -79,13 +79,13 @@ export function ProductCard({ product }: ProductCardProps) {
             <div className="flex items-start justify-between gap-2">
               <Link
                 href={product.href}
-                className="flex-1 min-w-0 text-xs font-bold text-foreground hover:text-[#1CA2D1] transition-colors line-clamp-2 leading-5 tracking-wide"
+                className="flex-1 min-w-0 text-xs font-bold text-foreground hover:text-black transition-colors line-clamp-2 leading-5 tracking-wide"
               >
                 {product.name}
               </Link>
               <Link
                 href={product.href}
-                className="shrink-0 grid size-6 place-items-center rounded-lg bg-muted border border-border text-muted-foreground hover:text-[#1CA2D1] transition"
+                className="shrink-0 grid size-6 place-items-center rounded-lg bg-white border border-zinc-200 text-zinc-500 hover:text-black transition-all"
                 target="_blank"
                 aria-label="Open product page in new tab"
                 title="Full Page"
@@ -97,12 +97,12 @@ export function ProductCard({ product }: ProductCardProps) {
             {/* Badges strip */}
             <div className="mt-1.5 flex flex-wrap items-center gap-1">
               {product.category && (
-                <span className="rounded bg-muted border border-border px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-muted-foreground">
+                <span className="rounded bg-transparent border border-zinc-200 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-zinc-500">
                   {product.category}
                 </span>
               )}
               {product.brand && (
-                <span className="rounded bg-[#1CA2D1]/10 border border-[#1CA2D1]/20 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-[#1CA2D1]">
+                <span className="rounded bg-transparent border border-zinc-200 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-zinc-700">
                   {product.brand}
                 </span>
               )}
@@ -119,7 +119,7 @@ export function ProductCard({ product }: ProductCardProps) {
                 {product.compatibility.map((c) => (
                   <span
                     key={c}
-                    className="rounded-full border border-teal-500/20 bg-teal-500/5 px-2 py-0.5 text-[9px] font-bold text-teal-400 uppercase tracking-wider"
+                    className="rounded-full border border-zinc-200 bg-transparent px-2 py-0.5 text-[9px] font-bold text-zinc-500 uppercase tracking-wider"
                   >
                     ✓ {c}
                   </span>
@@ -130,7 +130,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
           {/* Pricing and Actions Row */}
           <div className="mt-2.5 flex items-center justify-between gap-2 border-t border-border pt-2.5">
-            <span className="text-sm font-extrabold text-[#1CA2D1] font-mono">
+            <span className="text-sm font-extrabold text-black font-mono">
               ₹{(product.priceCents / 100).toLocaleString("en-IN")}
             </span>
             <div className="flex items-center gap-1">
@@ -142,8 +142,8 @@ export function ProductCard({ product }: ProductCardProps) {
                 className={cn(
                   "grid size-7 place-items-center rounded-lg border transition cursor-pointer",
                   isCompared
-                    ? "border-[#1CA2D1] bg-[#1CA2D1]/10 text-[#1CA2D1]"
-                    : "border-border bg-muted text-muted-foreground hover:border-border hover:text-foreground",
+                    ? "border-black bg-black/5 text-black"
+                    : "border-border bg-transparent text-zinc-400 hover:border-black/30 hover:text-black",
                 )}
                 aria-label="Compare product specification"
               >
@@ -155,7 +155,7 @@ export function ProductCard({ product }: ProductCardProps) {
                 type="button"
                 onClick={() => setQuickViewOpen((v) => !v)}
                 title="Quick specifications"
-                className="grid size-7 place-items-center rounded-lg border border-border bg-muted text-muted-foreground hover:border-border hover:text-foreground cursor-pointer transition"
+                className="grid size-7 place-items-center rounded-lg border border-border bg-transparent text-zinc-400 hover:border-black/30 hover:text-black cursor-pointer transition"
                 aria-label={quickViewOpen ? "Close details" : "Open details"}
               >
                 {quickViewOpen ? <ChevronUp className="size-3.5" /> : <ChevronDown className="size-3.5" />}
@@ -167,12 +167,12 @@ export function ProductCard({ product }: ProductCardProps) {
                 onClick={handleAddToCart}
                 disabled={isOutOfStock || addingToCart}
                 className={cn(
-                  "flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[10px] font-extrabold uppercase tracking-wider transition cursor-pointer shadow-sm",
+                  "flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[10px] font-extrabold uppercase tracking-wider transition-all cursor-pointer shadow-sm",
                   isOutOfStock
-                    ? "cursor-not-allowed border border-border text-muted-foreground bg-muted/50"
+                    ? "cursor-not-allowed border border-border text-zinc-400 bg-zinc-50"
                     : addedToCart
-                      ? "bg-emerald-500 text-white shadow-emerald-500/10"
-                      : "bg-[#1CA2D1] text-white hover:bg-[#1CA2D1]/90 shadow-[#1CA2D1]/15",
+                      ? "bg-emerald-600 text-white"
+                      : "bg-black text-white hover:bg-black/85",
                 )}
                 aria-label="Add product to cart"
               >
@@ -192,7 +192,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
       {/* Quick Specs / Details slider row */}
       {quickViewOpen && (
-        <div className="border-t border-border bg-background/50 px-4 py-3 text-xs text-foreground/90 animate-in slide-in-from-top duration-200">
+        <div className="border-t border-border bg-zinc-50/50 px-4 py-3 text-xs text-foreground/90 animate-in slide-in-from-top duration-250">
           {product.description && (
             <p className="mb-3 leading-5 text-muted-foreground">{product.description}</p>
           )}
@@ -216,7 +216,7 @@ export function ProductCard({ product }: ProductCardProps) {
           <div className="mt-3.5 pt-2.5 border-t border-border/40 flex items-center justify-end">
             <Link
               href={product.href}
-              className="inline-flex items-center gap-1 text-[10px] font-bold text-[#1CA2D1] uppercase tracking-wider hover:underline"
+              className="inline-flex items-center gap-1 text-[10px] font-bold text-black uppercase tracking-wider hover:underline"
             >
               Full details page
               <ExternalLink className="size-3" />

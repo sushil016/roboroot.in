@@ -4,8 +4,8 @@ import { UnauthorizedError } from "./types.js";
 
 const JWT_SECRET: jwt.Secret = process.env.JWT_SECRET || "your-secret-key-change-in-production";
 const JWT_REFRESH_SECRET: jwt.Secret = process.env.JWT_REFRESH_SECRET || "your-refresh-secret-change-in-production";
-const JWT_EXPIRES_IN: string = process.env.JWT_EXPIRES_IN || "15m"; // 15 minutes
-const JWT_REFRESH_EXPIRES_IN: string = process.env.JWT_REFRESH_EXPIRES_IN || "7d"; // 7 days
+const JWT_EXPIRES_IN: string = process.env.JWT_EXPIRES_IN || "1h"; // 1 hour
+const JWT_REFRESH_EXPIRES_IN: string = process.env.JWT_REFRESH_EXPIRES_IN || "1d"; // 1 day
 
 /**
  * Generate access and refresh tokens

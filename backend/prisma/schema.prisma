@@ -1121,3 +1121,14 @@ model WishlistItem {
   @@unique([userId, componentId])
   @@index([userId])
 }
+
+model MediaLibrary {
+  id        String   @id @default(cuid())
+  url       String   @unique
+  filename  String
+  mimeType  String?
+  sizeBytes Int?
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([createdAt])
+}
