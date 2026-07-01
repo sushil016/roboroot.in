@@ -96,7 +96,7 @@ export function CartPage() {
                     >
                       <div className="p-5">
                         <div className="grid gap-3 grid-cols-[80px_minmax(0,1fr)] sm:grid-cols-[108px_minmax(0,1fr)]">
-                          <Link href={`/components/${item.component.id}`}>
+                          <Link href={`/components/${item.component.slug}`}>
                             <div className="aspect-square overflow-hidden rounded-xl bg-[#F3F3E4] w-20 h-20 sm:w-28 sm:h-28">
                               <ProductImage
                                 src={item.component.imageUrl}
@@ -109,7 +109,7 @@ export function CartPage() {
                           <div className="min-w-0 flex flex-col gap-2 sm:gap-3 justify-between">
                             <div>
                               <Link
-                                href={`/components/${item.component.id}`}
+                                href={`/components/${item.component.slug}`}
                                 className="text-sm sm:text-base font-bold text-[#222222] hover:text-[#1CA2D1] transition-colors line-clamp-2"
                               >
                                 {item.component.name}

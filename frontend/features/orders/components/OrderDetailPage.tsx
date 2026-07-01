@@ -187,7 +187,7 @@ export function OrderDetailPage() {
                     <p className="mt-1.5 text-xs text-zinc-400">Qty {item.quantity}</p>
                     {item.componentId && (
                       <Link
-                        href={`/components/${item.componentId}`}
+                        href={`/components/${item.component?.slug || item.componentId}`}
                         className="mt-3 inline-flex text-xs font-semibold text-[#1CA2D1] hover:underline"
                       >
                         View product →

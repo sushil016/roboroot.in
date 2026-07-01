@@ -57,25 +57,25 @@ enum DifficultyLevel {
 }
 
 enum ProjectCategory {
-  IOT                  // Internet of Things
-  ROBOTICS             // Robots, Robotic Arms, etc.
-  DRONE                // Drones, UAVs, Flying Robots
-  AUTOMATION           // Home/Industrial Automation
-  ENVIRONMENT          // Environment Monitoring, Green Tech
-  HEALTH               // Healthcare, Medical Devices
-  AGRICULTURE          // Smart Farming, Agri-Tech
-  SECURITY             // Security Systems, Surveillance
-  EDUCATION            // Educational Tools, Learning Kits
-  AUTOMOTIVE           // Car Tech, Vehicle Automation
-  SMART_HOME           // Home Automation, Smart Devices
-  ENERGY               // Renewable Energy, Power Management
-  WEARABLES            // Wearable Tech, Smart Watches
-  GAMING               // Gaming Controllers, VR/AR
-  MUSIC                // Musical Instruments, Audio Tech
-  COMMUNICATION        // RF, Wireless, Communication Systems
-  AI_ML                // Artificial Intelligence, Machine Learning
-  COMPUTER_VISION      // Image Processing, Object Detection
-  OTHER                // Miscellaneous
+  IOT // Internet of Things
+  ROBOTICS // Robots, Robotic Arms, etc.
+  DRONE // Drones, UAVs, Flying Robots
+  AUTOMATION // Home/Industrial Automation
+  ENVIRONMENT // Environment Monitoring, Green Tech
+  HEALTH // Healthcare, Medical Devices
+  AGRICULTURE // Smart Farming, Agri-Tech
+  SECURITY // Security Systems, Surveillance
+  EDUCATION // Educational Tools, Learning Kits
+  AUTOMOTIVE // Car Tech, Vehicle Automation
+  SMART_HOME // Home Automation, Smart Devices
+  ENERGY // Renewable Energy, Power Management
+  WEARABLES // Wearable Tech, Smart Watches
+  GAMING // Gaming Controllers, VR/AR
+  MUSIC // Musical Instruments, Audio Tech
+  COMMUNICATION // RF, Wireless, Communication Systems
+  AI_ML // Artificial Intelligence, Machine Learning
+  COMPUTER_VISION // Image Processing, Object Detection
+  OTHER // Miscellaneous
 }
 
 enum ProjectAssetType {
@@ -250,9 +250,9 @@ model User {
 
   isActive Boolean @default(true)
 
-  emailVerified      Boolean   @default(false)
-  emailVerifyToken   String?   @unique
-  emailVerifyExpiry  DateTime?
+  emailVerified     Boolean   @default(false)
+  emailVerifyToken  String?   @unique
+  emailVerifyExpiry DateTime?
 
   createdAt DateTime @default(now()) @db.Timestamptz(6)
   updatedAt DateTime @updatedAt @db.Timestamptz(6)
@@ -290,7 +290,8 @@ model User {
   pcbQuoteRequests PcbQuoteRequest[]
 
   // Reviews
-  reviews Review[]
+  reviews           Review[]
+  bulkOrderRequests BulkOrderRequest[]
 }
 
 // OAuth / provider accounts (Google, GitHub, etc.)
@@ -399,9 +400,9 @@ model Project {
   description String? @db.Text
 
   // Categorization for better UX
-  category    ProjectCategory // Main category (IoT, Robotics, Drone, etc.)
-  tags        String[] // Additional tags for filtering (e.g., ["beginner-friendly", "arduino", "sensors"])
-  
+  category ProjectCategory // Main category (IoT, Robotics, Drone, etc.)
+  tags     String[] // Additional tags for filtering (e.g., ["beginner-friendly", "arduino", "sensors"])
+
   projectType ProjectType     @default(FEATURED)
   difficulty  DifficultyLevel @default(BEGINNER)
 
@@ -410,30 +411,30 @@ model Project {
   estimatedBuildTimeMinutes Int? // Time to complete
 
   // Pre-Built Option (Admin builds and lists)
-  preBuiltAvailable  Boolean @default(false)
-  preBuiltStock      Int     @default(0) // Available pre-built units
+  preBuiltAvailable  Boolean  @default(false)
+  preBuiltStock      Int      @default(0) // Available pre-built units
   preBuiltPriceCents Int? // Higher price for assembled version
   preBuiltImages     String[] // Photos of actual built units
 
   // Media
   thumbnailUrl String?
   youtubeUrl   String? // YouTube tutorial video URL
-  
+
   // Visibility & Status
-  isFeatured      Boolean @default(false) // Show on homepage
-  isPublic        Boolean @default(true)
-  isAIGenerated   Boolean @default(false) // From AI custom project
-  publishedAt     DateTime? @db.Timestamptz(6)
-  
+  isFeatured    Boolean   @default(false) // Show on homepage
+  isPublic      Boolean   @default(true)
+  isAIGenerated Boolean   @default(false) // From AI custom project
+  publishedAt   DateTime? @db.Timestamptz(6)
+
   // Learning Info
   learningOutcomes String[] // What student will learn
   prerequisites    String[] // Required knowledge/skills
-  
+
   // Stats
-  viewCount      Int @default(0)
-  buildCount     Int @default(0) // How many students built this
-  averageRating  Float @default(0.0)
-  
+  viewCount     Int   @default(0)
+  buildCount    Int   @default(0) // How many students built this
+  averageRating Float @default(0.0)
+
   // Relations
   createdById String?
   createdBy   User?   @relation(fields: [createdById], references: [id], onDelete: SetNull)
@@ -550,17 +551,17 @@ model Category {
 }
 
 model Subcategory {
-  id          String   @id @default(cuid())
+  id          String  @id @default(cuid())
   categoryId  String
   name        String
-  description String?  @db.Text
+  description String? @db.Text
   imageUrl    String?
-  isActive    Boolean  @default(true)
+  isActive    Boolean @default(true)
 
-  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  
-  createdAt   DateTime @default(now()) @db.Timestamptz(6)
-  updatedAt   DateTime @updatedAt @db.Timestamptz(6)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
 
   @@unique([categoryId, name])
   @@index([categoryId])
@@ -574,25 +575,26 @@ model Subcategory {
 model Component {
   id             String  @id @default(cuid())
   name           String
+  slug           String? @unique // SEO-friendly URL identifier e.g. "hc-05-bluetooth-module"
   sku            String? @unique
   description    String? @db.Text
   typicalUseCase String?
   vendorLink     String?
   imageUrl       String?
 
-  category    String @default("Electronics Components")
-  subcategory String @default("General")
-  productType ComponentProductType @default(ELECTRONICS_COMPONENT)
-  brand       String?
-  tags        String[] @default([])
-  isBestSeller Boolean @default(false)
-  isRobomaniacItem Boolean @default(false)
-  isSoftware   Boolean @default(false)
+  category         String               @default("Electronics Components")
+  subcategory      String               @default("General")
+  productType      ComponentProductType @default(ELECTRONICS_COMPONENT)
+  brand            String?
+  tags             String[]             @default([])
+  isBestSeller     Boolean              @default(false)
+  isRobomaniacItem Boolean              @default(false)
+  isSoftware       Boolean              @default(false)
 
-  unitPriceCents         Int  // price per unit (original / compare-at price)
-  discountedPriceCents   Int? // sale price — null means no active discount
-  stockQuantity          Int     @default(0)
-  isActive               Boolean @default(true)
+  unitPriceCents       Int // price per unit (original / compare-at price)
+  discountedPriceCents Int? // sale price — null means no active discount
+  stockQuantity        Int     @default(0)
+  isActive             Boolean @default(true)
 
   createdAt DateTime @default(now()) @db.Timestamptz(6)
   updatedAt DateTime @updatedAt @db.Timestamptz(6)
@@ -607,6 +609,7 @@ model Component {
   outgoingRelations ComponentRelation[] @relation("ComponentRelationSource")
   incomingRelations ComponentRelation[] @relation("ComponentRelationTarget")
 
+  @@index([slug])
   @@index([isActive])
   @@index([category, subcategory])
   @@index([productType])
@@ -673,13 +676,13 @@ model KitComponent {
 // ========================================
 
 model RagChunk {
-  id         String             @id @default(cuid())
+  id         String                       @id @default(cuid())
   sourceType RagChunkSourceType
   sourceId   String
-  chunkText  String             @db.Text
+  chunkText  String                       @db.Text
   metadata   Json?
   embedding  Unsupported("vector(1024)")?
-  createdAt  DateTime           @default(now()) @db.Timestamptz(6)
+  createdAt  DateTime                     @default(now()) @db.Timestamptz(6)
 
   @@index([sourceType, sourceId])
   @@index([createdAt])
@@ -928,12 +931,12 @@ model Coupon {
   code          String       @unique
   label         String
   discountType  DiscountType
-  discountValue Int          // percent * 100 OR paise
+  discountValue Int // percent * 100 OR paise
   minOrderCents Int          @default(0)
   maxUsageCount Int?
   usageCount    Int          @default(0)
   perUserLimit  Int?
-  allowedEmail  String?      // if set, coupon is only valid for this specific email
+  allowedEmail  String? // if set, coupon is only valid for this specific email
   expiresAt     DateTime?
   isActive      Boolean      @default(true)
   createdAt     DateTime     @default(now()) @db.Timestamptz(6)
@@ -1059,23 +1062,55 @@ enum PcbQuoteStatus {
 }
 
 model PcbQuoteRequest {
-  id              String         @id @default(cuid())
-  userId          String
-  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  boardLayers     Int
-  boardSizeX      Float
-  boardSizeY      Float
-  quantity        Int
-  surfaceFinish   String
-  copperWeight    String
-  gerberFileUrl   String?
-  notes           String?        @db.Text
-  status          PcbQuoteStatus @default(SUBMITTED)
+  id               String         @id @default(cuid())
+  userId           String
+  user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  boardLayers      Int
+  boardSizeX       Float
+  boardSizeY       Float
+  quantity         Int
+  surfaceFinish    String
+  copperWeight     String
+  gerberFileUrl    String?
+  notes            String?        @db.Text
+  status           PcbQuoteStatus @default(SUBMITTED)
   quotedPricePaise Int?
-  adminNotes      String?        @db.Text
+  adminNotes       String?        @db.Text
 
   createdAt DateTime @default(now()) @db.Timestamptz(6)
-  updatedAt DateTime @updatedAt    @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@index([userId])
+  @@index([status])
+}
+
+// ========================================
+// BULK ORDER QUOTE REQUESTS
+// ========================================
+
+enum BulkOrderStatus {
+  SUBMITTED
+  REVIEWING
+  QUOTED
+  COMPLETED
+  CANCELLED
+}
+
+model BulkOrderRequest {
+  id          String          @id @default(cuid())
+  userId      String?
+  user        User?           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  email       String
+  phone       String
+  companyName String?
+  csvFileUrl  String?
+  notes       String?         @db.Text
+  status      BulkOrderStatus @default(SUBMITTED)
+  adminNotes  String?         @db.Text
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
 
   @@index([userId])
   @@index([status])
@@ -1086,19 +1121,21 @@ model PcbQuoteRequest {
 // ========================================
 
 model Review {
-  id          String    @id @default(cuid())
+  id          String     @id @default(cuid())
   userId      String
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   componentId String?
   component   Component? @relation(fields: [componentId], references: [id], onDelete: Cascade)
   rating      Int
   title       String?
-  body        String?   @db.Text
-  isVerified  Boolean   @default(false)
-  isApproved  Boolean   @default(true)
+  body        String?    @db.Text
+  isVerified  Boolean    @default(false)
+  isApproved  Boolean    @default(true)
+  imageUrl    String?
+
 
   createdAt DateTime @default(now()) @db.Timestamptz(6)
-  updatedAt DateTime @updatedAt    @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
 
   @@unique([userId, componentId])
   @@index([componentId])

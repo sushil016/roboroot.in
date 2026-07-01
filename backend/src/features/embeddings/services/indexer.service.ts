@@ -20,7 +20,8 @@ export async function embedAndStore(chunks: EmbeddingChunk[], options: EmbedAndS
 
   for (let start = 0; start < chunks.length; start += batchSize) {
     const batch = chunks.slice(start, start + batchSize);
-    const embeddings = await embedTexts(batch.map((chunk) => chunk.chunkText));
+    // Indexed corpus must be embedded as "passage" for asymmetric models.
+    const embeddings = await embedTexts(batch.map((chunk) => chunk.chunkText), { inputType: "passage" });
     const embedded = batch.map<EmbeddedChunk>((chunk, index) => ({
       ...chunk,
       embedding: getEmbeddingAt(embeddings, index),

@@ -5,11 +5,14 @@ export const TOOL_PERMISSIONS: Record<ToolName, ToolActorRole[]> = {
   get_product_details: ["guest", "user", "admin"],
   place_order: ["user", "admin"],
   initiate_payment: ["user", "admin"],
-  verify_payment: ["user", "admin"],
   get_invoice: ["user", "admin"],
   track_order: ["user", "admin"],
   get_order_history: ["user", "admin"],
   cancel_order: ["user", "admin"],
+  get_cart: ["user", "admin"],
+  list_addresses: ["user", "admin"],
+  checkout_cart: ["user", "admin"],
+  compare_prices: ["guest", "user", "admin"],
 };
 
 export function canUseTool(tool: ToolName, role: ToolActorRole): boolean {

@@ -27,6 +27,7 @@ const cardVariants: any = {
 const MOCK_BEST_SELLERS: Component[] = [
   {
     id: "mock-bs-1",
+    slug: "roboroot-uno-r3-development-board",
     name: "RoboRoot Uno R3 Development Board",
     sku: "DEV-UNO-R3",
     description: "Arduino compatible microcontroller board for prototyping and learning.",
@@ -49,6 +50,7 @@ const MOCK_BEST_SELLERS: Component[] = [
   },
   {
     id: "mock-bs-2",
+    slug: "hc-sr04-ultrasonic-distance-sensor-module",
     name: "HC-SR04 Ultrasonic Distance Sensor Module",
     sku: "SEN-HCSR04",
     description: "Ultrasonic sensor for non-contact distance measurement.",
@@ -71,6 +73,7 @@ const MOCK_BEST_SELLERS: Component[] = [
   },
   {
     id: "mock-bs-3",
+    slug: "robotics-starter-course-kit-level-1",
     name: "Robotics Starter Course Kit - Level 1",
     sku: "KIT-ROBO-L1",
     description: "Complete hands-on kit with microcontrollers, motors, and sensors for beginners.",
@@ -93,6 +96,7 @@ const MOCK_BEST_SELLERS: Component[] = [
   },
   {
     id: "mock-bs-4",
+    slug: "high-torque-mg996r-metal-gear-servo-motor",
     name: "High Torque MG996R Metal Gear Servo Motor",
     sku: "MOT-MG996R",
     description: "High torque metal geared servo for heavy duty applications.",
@@ -158,7 +162,7 @@ function BestSellerCard({ component, rank }: { component: Component; rank: numbe
       </button>
 
       {/* Image container */}
-      <Link href={`/components/${component.id}`} className="relative flex aspect-square w-full shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[#FAFAED]/60 p-2 sm:p-4">
+      <Link href={`/components/${component.slug}`} className="relative flex aspect-square w-full shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[#FAFAED]/60 p-2 sm:p-4">
         {component.imageUrl ? (
           <img
             src={component.imageUrl}
@@ -182,7 +186,7 @@ function BestSellerCard({ component, rank }: { component: Component; rank: numbe
           </span>
 
           {/* Title */}
-          <Link href={`/components/${component.id}`} className="mt-1 block h-8 sm:h-10 flex-shrink-0 overflow-hidden">
+          <Link href={`/components/${component.slug}`} className="mt-1 block h-8 sm:h-10 flex-shrink-0 overflow-hidden">
             <h3 className="line-clamp-2 text-xs sm:text-sm font-bold leading-snug text-[#222222] group-hover:text-[#1CA2D1] transition-colors">
               {component.name}
             </h3>

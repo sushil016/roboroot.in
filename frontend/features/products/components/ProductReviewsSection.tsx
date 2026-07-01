@@ -58,9 +58,9 @@ export function ProductReviewsSection({
     setIsModalOpen(true);
   }
 
-  async function handleReviewSubmit(rating: number, title: string, body: string) {
+  async function handleReviewSubmit(rating: number, title: string, body: string, imageUrl?: string) {
     try {
-      await reviewApi.submitReview(componentId, rating, title, body);
+      await reviewApi.submitReview(componentId, rating, title, body, imageUrl);
       toast.success("Review submitted!", {
         description: "Your review has been submitted and is pending moderation.",
       });

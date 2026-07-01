@@ -1,10 +1,11 @@
-import type { Request, Response } from "express";
+import type { Request, Response, NextFunction } from "express";
 import * as reviewService from "../services/review.service.js";
+import { uploadFileToAzure, FileType } from "../../../services/azure-storage.service.js";
 
 export async function createReviewHandler(req: Request, res: Response): Promise<void> {
   const userId = req.user!.userId;
-  const { componentId, rating, title, body } = req.body as {
-    componentId?: string; rating?: number; title?: string; body?: string;
+  const { componentId, rating, title, body, imageUrl } = req.body as {
+    componentId?: string; rating?: number; title?: string; body?: string; imageUrl?: string;
   };
 
   if (!componentId || !rating) {
@@ -13,7 +14,7 @@ export async function createReviewHandler(req: Request, res: Response): Promise<
   }
 
   try {
-    const review = await reviewService.createReview(userId, componentId, Number(rating), title, body);
+    const review = await reviewService.createReview(userId, componentId, Number(rating), title, body, imageUrl);
     res.status(201).json({ success: true, data: review });
   } catch (err) {
     const error = err as Error & { statusCode?: number };
@@ -56,3 +57,38 @@ export async function moderateReviewHandler(req: Request, res: Response): Promis
     res.status(error.statusCode ?? 400).json({ success: false, error: error.message });
   }
 }
+
+/**
+ * Handle uploading an image for a review (authenticated users)
+ * POST /api/reviews/upload
+ */
+export async function uploadReviewImageHandler(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    const file = req.file;
+    if (!file) {
+      res.status(400).json({ success: false, error: "No image file provided" });
+      return;
+    }
+
+    const result = await uploadFileToAzure(
+      file.buffer,
+      file.originalname,
+      file.mimetype,
+      FileType.COMPONENT_IMAGE
+    );
+
+    if ("error" in result) {
+      res.status(500).json({ success: false, error: result.error });
+      return;
+    }
+
+    res.status(200).json({ success: true, url: result.url });
+  } catch (error) {
+    next(error);
+  }
+}
+

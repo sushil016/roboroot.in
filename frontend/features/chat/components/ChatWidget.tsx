@@ -398,7 +398,7 @@ export function ChatWidget() {
                 Chat with
               </span>
               <Image
-                src="/roboroot-logo.png"
+                src="/logo-roboroot0.png"
                 alt="RoboRoot"
                 width={95}
                 height={26}
@@ -406,7 +406,7 @@ export function ChatWidget() {
                 priority
               />
               <Image
-                src="/logo-roboroot.png"
+                src="/logo-roboroot0.png"
                 alt="RoboRoot Icon"
                 width={26}
                 height={26}
@@ -594,7 +594,7 @@ export function ChatWidget() {
                   <div className="flex items-center">
                     <Link href="/" className="relative flex h-8 sm:w-28 w-7 shrink-0 items-center select-none">
                       <Image
-                        src="/roboroot-logo.png"
+                        src="/logo-roboroot0.png"
                         alt="RoboRoot Logo"
                         width={110}
                         height={30}
@@ -602,7 +602,7 @@ export function ChatWidget() {
                         priority
                       />
                       <Image
-                        src="/logo-roboroot.png"
+                        src="/logo-roboroot0.png"
                         alt="RoboRoot Logo Icon"
                         width={28}
                         height={28}

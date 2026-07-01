@@ -8,7 +8,8 @@ export type ChatStreamEventType =
   | "payment"
   | "invoice"
   | "done"
-  | "error";
+  | "error"
+  | "address_required";
 export type ChatFeedback = "up" | "down" | null;
 export type StockStatus = "inStock" | "lowStock" | "outOfStock";
 export type OrderCardStatus = "confirmed" | "processing" | "shipped" | "delivered" | "cancelled";
@@ -78,6 +79,7 @@ export interface ChatMessage {
   retryContent?: string;
   isOfflineQueued?: boolean;
   isCancelled?: boolean;
+  addressFormRequired?: boolean;
 }
 
 export interface ChatStreamEvent {

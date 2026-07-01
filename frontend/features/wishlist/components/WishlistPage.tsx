@@ -96,7 +96,7 @@ export function WishlistPage() {
                     gradientOpacity={0.06}
                   >
                     <div className="flex flex-col p-4 h-full">
-                      <Link href={`/components/${component.id}`} className="group">
+                      <Link href={`/components/${component.slug}`} className="group">
                         <div className="aspect-square overflow-hidden rounded-xl bg-[#F3F3E4] mb-3">
                           <ProductImage
                             src={component.imageUrl}

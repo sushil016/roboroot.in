@@ -39,6 +39,9 @@ router.get(
   componentController.getOutOfStockHandler
 );
 
+// Slug lookup — MUST be before /:id wildcard
+router.get("/slug/:slug", cacheResponse(60), componentController.getComponentBySlugHandler);
+
 // Dynamic param route — must come after all static paths
 router.get("/:id", componentController.getComponentByIdHandler);
 router.get("/:id/reviews", getComponentReviewsHandler);

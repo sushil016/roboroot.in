@@ -46,7 +46,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export function ProjectDetailPage() {
   const params = useParams();
-  const projectId = params?.id as string;
+  const slug = params?.slug as string;
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   const {
@@ -54,9 +54,9 @@ export function ProjectDetailPage() {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ['project', projectId],
-    queryFn: () => projectApi.getProjectById(projectId),
-    enabled: !!projectId,
+    queryKey: ['project', slug],
+    queryFn: () => projectApi.getProjectBySlug(slug),
+    enabled: !!slug,
   });
 
   /* ---- Loading ---- */

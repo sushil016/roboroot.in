@@ -103,3 +103,8 @@ export const projectApi = {
 export async function getProjectMetadataById(id: string): Promise<Project> {
   return projectApi.getProjectById(id);
 }
+
+export async function getProjectMetadataBySlug(slug: string): Promise<Project> {
+  return projectApi.getProjectBySlug(slug);
+}
+

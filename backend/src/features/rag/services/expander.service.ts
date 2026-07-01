@@ -7,6 +7,12 @@ const FALLBACK_SYNONYMS: SynonymMap = {
   board: ["microcontroller development board", "Arduino", "ESP32", "Raspberry Pi"],
   lidar: ["LiDAR laser distance sensor", "RPLidar"],
   "motor driver": ["H-bridge driver", "L298N", "TB6612FNG"],
+  ble: ["bluetooth low energy communication module", "HC-05", "wireless transceiving link"],
+  wifi: ["wireless network internet access", "ESP8266", "ESP32 microchip"],
+  imu: ["inertial measurement unit sensor", "gyroscope accelerometer", "MPU6050"],
+  oled: ["digital display screen monitor panel", "I2C OLED screen"],
+  gps: ["satellite positioning navigation receiver", "NEO-6M module"],
+  battery: ["rechargeable lithium cell pack", "18650 Li-ion battery", "Lipo power source"],
 };
 
 let cachedSynonyms: SynonymMap | null = null;

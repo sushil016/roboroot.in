@@ -71,6 +71,15 @@ export function ReviewCard({
         </p>
       )}
 
+      {/* Review Image */}
+      {review.imageUrl && (
+        <div className="relative h-20 w-20 rounded-xl overflow-hidden border border-zinc-200 cursor-pointer hover:opacity-90 transition-opacity">
+          <a href={review.imageUrl} target="_blank" rel="noopener noreferrer">
+            <img src={review.imageUrl} alt="Customer upload" className="h-full w-full object-cover" />
+          </a>
+        </div>
+      )}
+
       {/* Footer / Meta Info */}
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-zinc-400 font-semibold pt-1 border-t border-zinc-50">
         <div className="flex items-center gap-1.5 text-zinc-600">

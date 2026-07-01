@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { Star, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { reviewApi } from "../../services/review.service";
 
 interface ReviewFormModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (rating: number, title: string, body: string) => Promise<void>;
+  onSubmit: (rating: number, title: string, body: string, imageUrl?: string) => Promise<void>;
   productName: string;
 }
 
@@ -19,12 +20,22 @@ export function ReviewFormModal({
   const [hoverRating, setHoverRating] = useState<number | null>(null);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   if (!isOpen) return null;
 
   const stars = [1, 2, 3, 4, 5];
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+      setPreviewUrl(URL.createObjectURL(file));
+    }
+  };
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -36,10 +47,16 @@ export function ReviewFormModal({
     setIsSubmitting(true);
     setError(null);
     try {
-      await onSubmit(rating, title, body);
+      let uploadedUrl: string | undefined;
+      if (selectedFile) {
+        uploadedUrl = await reviewApi.uploadReviewImage(selectedFile);
+      }
+      await onSubmit(rating, title, body, uploadedUrl);
       setTitle("");
       setBody("");
       setRating(5);
+      setSelectedFile(null);
+      setPreviewUrl(null);
       onClose();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to submit review.");
@@ -146,6 +163,40 @@ export function ReviewFormModal({
               onChange={(e) => setBody(e.target.value)}
               className="w-full p-4 text-sm border border-[#D8D8C4] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1CA2D1]/20 focus:border-[#1CA2D1] transition-all resize-none"
             />
+          </div>
+
+          {/* Optional Review Image */}
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold text-zinc-500 uppercase tracking-wide block">
+              Add Photo (Optional)
+            </label>
+            <div className="flex items-center gap-3">
+              <label className="h-14 w-14 shrink-0 rounded-xl border-2 border-dashed border-[#D8D8C4] hover:border-[#1CA2D1] cursor-pointer flex flex-col items-center justify-center text-zinc-400 hover:text-[#1CA2D1] transition-all bg-zinc-50">
+                <span className="text-[20px] font-light leading-none">+</span>
+                <span className="text-[8px] font-bold uppercase tracking-wider mt-1">Upload</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+              </label>
+              {previewUrl && (
+                <div className="relative h-14 w-14 rounded-xl overflow-hidden border border-[#D8D8C4] group">
+                  <img src={previewUrl} alt="Preview" className="h-full w-full object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedFile(null);
+                      setPreviewUrl(null);
+                    }}
+                    className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-[10px] font-bold transition-opacity cursor-pointer"
+                  >
+                    Remove
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Buttons */}

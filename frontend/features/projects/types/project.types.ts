@@ -43,6 +43,7 @@ export interface ProjectComponentDetail {
   notes?: string;
   component: {
     id: string;
+    slug: string;
     name: string;
     sku?: string;
     description?: string;

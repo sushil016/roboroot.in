@@ -19,7 +19,7 @@ export function ProjectCard({ project, index = 0 }: ProjectCardProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.06, ease: [0.22, 1, 0.36, 1] }}
     >
-      <Link href={`/projects/${project.id}`} className="block group">
+      <Link href={`/projects/${project.slug}`} className="block group">
         <div className="flex flex-col md:flex-row bg-white rounded-2xl border-2 border-[#1CA2D1] overflow-hidden shadow-[3px_3px_0px_0px_#1CA2D1] hover:shadow-[5px_5px_0px_0px_#1CA2D1] transition-all duration-300">
 
           {/* ── Thumbnail ── */}
@@ -82,7 +82,7 @@ export function ProjectCard({ project, index = 0 }: ProjectCardProps) {
                   {project.components.slice(0, 5).map((pc) => (
                     <div
                       key={pc.id}
-                      onClick={(e) => { e.preventDefault(); window.location.href = `/components/${pc.component.id}`; }}
+                      onClick={(e) => { e.preventDefault(); window.location.href = `/components/${pc.component.slug}`; }}
                       className="flex-shrink-0 flex flex-col items-center gap-1 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-xl p-2 w-[72px] transition-colors cursor-pointer"
                     >
                       <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-gray-200">
@@ -145,7 +145,7 @@ export function ProjectCard({ project, index = 0 }: ProjectCardProps) {
 
               {/* CTA */}
               <button
-                onClick={(e) => { e.preventDefault(); window.location.href = `/projects/${project.id}`; }}
+                onClick={(e) => { e.preventDefault(); window.location.href = `/projects/${project.slug}`; }}
                 className="sm:ml-auto flex-shrink-0 inline-flex items-center gap-1.5 h-9 px-5 rounded-lg bg-[#222222] text-white text-sm font-medium hover:bg-[#1CA2D1] transition-colors"
               >
                 View Project

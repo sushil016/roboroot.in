@@ -96,6 +96,20 @@ export function InputBar({ disabled, isStreaming, onSend, onStop, inputValue }: 
     setShowSlash(value.trimStart().startsWith("/") && value.trim().length <= 20);
   }, [value]);
 
+  // Handle programmatic message sending
+  useEffect(() => {
+    const handleSendMsg = (e: Event) => {
+      const customEvent = e as CustomEvent<{ message: string }>;
+      if (customEvent.detail?.message) {
+        onSend(customEvent.detail.message);
+      }
+    };
+    window.addEventListener("chat-send-message", handleSendMsg);
+    return () => {
+      window.removeEventListener("chat-send-message", handleSendMsg);
+    };
+  }, [onSend]);
+
   function handleSubmit(event?: FormEvent<HTMLFormElement>) {
     event?.preventDefault();
     const trimmed = value.trim();

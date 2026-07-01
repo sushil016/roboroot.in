@@ -13,6 +13,7 @@ export interface ProductMedia {
 
 export interface Component {
   id: string;
+  slug: string;
   name: string;
   sku: string | null;
   description: string | null;

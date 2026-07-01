@@ -66,21 +66,6 @@ export const toolRegistry: ClaudeToolDefinition[] = [
     },
   },
   {
-    name: "verify_payment",
-    description: "Verify a Razorpay payment signature for an authenticated user's order.",
-    input_schema: {
-      type: "object",
-      properties: {
-        orderId: { type: "string" },
-        razorpayOrderId: { type: "string" },
-        razorpayPaymentId: { type: "string" },
-        razorpaySignature: { type: "string" },
-      },
-      required: ["orderId", "razorpayOrderId", "razorpayPaymentId", "razorpaySignature"],
-      additionalProperties: false,
-    },
-  },
-  {
     name: "get_invoice",
     description: "Return the invoice download endpoint for an authenticated user's order after ownership checks.",
     input_schema: {
@@ -130,6 +115,49 @@ export const toolRegistry: ClaudeToolDefinition[] = [
   {
     name: "get_product_details",
     description: "Fetch full component details and graph relation IDs for a product.",
+    input_schema: {
+      type: "object",
+      properties: {
+        componentId: { type: "string" },
+      },
+      required: ["componentId"],
+      additionalProperties: false,
+    },
+  },
+  {
+    name: "get_cart",
+    description: "Get the current items in the user's shopping cart.",
+    input_schema: {
+      type: "object",
+      properties: {},
+      additionalProperties: false,
+    },
+  },
+  {
+    name: "list_addresses",
+    description: "List the shipping addresses saved for the authenticated user.",
+    input_schema: {
+      type: "object",
+      properties: {},
+      additionalProperties: false,
+    },
+  },
+  {
+    name: "checkout_cart",
+    description: "Checkout the user's current shopping cart, create the order, and initiate payment. Uses the default shipping address.",
+    input_schema: {
+      type: "object",
+      properties: {
+        couponCode: { type: "string" },
+        notes: { type: "string" },
+        paymentGateway: { type: "string", enum: ["TEST", "RAZORPAY"] },
+      },
+      additionalProperties: false,
+    },
+  },
+  {
+    name: "compare_prices",
+    description: "Fetch competitor price analysis details (Amazon, Flipkart, Robu, ElectronicsComp, Quartz Components) for a RoboRoot product.",
     input_schema: {
       type: "object",
       properties: {

@@ -69,7 +69,8 @@ export async function sendEmail(
   to: string,
   subject: string,
   html: string,
-  text: string
+  text: string,
+  attachments?: Array<{ filename: string; content: any; contentType?: string }>
 ): Promise<{ success: boolean; messageId?: string; error?: string; previewUrl?: string }> {
   try {
     const t = await getTransporter();
@@ -80,6 +81,7 @@ export async function sendEmail(
       subject,
       text,
       html,
+      attachments,
     });
 
     console.log(`✅ Email sent: ${info.messageId}`);

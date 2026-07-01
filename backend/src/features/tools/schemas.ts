@@ -31,12 +31,6 @@ export const toolSchemas = {
     orderId: z.string().trim().min(1),
     idempotencyKey: z.string().trim().min(1).optional(),
   }),
-  verify_payment: z.object({
-    orderId: z.string().trim().min(1),
-    razorpayOrderId: z.string().trim().min(1),
-    razorpayPaymentId: z.string().trim().min(1),
-    razorpaySignature: z.string().trim().min(1),
-  }),
   get_invoice: z.object({
     orderId: z.string().trim().min(1),
   }),
@@ -52,14 +46,27 @@ export const toolSchemas = {
   get_product_details: z.object({
     componentId: z.string().trim().min(1),
   }),
+  get_cart: z.object({}),
+  list_addresses: z.object({}),
+  checkout_cart: z.object({
+    couponCode: z.string().trim().min(1).optional(),
+    notes: z.string().trim().max(1000).optional(),
+    paymentGateway: z.enum(["TEST", "RAZORPAY"]).optional(),
+  }),
+  compare_prices: z.object({
+    componentId: z.string().trim().min(1),
+  }),
 } satisfies Record<ToolName, z.ZodType>;
 
 export type SearchProductsParams = z.infer<typeof toolSchemas.search_products>;
 export type PlaceOrderParams = z.infer<typeof toolSchemas.place_order>;
 export type InitiatePaymentParams = z.infer<typeof toolSchemas.initiate_payment>;
-export type VerifyPaymentParams = z.infer<typeof toolSchemas.verify_payment>;
 export type GetInvoiceParams = z.infer<typeof toolSchemas.get_invoice>;
 export type TrackOrderParams = z.infer<typeof toolSchemas.track_order>;
 export type GetOrderHistoryParams = z.infer<typeof toolSchemas.get_order_history>;
 export type CancelOrderParams = z.infer<typeof toolSchemas.cancel_order>;
 export type GetProductDetailsParams = z.infer<typeof toolSchemas.get_product_details>;
+export type GetCartParams = z.infer<typeof toolSchemas.get_cart>;
+export type ListAddressesParams = z.infer<typeof toolSchemas.list_addresses>;
+export type CheckoutCartParams = z.infer<typeof toolSchemas.checkout_cart>;
+export type ComparePricesParams = z.infer<typeof toolSchemas.compare_prices>;

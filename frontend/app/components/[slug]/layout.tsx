@@ -1,22 +1,29 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { getProductMetadataById } from "@/features/products/services/product.service";
+import { componentApi } from "@/features/products/services/product.service";
 
-export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
   try {
-    const { id } = await params;
-    const component = await getProductMetadataById(id);
+    const { slug } = await params;
+    const component = await componentApi.getComponentBySlug(slug);
     const name = component.name ?? "Component";
     const description = component.description ?? `${name} available at RoboRoot`;
     const image = component.imageUrl;
 
     return {
-      title: `${name} | RoboRoot`,
+      title: `${name}`,
       description,
+      alternates: {
+        canonical: `https://roboroot.in/components/${slug}`,
+      },
       openGraph: {
         title: `${name} | RoboRoot`,
         description,
-        ...(image ? { images: [{ url: image }] } : {}),
+        ...(image ? { images: [{ url: image, alt: name }] } : {}),
       },
     };
   } catch {

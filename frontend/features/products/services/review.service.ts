@@ -12,6 +12,7 @@ export interface Review {
   rating: number;
   title: string | null;
   body: string | null;
+  imageUrl: string | null;
   isVerified: boolean;
   isApproved: boolean;
   createdAt: string;
@@ -51,14 +52,30 @@ export const reviewApi = {
     rating: number,
     title?: string,
     body?: string,
+    imageUrl?: string,
   ): Promise<Review> => {
     const res = await api.post("/api/reviews", {
       componentId,
       rating,
       title: title || undefined,
       body: body || undefined,
+      imageUrl: imageUrl || undefined,
     });
     return res.data.data;
+  },
+
+  /**
+   * Upload an image for a review
+   */
+  uploadReviewImage: async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append("image", file);
+    const res = await api.post("/api/reviews/upload", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return res.data.url;
   },
 
   /**

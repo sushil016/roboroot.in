@@ -81,7 +81,7 @@ export function FeaturedBuildsSection() {
                   }}
                 >
                   <Link
-                    href={`/projects/${project.id}`}
+                    href={`/projects/${project.slug}`}
                     className="card-hover-bar block rounded-xl border border-white/10 bg-[#F3F3E4]/5 p-5 transition"
                   >
                     <Boxes className="h-8 w-8 text-[#1CA2D1]" />

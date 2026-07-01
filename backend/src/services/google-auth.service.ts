@@ -37,7 +37,7 @@ const googleClient = new OAuth2Client(
 /**
  * Get Google OAuth URL for authentication
  */
-export function getGoogleAuthUrl(state?: string): string {
+export function getGoogleAuthUrl(state?: string, redirectUri?: string): string {
   if (!GOOGLE_CLIENT_ID) {
     throw new ValidationError("Google OAuth is not configured");
   }
@@ -57,20 +57,26 @@ export function getGoogleAuthUrl(state?: string): string {
     opts.state = state;
   }
 
+  if (redirectUri) {
+    opts.redirect_uri = redirectUri;
+  }
+
   return googleClient.generateAuthUrl(opts);
 }
 
 /**
  * Handle Google OAuth callback
  */
-export async function handleGoogleCallback(code: string): Promise<AuthResponse> {
+export async function handleGoogleCallback(code: string, redirectUri?: string): Promise<AuthResponse> {
   try {
     if (!GOOGLE_CLIENT_ID) {
       throw new ValidationError("Google OAuth is not configured");
     }
 
     // Exchange code for tokens
-    const { tokens } = await googleClient.getToken(code);
+    const { tokens } = redirectUri
+      ? await googleClient.getToken({ code, redirect_uri: redirectUri })
+      : await googleClient.getToken(code);
     googleClient.setCredentials(tokens);
 
     // Get user info

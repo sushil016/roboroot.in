@@ -5,6 +5,14 @@ const OPENAI_BASE_URL = "https://api.openai.com";
 
 type EmbeddingProvider = "digitalocean" | "openai" | "nvidia";
 
+/**
+ * Asymmetric embedding models (e.g. NVIDIA nv-embedqa-e5-v5) embed documents and
+ * queries into different sub-spaces and MUST be told which is which. Corpus/chunks
+ * are "passage"; the user's search string is "query". Using the same type for both
+ * measurably degrades retrieval relevance.
+ */
+export type EmbeddingInputType = "query" | "passage";
+
 interface EmbeddingItem {
   index: number;
   embedding: number[];
@@ -18,6 +26,8 @@ export interface EmbedOptions {
   model?: string;
   apiKey?: string;
   provider?: EmbeddingProvider;
+  /** "query" (default) for search strings, "passage" for indexed documents. */
+  inputType?: EmbeddingInputType;
 }
 
 export async function embedTexts(texts: string[], options: EmbedOptions = {}): Promise<number[][]> {
@@ -30,13 +40,14 @@ export async function embedTexts(texts: string[], options: EmbedOptions = {}): P
   }
 
   const model = options.model ?? getEmbeddingModel(provider);
+  const inputType = options.inputType ?? "query";
   const response = await fetch(`${getEmbeddingBaseUrl(provider).replace(/\/$/, "")}/embeddings`, {
     method: "POST",
     headers: {
       "Authorization": `Bearer ${apiKey}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(buildEmbeddingRequest(provider, model, texts)),
+    body: JSON.stringify(buildEmbeddingRequest(provider, model, texts, inputType)),
   });
 
   if (!response.ok) {
@@ -88,7 +99,12 @@ function getEmbeddingBaseUrl(provider: EmbeddingProvider): string {
   return OPENAI_BASE_URL;
 }
 
-function buildEmbeddingRequest(provider: EmbeddingProvider, model: string, input: string[]): Record<string, unknown> {
+function buildEmbeddingRequest(
+  provider: EmbeddingProvider,
+  model: string,
+  input: string[],
+  inputType: EmbeddingInputType,
+): Record<string, unknown> {
   const request: Record<string, unknown> = {
     model,
     input,
@@ -96,7 +112,7 @@ function buildEmbeddingRequest(provider: EmbeddingProvider, model: string, input
   };
 
   if (provider === "nvidia") {
-    request.input_type = "query";
+    request.input_type = inputType;
   }
 
   const dimensions = Number(process.env.EMBEDDING_DIMENSIONS ?? 1024);

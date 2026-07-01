@@ -10,7 +10,15 @@ interface KeywordHitRow {
   keywordScore: number;
 }
 
-export async function keywordSearchCatalog(query: string, limit = 20): Promise<CatalogRetrievalHit[]> {
+export async function keywordSearchCatalog(
+  query: string,
+  limit = 20,
+  filters?: { category?: string; brand?: string; sourceType?: string }
+): Promise<CatalogRetrievalHit[]> {
+  const categoryFilter = filters?.category ? filters.category : null;
+  const brandFilter = filters?.brand ? filters.brand : null;
+  const sourceTypeFilter = filters?.sourceType ? filters.sourceType : null;
+
   const rows = await prisma.$queryRaw<KeywordHitRow[]>`
     SELECT
       "id",
@@ -20,7 +28,10 @@ export async function keywordSearchCatalog(query: string, limit = 20): Promise<C
       "metadata",
       similarity("chunkText", ${query}) AS "keywordScore"
     FROM "RagChunk"
-    WHERE similarity("chunkText", ${query}) > 0.05
+    WHERE similarity("chunkText", ${query}) > 0.2
+      AND (${categoryFilter}::text IS NULL OR "metadata"->>'category' = ${categoryFilter})
+      AND (${brandFilter}::text IS NULL OR "metadata"->>'brand' = ${brandFilter})
+      AND (${sourceTypeFilter}::text IS NULL OR "sourceType"::text = ${sourceTypeFilter})
     ORDER BY similarity("chunkText", ${query}) DESC
     LIMIT ${limit}
   `;

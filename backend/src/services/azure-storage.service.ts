@@ -47,6 +47,7 @@ export enum FileType {
   PROJECT_PDF = 'project-pdfs',
   COMPONENT_IMAGE = 'component-images',
   PROJECT_THUMBNAIL = 'project-thumbnails',
+  BULK_ORDER_CSV = 'bulk-orders',
 }
 
 interface UploadResult {
@@ -160,11 +161,11 @@ export async function uploadFileToAzure(
   fileType: FileType
 ): Promise<UploadResult | UploadError> {
   try {
-    // Validate file type
     const isImage = fileType === FileType.PROJECT_IMAGE || 
                     fileType === FileType.COMPONENT_IMAGE || 
                     fileType === FileType.PROJECT_THUMBNAIL;
     const isPdf = fileType === FileType.PROJECT_PDF;
+    const isCsv = fileType === FileType.BULK_ORDER_CSV;
 
     if (isImage && !validateFileType(mimeType, UPLOAD_LIMITS.ALLOWED_IMAGE_TYPES)) {
       return {
@@ -180,8 +181,21 @@ export async function uploadFileToAzure(
       };
     }
 
+    if (isCsv && mimeType !== 'text/csv' && mimeType !== 'application/vnd.ms-excel' && mimeType !== 'application/octet-stream' && !originalFilename.endsWith('.csv')) {
+      return {
+        success: false,
+        error: 'Invalid file type. Only CSV files are allowed',
+      };
+    }
+
     // Validate file size
-    const maxSize = isImage ? UPLOAD_LIMITS.MAX_IMAGE_SIZE : UPLOAD_LIMITS.MAX_PDF_SIZE;
+    let maxSize = UPLOAD_LIMITS.MAX_PDF_SIZE;
+    if (isImage) {
+      maxSize = UPLOAD_LIMITS.MAX_IMAGE_SIZE;
+    } else if (isCsv) {
+      maxSize = 5 * 1024 * 1024; // 5MB limit for CSV
+    }
+
     if (!validateFileSize(buffer.length, maxSize)) {
       const maxSizeMB = maxSize / (1024 * 1024);
       return {

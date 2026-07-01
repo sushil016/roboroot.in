@@ -3,33 +3,42 @@ import type { CatalogRetrievalHit, DocumentTreeRetrievalHit } from "../types/rag
 export function mergeAndRerankCatalog(
   vectorHits: CatalogRetrievalHit[],
   keywordHits: CatalogRetrievalHit[],
-  limit = 4,
+  limit = 8,
 ): CatalogRetrievalHit[] {
   const merged = new Map<string, CatalogRetrievalHit>();
+  const k = 60; // RRF constant
+
+  const vectorRanks = new Map<string, number>();
+  vectorHits.forEach((hit, idx) => {
+    vectorRanks.set(hit.id, idx + 1);
+  });
+
+  const keywordRanks = new Map<string, number>();
+  keywordHits.forEach((hit, idx) => {
+    keywordRanks.set(hit.id, idx + 1);
+  });
 
   for (const hit of vectorHits) {
-    merged.set(hit.id, {
-      ...hit,
-      catalogScore: 0.7 * (hit.vectorScore ?? 0),
-    });
+    merged.set(hit.id, { ...hit });
   }
 
   for (const hit of keywordHits) {
     const existing = merged.get(hit.id);
     if (existing) {
-      const updated: CatalogRetrievalHit = {
-        ...existing,
-        catalogScore: 0.7 * (existing.vectorScore ?? 0) + 0.3 * (hit.keywordScore ?? 0),
-      };
-
-      if (hit.keywordScore !== undefined) updated.keywordScore = hit.keywordScore;
-      merged.set(hit.id, updated);
+      if (hit.keywordScore !== undefined) existing.keywordScore = hit.keywordScore;
     } else {
-      merged.set(hit.id, {
-        ...hit,
-        catalogScore: 0.3 * (hit.keywordScore ?? 0),
-      });
+      merged.set(hit.id, { ...hit });
     }
+  }
+
+  for (const [id, hit] of merged.entries()) {
+    const vectorRank = vectorRanks.get(id);
+    const keywordRank = keywordRanks.get(id);
+
+    const rrfVectorScore = vectorRank ? 1 / (k + vectorRank) : 0;
+    const rrfKeywordScore = keywordRank ? 1 / (k + keywordRank) : 0;
+
+    hit.catalogScore = rrfVectorScore + rrfKeywordScore;
   }
 
   return Array.from(merged.values())

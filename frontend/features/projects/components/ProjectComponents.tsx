@@ -30,6 +30,7 @@ export function ProjectComponents({ components, totalCost, projectTitle }: Proje
       // Convert ProjectComponentDetail to Component format expected by cart
       const component = {
         id: pc.component.id,
+        slug: pc.component.slug,
         name: pc.component.name,
         sku: pc.component.sku || null,
         description: pc.component.description || null,
@@ -74,6 +75,7 @@ export function ProjectComponents({ components, totalCost, projectTitle }: Proje
         // Convert ProjectComponentDetail to Component format expected by cart
         const component = {
           id: pc.component.id,
+          slug: pc.component.slug,
           name: pc.component.name,
           sku: pc.component.sku || null,
           description: pc.component.description || null,
@@ -152,7 +154,7 @@ export function ProjectComponents({ components, totalCost, projectTitle }: Proje
             >
               {/* Component Image */}
               <Link
-                href={`/components/${component.id}`}
+                href={`/components/${component.slug}`}
                 className="flex-shrink-0 relative w-20 h-20 rounded-md overflow-hidden bg-muted group"
               >
                 {component.imageUrl ? (
@@ -173,7 +175,7 @@ export function ProjectComponents({ components, totalCost, projectTitle }: Proje
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-2 mb-1">
                   <Link
-                    href={`/components/${component.id}`}
+                    href={`/components/${component.slug}`}
                     className="font-semibold hover:text-primary transition-colors line-clamp-1"
                   >
                     {component.name}

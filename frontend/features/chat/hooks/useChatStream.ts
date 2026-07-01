@@ -5,8 +5,8 @@ import { CHAT_SESSION_KEY, CHAT_STORAGE_KEY } from "../index";
 import { ChatAuthRequiredError, streamChat } from "../services/chat.service";
 import type { ChatMessage, ChatStreamEvent, ChatSession } from "../types/chat.types";
 
-const STREAM_TICK_MS = 16;
-const STREAM_CHUNK_CHARS = 18;
+const STREAM_TICK_MS = 8;
+const STREAM_CHUNK_CHARS = 60;
 
 function createId(): string {
   return globalThis.crypto?.randomUUID?.() ?? `chat_${Date.now()}_${Math.random().toString(36).slice(2)}`;
@@ -466,6 +466,10 @@ function applyStreamEvent(
   if (event.type === "error") {
     setMessages((current) => updateAssistant(current, assistantId, { content: event.error ?? "Chat failed", isError: true }));
   }
+
+  if (event.type === "address_required") {
+    setMessages((current) => updateAssistant(current, assistantId, { addressFormRequired: true }));
+  }
 }
 
 function splitStreamingText(text: string): string[] {
@@ -485,15 +489,12 @@ function splitStreamingText(text: string): string[] {
       for (let index = 0; index < token.length; index += STREAM_CHUNK_CHARS) {
         chunks.push(token.slice(index, index + STREAM_CHUNK_CHARS));
       }
-      continue;
-    }
-
-    if (current && current.length + token.length > STREAM_CHUNK_CHARS) {
+    } else if (current && current.length + token.length > STREAM_CHUNK_CHARS) {
       chunks.push(current);
-      current = "";
+      current = token;
+    } else {
+      current = `${current}${token}`;
     }
-
-    current += token;
   }
 
   if (current) chunks.push(current);
@@ -516,6 +517,7 @@ function updateAssistant(
     isError?: boolean;
     isRateLimited?: boolean;
     retryContent?: string;
+    addressFormRequired?: boolean;
   },
 ): ChatMessage[] {
   return messages.map((message) => {
@@ -534,6 +536,7 @@ function updateAssistant(
       isError: patch.isError ?? message.isError,
       isRateLimited: patch.isRateLimited ?? message.isRateLimited,
       retryContent: patch.retryContent ?? message.retryContent,
+      addressFormRequired: patch.addressFormRequired ?? message.addressFormRequired,
     };
   });
 }

@@ -2,12 +2,15 @@ export type ToolName =
   | "search_products"
   | "place_order"
   | "initiate_payment"
-  | "verify_payment"
   | "get_invoice"
   | "track_order"
   | "get_order_history"
   | "cancel_order"
-  | "get_product_details";
+  | "get_product_details"
+  | "get_cart"
+  | "list_addresses"
+  | "checkout_cart"
+  | "compare_prices";
 
 export type ToolActorRole = "guest" | "user" | "admin";
 

@@ -3,7 +3,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { knowledgeHubCards } from "@/data/knowledgeHubCards";
 
-const RoborootAiSection = () => {
+const 
+RoborootAiSection = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const cardsContainerRef = useRef<HTMLDivElement>(null);
   const [activeCardIndex, setActiveCardIndex] = useState(0);

@@ -1,0 +1,4 @@
+Component Name,SKU,Quantity,Target Price (INR),Notes
+Arduino Uno R3,COMP-ARD-UNO,50,450,Require original CH340 or Atmega328P
+SG90 Micro Servo,COMP-SERVO-SG90,100,60,TowerPro brand preferred
+12V 2A Power Adapter,PWR-12V2A,30,,Indian plug type

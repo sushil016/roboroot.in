@@ -44,14 +44,14 @@ interface GitHubEmail {
 /**
  * Get GitHub OAuth URL for authentication
  */
-export function getGitHubAuthUrl(state?: string): string {
+export function getGitHubAuthUrl(state?: string, redirectUri?: string): string {
   if (!GITHUB_CLIENT_ID) {
     throw new ValidationError("GitHub OAuth is not configured");
   }
 
   const params = new URLSearchParams({
     client_id: GITHUB_CLIENT_ID,
-    redirect_uri: GITHUB_REDIRECT_URI,
+    redirect_uri: redirectUri || GITHUB_REDIRECT_URI,
     scope: "read:user user:email",
   });
 
@@ -65,7 +65,7 @@ export function getGitHubAuthUrl(state?: string): string {
 /**
  * Handle GitHub OAuth callback
  */
-export async function handleGitHubCallback(code: string): Promise<AuthResponse> {
+export async function handleGitHubCallback(code: string, redirectUri?: string): Promise<AuthResponse> {
   try {
     if (!GITHUB_CLIENT_ID || !GITHUB_CLIENT_SECRET) {
       throw new ValidationError("GitHub OAuth is not configured");
@@ -82,7 +82,7 @@ export async function handleGitHubCallback(code: string): Promise<AuthResponse> 
         client_id: GITHUB_CLIENT_ID,
         client_secret: GITHUB_CLIENT_SECRET,
         code,
-        redirect_uri: GITHUB_REDIRECT_URI,
+        redirect_uri: redirectUri || GITHUB_REDIRECT_URI,
       }),
     });
 

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Check, Copy, RefreshCw, ThumbsDown, ThumbsUp, ExternalLink, Bot, HelpCircle, Pencil } from "lucide-react";
+import { Check, Copy, RefreshCw, ThumbsDown, ThumbsUp, ExternalLink, Bot, HelpCircle, Pencil, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { ChatFeedback, ChatMessage } from "../types/chat.types";
 import { MessageContent } from "./MessageContent";
@@ -10,6 +10,7 @@ import { ProductCard } from "./ProductCard";
 import { OrderCard } from "./OrderCard";
 import { PaymentCard } from "./PaymentCard";
 import { InvoiceCard } from "./InvoiceCard";
+import { env } from "@/lib/env";
 
 interface MessageBubbleProps {
   message: ChatMessage;
@@ -27,7 +28,7 @@ function getStatusLabel(status: string | null | undefined): string {
   if (status === "connecting") return "Connecting...";
   if (status === "classifying") return "Analyzing request...";
   if (status === "retrieving") return "Searching components...";
-  if (status === "thinking") return "Gathering product info...";
+  if (status === "thinking") return "Thinking...";
   if (status === "writing") return "Formulating answer...";
   return "Thinking...";
 }
@@ -45,6 +46,49 @@ export function MessageBubble({
   const isUser = message.role === "user";
   const [copied, setCopied] = useState(false);
   const [feedback, setFeedback] = useState<ChatFeedback>(message.feedback ?? null);
+
+  const [addressSaved, setAddressSaved] = useState(false);
+  const [savingAddress, setSavingAddress] = useState(false);
+  const [addressError, setAddressError] = useState<string | null>(null);
+
+  const [formData, setFormData] = useState({
+    name: "",
+    phone: "",
+    line1: "",
+    line2: "",
+    city: "",
+    state: "",
+    pincode: "",
+    country: "India",
+  });
+
+  const handleAddressSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.name || !formData.phone || !formData.line1 || !formData.city || !formData.state || !formData.pincode) {
+      setAddressError("Please fill out all required fields.");
+      return;
+    }
+    setSavingAddress(true);
+    setAddressError(null);
+    try {
+      const response = await fetch(`${env.apiUrl}/api/addresses`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...formData, isDefault: true }),
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || "Failed to save address");
+      }
+      setAddressSaved(true);
+      window.dispatchEvent(new CustomEvent("chat-send-message", { detail: { message: "I have added my default shipping address, please checkout my cart." } }));
+    } catch (err: any) {
+      setAddressError(err.message || "An error occurred while saving.");
+    } finally {
+      setSavingAddress(false);
+    }
+  };
 
   async function copyMessage() {
     if (!message.content) return;
@@ -196,6 +240,117 @@ export function MessageBubble({
             >
               {message.actionLabel}
             </Link>
+          )}
+
+          {/* Address Input Form */}
+          {message.addressFormRequired && !addressSaved && (
+            <form onSubmit={handleAddressSubmit} className="mt-4 rounded-xl border border-zinc-200 bg-zinc-50 p-4 space-y-3 font-sans text-zinc-950">
+              <p className="text-xs font-bold text-zinc-800 uppercase tracking-wider">Add Shipping Address</p>
+              
+              <div className="grid grid-cols-2 gap-2.5">
+                <div>
+                  <label className="block text-[10px] font-bold text-zinc-500 uppercase">Full Name *</label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="mt-1 w-full rounded-lg border border-zinc-200 bg-white px-2.5 py-1.5 text-xs focus:border-black focus:outline-none"
+                    placeholder="Sushil Sahani"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-zinc-500 uppercase">Phone Number *</label>
+                  <input
+                    type="tel"
+                    required
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    className="mt-1 w-full rounded-lg border border-zinc-200 bg-white px-2.5 py-1.5 text-xs focus:border-black focus:outline-none"
+                    placeholder="9876543210"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-bold text-zinc-500 uppercase">Address Line 1 *</label>
+                <input
+                  type="text"
+                  required
+                  value={formData.line1}
+                  onChange={(e) => setFormData({ ...formData, line1: e.target.value })}
+                  className="mt-1 w-full rounded-lg border border-zinc-200 bg-white px-2.5 py-1.5 text-xs focus:border-black focus:outline-none"
+                  placeholder="Flat No, Bldg Name, Street"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-bold text-zinc-500 uppercase">Address Line 2 (Optional)</label>
+                <input
+                  type="text"
+                  value={formData.line2}
+                  onChange={(e) => setFormData({ ...formData, line2: e.target.value })}
+                  className="mt-1 w-full rounded-lg border border-zinc-200 bg-white px-2.5 py-1.5 text-xs focus:border-black focus:outline-none"
+                  placeholder="Landmark, Area"
+                />
+              </div>
+
+              <div className="grid grid-cols-3 gap-2">
+                <div>
+                  <label className="block text-[10px] font-bold text-zinc-500 uppercase">City *</label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.city}
+                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                    className="mt-1 w-full rounded-lg border border-zinc-200 bg-white px-2.5 py-1.5 text-xs focus:border-black focus:outline-none"
+                    placeholder="Mumbai"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-zinc-500 uppercase">State *</label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.state}
+                    onChange={(e) => setFormData({ ...formData, state: e.target.value })}
+                    className="mt-1 w-full rounded-lg border border-zinc-200 bg-white px-2.5 py-1.5 text-xs focus:border-black focus:outline-none"
+                    placeholder="MH"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-zinc-500 uppercase">Pincode *</label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.pincode}
+                    onChange={(e) => setFormData({ ...formData, pincode: e.target.value })}
+                    className="mt-1 w-full rounded-lg border border-zinc-200 bg-white px-2.5 py-1.5 text-xs focus:border-black focus:outline-none"
+                    placeholder="400037"
+                  />
+                </div>
+              </div>
+
+              {addressError && (
+                <p className="text-[11px] font-semibold text-red-600">{addressError}</p>
+              )}
+
+              <button
+                type="submit"
+                disabled={savingAddress}
+                className="w-full flex items-center justify-center gap-1.5 rounded-lg bg-black py-2 text-xs font-bold text-white hover:bg-black/90 transition disabled:opacity-50 cursor-pointer"
+              >
+                {savingAddress && <Loader2 className="size-3.5 animate-spin" />}
+                <span>Save Address & Continue</span>
+              </button>
+            </form>
+          )}
+
+          {addressSaved && (
+            <div className="mt-4 rounded-xl border border-emerald-100 bg-emerald-50/50 p-3.5 flex items-center gap-2 text-xs font-bold text-emerald-800 animate-in fade-in duration-200">
+              <Check className="size-4 shrink-0" />
+              <span>Address saved successfully! Resuming checkout...</span>
+            </div>
           )}
 
           {/* Retry sending message */}

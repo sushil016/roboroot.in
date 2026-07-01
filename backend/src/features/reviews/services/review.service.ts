@@ -6,6 +6,7 @@ export async function createReview(
   rating: number,
   title?: string,
   body?: string,
+  imageUrl?: string,
 ) {
   if (rating < 1 || rating > 5) throw Object.assign(new Error("Rating must be between 1 and 5"), { statusCode: 400 });
 
@@ -28,12 +29,14 @@ export async function createReview(
       rating,
       title: title ?? null,
       body: body ?? null,
+      imageUrl: imageUrl ?? null,
       isVerified: Boolean(purchased),
     },
     update: {
       rating,
       title: title ?? null,
       body: body ?? null,
+      imageUrl: imageUrl ?? null,
     },
     include: { user: { select: { name: true, avatarUrl: true } } },
   });

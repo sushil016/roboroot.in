@@ -334,12 +334,49 @@ export async function updateMeController(req: Request, res: Response): Promise<v
 }
 
 /**
+ * Helper to dynamically determine the OAuth redirect URI based on the incoming request host
+ */
+function getDynamicRedirectUri(req: Request, provider: "google" | "github"): string {
+  const configuredUri = provider === "google"
+    ? process.env.GOOGLE_REDIRECT_URI
+    : process.env.GITHUB_REDIRECT_URI;
+    
+  const defaultUri = configuredUri || `http://localhost:4000/api/auth/${provider}/callback`;
+
+  // Get host and protocol from request headers (checking for reverse proxies)
+  const host = (req.headers["x-forwarded-host"] as string) || req.get("host") || "";
+  const protocol = (req.headers["x-forwarded-proto"] as string) || req.protocol || "http";
+
+  // Check if it's a local development request
+  const isLocal = /^(localhost|127\.0\.0\.1)(:\d+)?$/.test(host);
+
+  if (!isLocal && host) {
+    // We are on a hosted domain!
+    // Since the website uses Vercel / Nginx which proxies /_/backend to the backend,
+    // we need to include /_/backend in the redirect URI if the request came via that proxy.
+    let baseHost = host;
+    if (host.includes("roboroot.in") || host.includes("vercel.app") || host.includes("sushilsahani.dev")) {
+      baseHost = `${host}/_/backend`;
+    }
+    
+    const hostedBase = `https://${baseHost}`;
+    
+    // Replace the local/dev base in the defaultUri with the hosted base
+    // This preserves any query parameters like ?flowName=GeneralOAuthFlow
+    return defaultUri.replace(/^https?:\/\/[^\/]+/, hostedBase);
+  }
+
+  return defaultUri;
+}
+
+/**
  * Initiate Google OAuth flow
  */
 export async function googleAuthController(req: Request, res: Response): Promise<void> {
   try {
     const { redirect } = req.query;
-    const authUrl = getGoogleAuthUrl(typeof redirect === "string" ? redirect : undefined);
+    const redirectUri = getDynamicRedirectUri(req, "google");
+    const authUrl = getGoogleAuthUrl(typeof redirect === "string" ? redirect : undefined, redirectUri);
     res.redirect(authUrl);
   } catch (error) {
     if (error instanceof AuthError) {
@@ -371,7 +408,8 @@ export async function googleCallbackController(req: Request, res: Response): Pro
       throw new ValidationError("Authorization code is required");
     }
 
-    const result = await handleGoogleCallback(code);
+    const redirectUri = getDynamicRedirectUri(req, "google");
+    const result = await handleGoogleCallback(code, redirectUri);
 
     // Set httpOnly cookies instead of exposing tokens in URL
     setAuthCookies(res, result.accessToken, result.refreshToken);
@@ -399,7 +437,8 @@ export async function googleCallbackController(req: Request, res: Response): Pro
 export async function githubAuthController(req: Request, res: Response): Promise<void> {
   try {
     const { redirect } = req.query;
-    const authUrl = getGitHubAuthUrl(typeof redirect === "string" ? redirect : undefined);
+    const redirectUri = getDynamicRedirectUri(req, "github");
+    const authUrl = getGitHubAuthUrl(typeof redirect === "string" ? redirect : undefined, redirectUri);
     res.redirect(authUrl);
   } catch (error) {
     if (error instanceof AuthError) {
@@ -431,7 +470,8 @@ export async function githubCallbackController(req: Request, res: Response): Pro
       throw new ValidationError("Authorization code is required");
     }
 
-    const result = await handleGitHubCallback(code);
+    const redirectUri = getDynamicRedirectUri(req, "github");
+    const result = await handleGitHubCallback(code, redirectUri);
 
     // Set httpOnly cookies instead of exposing tokens in URL
     setAuthCookies(res, result.accessToken, result.refreshToken);

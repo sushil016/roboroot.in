@@ -15,11 +15,46 @@ import type {
 } from "../types/component.types.js";
 
 /**
+ * Generate a URL-safe slug from a component name
+ */
+function generateSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .substring(0, 100);
+}
+
+/**
+ * Generate a unique slug, appending -2, -3, etc. on collision
+ */
+async function generateUniqueSlug(name: string, excludeId?: string): Promise<string> {
+  const baseSlug = generateSlug(name);
+  let slug = baseSlug;
+  let attempt = 1;
+
+  while (true) {
+    const existing = await prisma.component.findUnique({
+      where: { slug },
+      select: { id: true },
+    });
+
+    if (!existing || (excludeId && existing.id === excludeId)) {
+      return slug;
+    }
+
+    attempt++;
+    slug = `${baseSlug}-${attempt}`;
+  }
+}
+
+/**
  * Format component for response
  */
 function formatComponent(component: any): ComponentResponse {
   return {
     id: component.id,
+    slug: component.slug,
     name: component.name,
     sku: component.sku,
     description: component.description,
@@ -59,9 +94,13 @@ export async function createComponent(data: CreateComponentRequest): Promise<Com
     }
   }
 
+  // Auto-generate a unique slug from the name
+  const slug = await generateUniqueSlug(data.name);
+
   const component = await prisma.component.create({
     data: {
       name: data.name,
+      slug,
       sku: data.sku || null,
       description: data.description || null,
       typicalUseCase: data.typicalUseCase || null,
@@ -81,8 +120,6 @@ export async function createComponent(data: CreateComponentRequest): Promise<Com
       isActive: data.isActive !== undefined ? data.isActive : true,
     },
   });
-
-  console.log(`✅ Component created: ${component.id} - ${component.name}`);
 
   return formatComponent(component);
 }
@@ -212,6 +249,22 @@ export async function getComponentById(id: string): Promise<ComponentResponse> {
 
   if (!component) {
     throw new NotFoundError("Component not found");
+  }
+
+  return formatComponent(component);
+}
+
+/**
+ * Get a single component by slug (for SEO-friendly public URLs)
+ */
+export async function getComponentBySlug(slug: string): Promise<ComponentResponse> {
+  const component = await prisma.component.findUnique({
+    where: { slug },
+    include: { media: true },
+  });
+
+  if (!component) {
+    throw new NotFoundError(`Component not found`);
   }
 
   return formatComponent(component);
@@ -366,12 +419,23 @@ export async function updateComponent(
     }
   }
 
+  // If name changed AND no explicit slug override provided, regenerate slug
+  const updateData: any = { ...data };
+  if (data.name && data.name !== existing.name && !data.slug) {
+    updateData.slug = await generateUniqueSlug(data.name, id);
+  } else if (data.slug) {
+    // Validate manual slug format
+    updateData.slug = data.slug
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .substring(0, 100);
+  }
+
   const component = await prisma.component.update({
     where: { id },
-    data,
+    data: updateData,
   });
-
-  console.log(`✅ Component updated: ${component.id} - ${component.name}`);
 
   return formatComponent(component);
 }

@@ -14,6 +14,7 @@ import {
 import { cn } from "@/lib/utils";
 import type { ChatProductCard, StockStatus } from "../types/chat.types";
 import { useCompare } from "../hooks/useCompare";
+import { env } from "@/lib/env";
 
 interface ProductCardProps {
   product: ChatProductCard;
@@ -38,11 +39,11 @@ export function ProductCard({ product }: ProductCardProps) {
     if (isOutOfStock || addingToCart) return;
     setAddingToCart(true);
     try {
-      await fetch(`/api/cart`, {
-        method: "POST",
+      await fetch(`${env.apiUrl}/api/cart/items`, {
+        method: "PUT",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ productId: product.id, quantity: 1 }),
+        body: JSON.stringify({ componentId: product.id, quantity: 1 }),
       });
       setAddedToCart(true);
       window.setTimeout(() => setAddedToCart(false), 2000);

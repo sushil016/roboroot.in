@@ -11,6 +11,7 @@ import {
 } from "../services/cache.service.js";
 import { loadSessionHistory, saveSessionTurn } from "../services/session.service.js";
 import { chatRequestSchema } from "../validators/chat.validator.js";
+import * as cartService from "../../cart/services/cart.service.js";
 import type { ChatPromptMessage } from "../../rag/types/rag.types.js";
 import type { ToolActorRole, ToolContext } from "../../tools/types.js";
 import type { ChatSseEvent } from "../types/chat.types.js";
@@ -62,11 +63,18 @@ export async function chatHandler(req: Request, res: Response): Promise<void> {
       }
     }
 
-    sendSse(res, "status", { status: "retrieving", intent: classification.intent });
-    const retrieval =
-      classification.intent === "action" ? null : await hybridRetrieve(parsed.message);
+    const isGreeting = isGreetingQuery(parsed.message);
+    if (!isGreeting) {
+      sendSse(res, "status", { status: "retrieving", intent: classification.intent });
+    }
+    const [retrieval, cart] = await Promise.all([
+      classification.intent === "action" || isGreeting
+        ? Promise.resolve(null)
+        : hybridRetrieve(parsed.message),
+      cartService.getCart(user.userId),
+    ]);
 
-    const prompt = buildPrompt(retrieval?.context ?? "", promptHistory, parsed.message);
+    const prompt = buildPrompt(retrieval?.context ?? "", promptHistory, parsed.message, cart);
     const toolContext: ToolContext = {
       userId: user.userId,
       role: mapRole(user.role),
@@ -75,10 +83,22 @@ export async function chatHandler(req: Request, res: Response): Promise<void> {
 
     sendSse(res, "status", { status: "thinking" });
     let deltaSent = false;
-    const { text: answer, events } = await runClaudeToolLoop(prompt, toolContext, (textDelta) => {
-      sendSse(res, "delta", { text: textDelta });
-      deltaSent = true;
-    });
+    // Only expose commerce tools when the user is trying to DO something
+    // (order/pay/track/cancel...). Pure knowledge/product queries already have
+    // their RAG context injected into the system prompt, so the model can answer
+    // in a single streamed call instead of paying for a second round-trip that
+    // just re-runs retrieval via the search_products tool.
+    const includeTools =
+      classification.intent === "action" || classification.intent === "mixed";
+    const { text: answer, events } = await runClaudeToolLoop(
+      prompt,
+      toolContext,
+      (textDelta) => {
+        sendSse(res, "delta", { text: textDelta });
+        deltaSent = true;
+      },
+      { includeTools }
+    );
 
     // ── Stream structured action/product events first ────────────────────────
     // These arrive before the text delta so the frontend can render cards
@@ -209,6 +229,9 @@ function streamSseEvent(res: Response, event: ChatSseEvent): void {
     case "citation":
       sendSse(res, "citation", { citation: event.citation });
       break;
+    case "address_required":
+      sendSse(res, "address_required", {});
+      break;
   }
 }
 
@@ -264,4 +287,22 @@ function buildProductEventsFromRagHits(hits: CatalogRetrievalHit[]): ChatSseEven
 function mapRole(role: string): ToolActorRole {
   if (role === "ADMIN" || role === "SUPER_ADMIN") return "admin";
   return "user";
+}
+
+function isGreetingQuery(message: string): boolean {
+  const normalized = message.toLowerCase().trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g, "");
+  const GREETING_KEYWORDS = [
+    "hi",
+    "hii",
+    "hello",
+    "hey",
+    "yo",
+    "hola",
+    "sup",
+    "greetings",
+    "good morning",
+    "good afternoon",
+    "good evening",
+  ];
+  return GREETING_KEYWORDS.includes(normalized);
 }

@@ -11,24 +11,39 @@ interface VectorHitRow {
   vectorScore: number;
 }
 
-export async function vectorSearchCatalog(query: string, limit = 20): Promise<CatalogRetrievalHit[]> {
-  const [embedding] = await embedTexts([query]);
+export async function vectorSearchCatalog(
+  query: string,
+  limit = 20,
+  filters?: { category?: string; brand?: string; sourceType?: string }
+): Promise<CatalogRetrievalHit[]> {
+  const [embedding] = await embedTexts([query], { inputType: "query" });
   if (!embedding) return [];
 
   const vector = toVectorLiteral(embedding);
-  const rows = await prisma.$queryRaw<VectorHitRow[]>`
-    SELECT
-      "id",
-      "sourceType"::text AS "sourceType",
-      "sourceId",
-      "chunkText",
-      "metadata",
-      1 - ("embedding" <=> ${vector}::vector) AS "vectorScore"
-    FROM "RagChunk"
-    WHERE "embedding" IS NOT NULL
-    ORDER BY "embedding" <=> ${vector}::vector
-    LIMIT ${limit}
-  `;
+  const categoryFilter = filters?.category ? filters.category : null;
+  const brandFilter = filters?.brand ? filters.brand : null;
+  const sourceTypeFilter = filters?.sourceType ? filters.sourceType : null;
+
+  const rows = await prisma.$transaction(async (tx) => {
+    await tx.$executeRawUnsafe("SET LOCAL ivfflat.probes = 10;");
+    return tx.$queryRaw<VectorHitRow[]>`
+      SELECT
+        "id",
+        "sourceType"::text AS "sourceType",
+        "sourceId",
+        "chunkText",
+        "metadata",
+        1 - ("embedding" <=> ${vector}::vector) AS "vectorScore"
+      FROM "RagChunk"
+      WHERE "embedding" IS NOT NULL
+        AND (1 - ("embedding" <=> ${vector}::vector)) > 0.35
+        AND (${categoryFilter}::text IS NULL OR "metadata"->>'category' = ${categoryFilter})
+        AND (${brandFilter}::text IS NULL OR "metadata"->>'brand' = ${brandFilter})
+        AND (${sourceTypeFilter}::text IS NULL OR "sourceType"::text = ${sourceTypeFilter})
+      ORDER BY "embedding" <=> ${vector}::vector
+      LIMIT ${limit}
+    `;
+  });
 
   return rows.map((row) => ({
     kind: "catalog",

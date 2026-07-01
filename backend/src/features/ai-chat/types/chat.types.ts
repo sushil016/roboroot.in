@@ -92,7 +92,8 @@ export type ChatSseEvent =
   | { type: "order"; order: OrderSsePayload }
   | { type: "payment"; payment: PaymentSsePayload }
   | { type: "invoice"; invoice: InvoiceSsePayload }
-  | { type: "citation"; citation: CitationSsePayload };
+  | { type: "citation"; citation: CitationSsePayload }
+  | { type: "address_required" };
 
 // Return type of runClaudeToolLoop — text answer + any structured events to stream
 export interface ToolLoopResult {

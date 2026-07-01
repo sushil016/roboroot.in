@@ -27,6 +27,7 @@ const cardVariants: any = {
 const MOCK_NEW_ARRIVALS: Component[] = [
   {
     id: "mock-new-1",
+    slug: "esp32-s3-wroom-cam-development-board",
     name: "ESP32-S3 WROOM Cam Development Board",
     sku: "DEV-ESP32S3-CAM",
     description: "ESP32-S3 module with built-in camera and dual-core processor for computer vision and IoT applications.",
@@ -49,6 +50,7 @@ const MOCK_NEW_ARRIVALS: Component[] = [
   },
   {
     id: "mock-new-2",
+    slug: "precision-flight-tof-lidar-distance-sensor",
     name: "Precision Flight ToF LiDAR Distance Sensor",
     sku: "SEN-TOF-LIDAR",
     description: "Time-of-Flight distance sensor for high precision distance measurement and collision avoidance.",
@@ -71,6 +73,7 @@ const MOCK_NEW_ARRIVALS: Component[] = [
   },
   {
     id: "mock-new-3",
+    slug: "t-motor-f60-pro-iv-fpv-racing-motor",
     name: "T-Motor F60 Pro IV FPV Racing Motor",
     sku: "MOT-TM-F60",
     description: "Premium high performance motor designed specifically for racing drones and FPV copters.",
@@ -93,6 +96,7 @@ const MOCK_NEW_ARRIVALS: Component[] = [
   },
   {
     id: "mock-new-4",
+    slug: "4s-1500mah-120c-lipo-battery-pack",
     name: "4S 1500mAh 120C LiPo Battery Pack",
     sku: "BAT-4S-1500",
     description: "High discharge rate LiPo battery pack providing maximum power and capacity for aerial platforms.",
@@ -158,7 +162,7 @@ function NewArrivalCard({ component }: { component: Component }) {
       </button>
 
       {/* Image container */}
-      <Link href={`/components/${component.id}`} className="relative flex aspect-square w-full shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[#FAFAED]/60 p-2 sm:p-4">
+      <Link href={`/components/${component.slug}`} className="relative flex aspect-square w-full shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[#FAFAED]/60 p-2 sm:p-4">
         {component.imageUrl ? (
           <img
             src={component.imageUrl}
@@ -182,7 +186,7 @@ function NewArrivalCard({ component }: { component: Component }) {
           </span>
 
           {/* Title */}
-          <Link href={`/components/${component.id}`} className="mt-1 block h-8 sm:h-10 flex-shrink-0 overflow-hidden">
+          <Link href={`/components/${component.slug}`} className="mt-1 block h-8 sm:h-10 flex-shrink-0 overflow-hidden">
             <h3 className="line-clamp-2 text-xs sm:text-sm font-bold leading-snug text-[#222222] group-hover:text-[#1CA2D1] transition-colors">
               {component.name}
             </h3>

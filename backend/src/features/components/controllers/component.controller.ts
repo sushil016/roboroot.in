@@ -128,6 +128,34 @@ export async function getComponentByIdHandler(
 }
 
 /**
+ * Get a single component by slug
+ * GET /api/components/slug/:slug
+ * Access: Public
+ */
+export async function getComponentBySlugHandler(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    const { slug } = req.params;
+
+    if (!slug) {
+      throw new ValidationError("Component slug is required");
+    }
+
+    const component = await componentService.getComponentBySlug(slug);
+
+    res.status(200).json({
+      success: true,
+      data: component,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
  * Update a component
  * PATCH /api/components/:id
  * Access: Admin only

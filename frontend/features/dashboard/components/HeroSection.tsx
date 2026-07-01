@@ -5,6 +5,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { serviceTiles } from "@/features/dashboard/data/homepage";
+import { SideRays } from "@/components/SideRays";
 
 const descriptions = [
   "Thousands of sensors, microcontrollers, motors, power modules, and components ready to ship for any build.",
@@ -60,7 +61,7 @@ export function HeroSection() {
   const slide = serviceTiles[current];
 
   return (
-    <section className="bg-[#f2f2f0] px-4 sm:px-6 py-6">
+    <section className="bg-transparent px-4 sm:px-6 py-6 relative z-10">
       <div
         className="mx-auto max-w-7xl relative overflow-hidden bg-zinc-950 rounded-3xl border border-[#D8D8C4] shadow-md group"
         style={{ minHeight: 440 }}
@@ -91,7 +92,7 @@ export function HeroSection() {
         </AnimatePresence>
 
         {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-[linear-gradient(110deg,rgba(9,9,11,0.92)_0%,rgba(9,9,11,0.6)_50%,rgba(28,162,209,0.15)_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(110deg,rgba(9,9,11,0.92)_0%,rgba(9,9,11,0.6)_50%,rgba(28,162,209,0.15)_100%)] z-0" />
 
         {/* Text Content */}
         <div className="relative flex min-h-[440px] flex-col justify-center px-8 py-12 sm:px-12 lg:px-20 z-10">

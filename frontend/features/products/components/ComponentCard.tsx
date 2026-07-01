@@ -45,7 +45,7 @@ export function ComponentCard({ component }: ComponentCardProps) {
   const isLowStock = component.stockQuantity > 0 && component.stockQuantity <= 10;
 
   return (
-    <Link href={`/components/${component.id}`}>
+    <Link href={`/components/${component.slug}`}>
       <Card className="card-hover-bar h-full cursor-pointer group transition border border-[#D8D8C4] bg-[#F3F3E4]">
         <CardContent className="p-4">
           {/* Image */}

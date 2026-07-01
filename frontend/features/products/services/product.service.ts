@@ -60,6 +60,14 @@ export const componentApi = {
   },
 
   /**
+   * Get single component by slug (SEO-friendly URL)
+   */
+  getComponentBySlug: async (slug: string): Promise<Component> => {
+    const response = await api.get(`/api/components/slug/${slug}`);
+    return response.data.data;
+  },
+
+  /**
    * Get component by SKU
    */
   getComponentBySku: async (sku: string): Promise<Component> => {
@@ -140,4 +148,8 @@ export const orderApi = {
 
 export async function getProductMetadataById(id: string): Promise<Component> {
   return componentApi.getComponentById(id);
+}
+
+export async function getProductMetadataBySlug(slug: string): Promise<Component> {
+  return componentApi.getComponentBySlug(slug);
 }

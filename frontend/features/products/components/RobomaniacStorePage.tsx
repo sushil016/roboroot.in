@@ -112,10 +112,10 @@ function DarkRow({ label, note, highlight, tag }: { label: string; note?: string
 }
 
 // ─── Product card ─────────────────────────────────────────────────────
-function ProductCard({ product }: { product: { id: string; name: string; unitPriceCents: number; imageUrl?: string | null; subcategory?: string | null; category: string } }) {
+function ProductCard({ product }: { product: { id: string; slug: string; name: string; unitPriceCents: number; imageUrl?: string | null; subcategory?: string | null; category: string } }) {
   const addItem = useCartStore((s) => s.addItem);
   return (
-    <Link href={`/components/${product.id}`} className="group block">
+    <Link href={`/components/${product.slug}`} className="group block">
       <div className="overflow-hidden rounded-2xl border-2 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)]"
         style={{ borderColor: DARK, backgroundColor: BG }}>
         <div className="relative aspect-[4/3] overflow-hidden bg-[#E0DACA]">
@@ -337,7 +337,7 @@ export function RobomaniacStorePage() {
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.06, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                   >
-                    <Link href={`/components/${product.id}`} className="group">
+                    <Link href={`/components/${product.slug}`} className="group">
                       <div className={`flex items-center gap-4 rounded-xl border px-4 py-3 transition-colors ${i === 1 ? 'border-[#C8780A]/40 bg-[#C8780A]/12' : 'border-[#2A2420] hover:border-[#3A342E]'}`}>
                         {/* Image thumb */}
                         <div className="h-10 w-10 shrink-0 overflow-hidden rounded-lg border border-[#2A2420]">

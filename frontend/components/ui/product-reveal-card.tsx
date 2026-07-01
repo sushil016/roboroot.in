@@ -57,7 +57,7 @@ export function ProductRevealCard({
     >
       {/* Image area */}
       <Link
-        href={`/components/${component.id}`}
+        href={`/components/${component.slug}`}
         className="relative block overflow-hidden bg-[#F7F7EF]"
         style={{ aspectRatio: compact ? "4/3" : "1/1" }}
       >
@@ -161,7 +161,7 @@ export function ProductRevealCard({
 
         {/* Product name */}
         <Link
-          href={`/components/${component.id}`}
+          href={`/components/${component.slug}`}
           className="mt-1 block sm:mt-1.5"
         >
           <h3 className="line-clamp-2 text-xs sm:text-[14px] font-bold leading-[1.4] text-[#222222] hover:text-[#1CA2D1] transition-colors">

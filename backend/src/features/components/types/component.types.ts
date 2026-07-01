@@ -26,6 +26,7 @@ export interface CreateComponentRequest {
 
 export interface UpdateComponentRequest {
   name?: string;
+  slug?: string; // Allow manual slug override from admin
   sku?: string;
   description?: string;
   typicalUseCase?: string;
@@ -65,6 +66,7 @@ export interface ComponentFilters {
 
 export interface ComponentResponse {
   id: string;
+  slug: string;
   name: string;
   sku: string | null;
   description: string | null;

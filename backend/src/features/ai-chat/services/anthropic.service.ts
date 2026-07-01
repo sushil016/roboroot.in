@@ -14,10 +14,16 @@ import type {
   ToolLoopResult,
 } from "../types/chat.types.js";
 
-const ANTHROPIC_MESSAGES_URL = "https://api.anthropic.com/v1/messages";
-const DEFAULT_ANTHROPIC_MODEL = "claude-sonnet-4-20250514";
+const getAnthropicMessagesUrl = (): string => {
+  const baseUrl = process.env.ANTHROPIC_BASE_URL || "https://api.anthropic.com";
+  const cleanBase = baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`;
+  return `${cleanBase}v1/messages`;
+};
+
+const ANTHROPIC_MESSAGES_URL = getAnthropicMessagesUrl();
+const DEFAULT_ANTHROPIC_MODEL = "claude-3-5-sonnet-20241022";
 const DEFAULT_NVIDIA_BASE_URL = "https://integrate.api.nvidia.com/v1";
-const DEFAULT_NVIDIA_MODEL = "meta/llama-3.1-70b-instruct";
+const DEFAULT_NVIDIA_MODEL = "abacusai/dracarys-llama-3.1-70b-instruct";
 
 type ClaudeContentBlock =
   | { type: "text"; text: string }
@@ -62,14 +68,22 @@ interface OpenAIChatResponse {
 export async function runClaudeToolLoop(
   prompt: ChatPromptMessage[],
   ctx: ToolContext,
-  onDelta?: (text: string) => void
+  onDelta?: (text: string) => void,
+  options: { includeTools?: boolean } = {}
 ): Promise<ToolLoopResult> {
+  const includeTools = options.includeTools ?? true;
+
   if (shouldUseNvidiaProvider()) {
-    return await runOpenAICompatibleToolLoop(prompt, ctx, onDelta);
+    return await runOpenAICompatibleToolLoop(prompt, ctx, onDelta, includeTools);
   }
 
+  // The system prompt + retrieved RAG context live in the "system" role message.
+  // Anthropic requires this as a top-level `system` parameter — it is NOT a
+  // member of the messages array. Extract it here so the model actually receives
+  // the retrieval context and relevance instructions.
+  const system = systemFromPrompt(prompt);
   const messages = toClaudeMessages(prompt);
-  const first = await createMessage(messages, true, onDelta);
+  const first = await createMessage(messages, includeTools, onDelta, system);
   const toolUses = first.content.filter(isToolUseBlock);
 
   if (toolUses.length === 0) {
@@ -109,7 +123,7 @@ export async function runClaudeToolLoop(
     ...messages,
     { role: "assistant", content: first.content },
     { role: "user", content: toolResults },
-  ], false, onDelta);
+  ], false, onDelta, system);
 
   return { text: textFromContent(second.content), events: collectedEvents };
 }
@@ -142,6 +156,16 @@ function extractSseEvents(toolName: ToolName, data: unknown): ChatSseEvent[] {
 
     case "get_product_details":
       return extractProductDetailEvents(data as Record<string, unknown>);
+
+    case "checkout_cart": {
+      const obj = data as Record<string, unknown>;
+      if (obj["addressRequired"] === true) {
+        return [{ type: "address_required" }];
+      }
+      const p = obj["payment"] as Record<string, unknown>;
+      if (p) return extractPaymentEvents(p);
+      return [];
+    }
 
     default:
       return [];
@@ -402,7 +426,8 @@ function arrayField(obj: Record<string, unknown>, key: string): string[] | undef
 async function createMessage(
   messages: ClaudeMessage[],
   includeTools: boolean,
-  onDelta?: (text: string) => void
+  onDelta?: (text: string) => void,
+  system?: string
 ): Promise<ClaudeResponse> {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
@@ -413,6 +438,7 @@ async function createMessage(
     const bodyParams = {
       model: process.env.ANTHROPIC_MODEL ?? DEFAULT_ANTHROPIC_MODEL,
       max_tokens: 900,
+      ...(system ? { system } : {}),
       messages,
       tools: includeTools ? toolRegistry : undefined,
       stream: true,
@@ -517,6 +543,7 @@ async function createMessage(
     body: JSON.stringify({
       model: process.env.ANTHROPIC_MODEL ?? DEFAULT_ANTHROPIC_MODEL,
       max_tokens: 900,
+      ...(system ? { system } : {}),
       messages,
       tools: includeTools ? toolRegistry : undefined,
     }),
@@ -537,10 +564,11 @@ async function createMessage(
 async function runOpenAICompatibleToolLoop(
   prompt: ChatPromptMessage[],
   ctx: ToolContext,
-  onDelta?: (text: string) => void
+  onDelta?: (text: string) => void,
+  includeTools = true
 ): Promise<ToolLoopResult> {
   const messages = toOpenAICompatibleMessages(prompt);
-  const first = await createOpenAICompatibleMessage(messages, true, onDelta);
+  const first = await createOpenAICompatibleMessage(messages, includeTools, onDelta);
   const firstMessage = getFirstOpenAIMessage(first);
   const toolCalls = firstMessage.tool_calls ?? [];
 
@@ -739,6 +767,19 @@ function toClaudeMessages(prompt: ChatPromptMessage[]): ClaudeMessage[] {
     }));
 }
 
+/**
+ * Anthropic's API takes the system prompt as a top-level `system` string, not as
+ * a message. Collapse any system-role entries from the prompt into that string.
+ */
+function systemFromPrompt(prompt: ChatPromptMessage[]): string | undefined {
+  const parts = prompt
+    .filter((message) => message.role === "system")
+    .map((message) => message.content.trim())
+    .filter(Boolean);
+
+  return parts.length > 0 ? parts.join("\n\n") : undefined;
+}
+
 function toOpenAICompatibleMessages(prompt: ChatPromptMessage[]): OpenAIChatMessage[] {
   return prompt.map((message) => ({
     role: message.role,
@@ -781,7 +822,7 @@ function textFromContent(content: ClaudeContentBlock[]): string {
 }
 
 function shouldUseNvidiaProvider(): boolean {
-  return process.env.CHAT_LLM_PROVIDER === "nvidia" || Boolean(process.env.NVIDIA_API_KEY);
+  return process.env.CHAT_LLM_PROVIDER === "nvidia";
 }
 
 function getFirstOpenAIMessage(response: OpenAIChatResponse): OpenAIChatMessage {
