@@ -1,68 +1,62 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle2, Loader2, CreditCard, Download, Share2 } from "lucide-react";
+import Link from "next/link";
+import { CheckCircle2, Loader2, CreditCard, Download, Share2, ArrowRight, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { ChatPaymentCard } from "../types/chat.types";
+import { startRazorpayCheckout } from "../services/checkout.service";
 
 interface PaymentCardProps {
   payment: ChatPaymentCard;
 }
 
+type PayState = "idle" | "initiating" | "paid" | "error";
+
 export function PaymentCard({ payment }: PaymentCardProps) {
-  const [initiating, setInitiating] = useState(false);
-  const [paid, setPaid] = useState(false);
+  const [payState, setPayState] = useState<PayState>("idle");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   async function handlePay() {
-    setInitiating(true);
+    setPayState("initiating");
+    setErrorMessage(null);
     try {
-      if (typeof window !== "undefined" && !("Razorpay" in window)) {
-        await loadScript("https://checkout.razorpay.com/v1/checkout.js");
-      }
-
-      const options = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID ?? "",
-        amount: payment.amountCents,
-        currency: payment.currency ?? "INR",
-        name: "RoboRoot",
-        description: `Order #${payment.orderId}`,
-        order_id: payment.razorpayOrderId,
-        handler: () => {
-          setPaid(true);
+      await startRazorpayCheckout(payment.orderId, {
+        onSuccess: () => setPayState("paid"),
+        onDismiss: () => setPayState("idle"),
+        onError: (message) => {
+          setErrorMessage(message);
+          setPayState("error");
         },
-        theme: { color: "#1CA2D1" },
-      };
-
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const rzp = new (window as any).Razorpay(options);
-      rzp.open();
+      });
     } catch (e) {
-      console.error("Razorpay initiation failed", e);
-    } finally {
-      setInitiating(false);
+      setErrorMessage(e instanceof Error ? e.message : "Could not open the payment gateway.");
+      setPayState("error");
     }
   }
 
-  if (paid) {
+  if (payState === "paid") {
     return <PaymentSuccessCard orderId={payment.orderId} amountCents={payment.amountCents} />;
   }
 
+  const initiating = payState === "initiating";
+
   return (
-    <div className="mt-4 overflow-hidden rounded-xl border border-border bg-card shadow-sm animate-in fade-in duration-200">
-      <div className="bg-muted/60 px-4 py-3 border-b border-border">
+    <div className="mt-4 overflow-hidden rounded-2xl border border-border bg-card shadow-sm animate-in fade-in slide-in-from-bottom-1 duration-300">
+      <div className="bg-gradient-to-r from-[#1CA2D1]/10 to-transparent px-4 py-3 border-b border-border">
         <div className="flex items-center gap-2 text-foreground">
           <CreditCard className="size-4 text-primary" />
-          <span className="text-[11px] font-bold uppercase tracking-wider">Secure Payment</span>
+          <span className="text-[11px] font-bold uppercase tracking-[0.14em]">Secure Payment</span>
         </div>
         <p className="mt-0.5 text-[10px] text-muted-foreground font-bold font-mono tracking-wider">ORDER #{payment.orderId}</p>
       </div>
 
       <div className="px-4 py-6 text-center bg-background/50 border-b border-border/50">
-        <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Amount Outstanding</p>
-        <p className="mt-1 text-3xl font-extrabold text-primary font-mono tracking-tight">
+        <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground">Amount Payable</p>
+        <p className="mt-1 text-3xl font-extrabold text-primary font-mono tracking-tight tabular-nums">
           ₹{(payment.amountCents / 100).toLocaleString("en-IN")}
         </p>
-        <p className="mt-2 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Gateway transaction powered by Razorpay</p>
+        <p className="mt-2 text-[9px] font-bold text-muted-foreground uppercase tracking-[0.14em]">UPI · Cards · Net Banking — powered by Razorpay</p>
       </div>
 
       <div className="p-3 bg-card">
@@ -71,16 +65,16 @@ export function PaymentCard({ payment }: PaymentCardProps) {
           onClick={handlePay}
           disabled={initiating}
           className={cn(
-            "flex w-full items-center justify-center gap-2 rounded-xl py-3 text-xs font-bold uppercase tracking-wider text-primary-foreground transition cursor-pointer shadow-sm active:scale-95 duration-150",
+            "flex w-full items-center justify-center gap-2 rounded-xl py-3 text-xs font-bold uppercase tracking-[0.14em] text-primary-foreground transition cursor-pointer shadow-sm active:scale-[0.98] duration-150",
             initiating
               ? "bg-secondary text-secondary-foreground border border-border cursor-not-allowed"
-              : "bg-primary hover:bg-primary/95",
+              : "bg-primary hover:bg-primary/95 hover:shadow-md",
           )}
         >
           {initiating ? (
             <>
               <Loader2 className="size-4 animate-spin" />
-              Launching Gateway…
+              Opening Gateway…
             </>
           ) : (
             <>
@@ -89,8 +83,16 @@ export function PaymentCard({ payment }: PaymentCardProps) {
             </>
           )}
         </button>
-        <p className="mt-3 text-center text-[9px] font-bold uppercase tracking-wider text-muted-foreground">
-          🔒 Secure 256-bit encrypted checkout connection
+
+        {payState === "error" && errorMessage && (
+          <p className="mt-3 flex items-center justify-center gap-1.5 text-center text-[10px] font-bold text-red-600">
+            <AlertCircle className="size-3 shrink-0" />
+            {errorMessage}
+          </p>
+        )}
+
+        <p className="mt-3 text-center text-[9px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+          🔒 256-bit encrypted · funds captured only on success
         </p>
       </div>
     </div>
@@ -121,42 +123,41 @@ function PaymentSuccessCard({ orderId, amountCents, invoiceUrl }: PaymentSuccess
         </div>
       </div>
 
-      <div className="flex gap-2 p-3 bg-card">
-        {invoiceUrl && (
-          <a
-            href={invoiceUrl}
-            download
-            className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-primary py-2 text-[10px] font-bold uppercase tracking-wider text-primary-foreground hover:bg-primary/95 transition cursor-pointer shadow-sm active:scale-95 duration-150"
-          >
-            <Download className="size-3.5" />
-            Invoice PDF
-          </a>
-        )}
-        <button
-          type="button"
-          onClick={() =>
-            navigator.share?.({
-              title: `RoboRoot Order #${orderId}`,
-              text: `I just placed an order on RoboRoot! Order #${orderId}`,
-            })
-          }
-          className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-border bg-secondary py-2 text-[10px] font-bold uppercase tracking-wider text-secondary-foreground hover:bg-secondary/80 hover:text-foreground transition cursor-pointer active:scale-95 duration-150"
+      <div className="flex flex-col gap-2 p-3 bg-card">
+        <Link
+          href={`/orders/${orderId}`}
+          className="flex w-full items-center justify-center gap-1.5 rounded-lg bg-primary py-2.5 text-[10px] font-bold uppercase tracking-[0.14em] text-primary-foreground hover:bg-primary/95 transition cursor-pointer shadow-sm active:scale-[0.98] duration-150"
         >
-          <Share2 className="size-3.5" />
-          Share Order
-        </button>
+          View Order in Profile
+          <ArrowRight className="size-3.5" />
+        </Link>
+        <div className="flex gap-2">
+          {invoiceUrl && (
+            <a
+              href={invoiceUrl}
+              download
+              className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-border bg-secondary py-2 text-[10px] font-bold uppercase tracking-[0.14em] text-secondary-foreground hover:bg-secondary/80 hover:text-foreground transition cursor-pointer active:scale-[0.98] duration-150"
+            >
+              <Download className="size-3.5" />
+              Invoice PDF
+            </a>
+          )}
+          <button
+            type="button"
+            onClick={() =>
+              navigator.share?.({
+                title: `RoboRoot Order #${orderId}`,
+                text: `I just placed an order on RoboRoot! Order #${orderId}`,
+              })
+            }
+            className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-border bg-secondary py-2 text-[10px] font-bold uppercase tracking-[0.14em] text-secondary-foreground hover:bg-secondary/80 hover:text-foreground transition cursor-pointer active:scale-[0.98] duration-150"
+          >
+            <Share2 className="size-3.5" />
+            Share
+          </button>
+        </div>
       </div>
     </div>
   );
-}
-
-function loadScript(src: string): Promise<void> {
-  return new Promise((resolve, reject) => {
-    const script = document.createElement("script");
-    script.src = src;
-    script.onload = () => resolve();
-    script.onerror = () => reject(new Error(`Failed to load ${src}`));
-    document.body.appendChild(script);
-  });
 }
 

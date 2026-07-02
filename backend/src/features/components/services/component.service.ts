@@ -28,7 +28,7 @@ function generateSlug(name: string): string {
 /**
  * Generate a unique slug, appending -2, -3, etc. on collision
  */
-async function generateUniqueSlug(name: string, excludeId?: string): Promise<string> {
+export async function generateUniqueSlug(name: string, excludeId?: string): Promise<string> {
   const baseSlug = generateSlug(name);
   let slug = baseSlug;
   let attempt = 1;
@@ -94,8 +94,8 @@ export async function createComponent(data: CreateComponentRequest): Promise<Com
     }
   }
 
-  // Auto-generate a unique slug from the name
-  const slug = await generateUniqueSlug(data.name);
+  // Auto-generate or sanitize a unique slug
+  const slug = data.slug ? await generateUniqueSlug(data.slug) : await generateUniqueSlug(data.name);
 
   const component = await prisma.component.create({
     data: {

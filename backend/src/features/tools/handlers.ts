@@ -42,7 +42,10 @@ async function executeValidatedTool(tool: ToolName, params: unknown, ctx: ToolCo
       const orderInput: Parameters<typeof createOrder>[0] = {
         userId,
         items: parsed.items,
-        paymentGateway: parsed.paymentGateway === "RAZORPAY" ? PaymentGateway.RAZORPAY : PaymentGateway.TEST,
+        // Chat commerce defaults to a real Razorpay payment so the order is left
+        // PENDING_PAYMENT and can be paid via the in-chat popup. TEST is only used
+        // when explicitly requested (e.g. internal/QA flows).
+        paymentGateway: parsed.paymentGateway === "TEST" ? PaymentGateway.TEST : PaymentGateway.RAZORPAY,
       };
 
       if (parsed.shippingAddress) {
@@ -172,7 +175,7 @@ async function executeValidatedTool(tool: ToolName, params: unknown, ctx: ToolCo
         userId,
         items: itemsInput,
         shippingAddressId: defaultAddress.id,
-        paymentGateway: parsed.paymentGateway === "RAZORPAY" ? PaymentGateway.RAZORPAY : PaymentGateway.TEST,
+        paymentGateway: parsed.paymentGateway === "TEST" ? PaymentGateway.TEST : PaymentGateway.RAZORPAY,
       };
 
       if (parsed.couponCode !== undefined) orderInput.couponCode = parsed.couponCode;
@@ -194,6 +197,39 @@ async function executeValidatedTool(tool: ToolName, params: unknown, ctx: ToolCo
           payment,
           paymentUrl: orderResult.paymentUrl,
           message: "Order placed and payment link generated successfully.",
+        },
+      };
+    }
+    case "get_user_profile": {
+      const userId = requireUserId(ctx);
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          college: true,
+          role: true,
+          addresses: {
+            orderBy: { isDefault: "desc" },
+          },
+        },
+      });
+
+      if (!user) return { error: "User not found" };
+
+      const defaultAddress = user.addresses.find((a) => a.isDefault) ?? null;
+
+      return {
+        data: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          college: user.college,
+          role: user.role,
+          defaultAddress,
+          addresses: user.addresses,
+          totalAddresses: user.addresses.length,
         },
       };
     }

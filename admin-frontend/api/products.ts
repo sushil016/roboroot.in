@@ -4,6 +4,7 @@ import { tagsToArray } from "@/utils";
 
 export type ProductPayload = {
   name: string;
+  slug?: string;
   sku?: string;
   description?: string;
   typicalUseCase?: string;
@@ -53,6 +54,7 @@ export async function archiveProduct(id: string, token: string): Promise<void> {
 
 export function buildProductPayload(form: {
   name: string;
+  slug: string;
   sku: string;
   description: string;
   typicalUseCase: string;
@@ -73,6 +75,7 @@ export function buildProductPayload(form: {
 }): ProductPayload {
   return {
     name: form.name,
+    slug: form.slug || undefined,
     sku: form.sku || undefined,
     description: form.description || undefined,
     typicalUseCase: form.typicalUseCase || undefined,

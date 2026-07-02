@@ -13,6 +13,7 @@ export const TOOL_PERMISSIONS: Record<ToolName, ToolActorRole[]> = {
   list_addresses: ["user", "admin"],
   checkout_cart: ["user", "admin"],
   compare_prices: ["guest", "user", "admin"],
+  get_user_profile: ["user", "admin"],
 };
 
 export function canUseTool(tool: ToolName, role: ToolActorRole): boolean {

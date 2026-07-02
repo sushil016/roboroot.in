@@ -89,6 +89,7 @@ export function ProductFormPanel({
             </button>
           </div>
           <input className="admin-input" placeholder="SKU" value={productForm.sku} onChange={(event) => onForm({ ...productForm, sku: event.target.value })} />
+          <input className="admin-input" placeholder="Slug (e.g. hc-05-bluetooth-module — optional)" value={productForm.slug} onChange={(event) => onForm({ ...productForm, slug: event.target.value })} />
           <div className="grid gap-3 sm:grid-cols-2">
             <input className="admin-input" placeholder="Category" value={productForm.category} onChange={(event) => onForm({ ...productForm, category: event.target.value })} required />
             <input className="admin-input" placeholder="Subcategory" value={productForm.subcategory} onChange={(event) => onForm({ ...productForm, subcategory: event.target.value })} required />

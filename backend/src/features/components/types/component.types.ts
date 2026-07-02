@@ -5,6 +5,7 @@
 
 export interface CreateComponentRequest {
   name: string;
+  slug?: string;
   sku?: string;
   description?: string;
   typicalUseCase?: string;

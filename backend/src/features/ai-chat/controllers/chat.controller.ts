@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import { randomUUID } from "node:crypto";
 import { logger } from "../../../lib/logger.js";
 import { buildPrompt, hybridRetrieve } from "../../rag/index.js";
+import type { UserProfileContext } from "../../rag/services/prompt-builder.service.js";
 import { classifyChatMessage } from "../services/intent.service.js";
 import { runClaudeToolLoop } from "../services/anthropic.service.js";
 import {
@@ -12,6 +13,7 @@ import {
 import { loadSessionHistory, saveSessionTurn } from "../services/session.service.js";
 import { chatRequestSchema } from "../validators/chat.validator.js";
 import * as cartService from "../../cart/services/cart.service.js";
+import { prisma } from "../../../lib/prisma.js";
 import type { ChatPromptMessage } from "../../rag/types/rag.types.js";
 import type { ToolActorRole, ToolContext } from "../../tools/types.js";
 import type { ChatSseEvent } from "../types/chat.types.js";
@@ -67,14 +69,45 @@ export async function chatHandler(req: Request, res: Response): Promise<void> {
     if (!isGreeting) {
       sendSse(res, "status", { status: "retrieving", intent: classification.intent });
     }
-    const [retrieval, cart] = await Promise.all([
+    const [retrieval, cart, userRecord] = await Promise.all([
       classification.intent === "action" || isGreeting
         ? Promise.resolve(null)
         : hybridRetrieve(parsed.message),
       cartService.getCart(user.userId),
+      prisma.user.findUnique({
+        where: { id: user.userId },
+        select: {
+          name: true,
+          email: true,
+          addresses: {
+            where: { isDefault: true },
+            take: 1,
+          },
+        },
+      }),
     ]);
 
-    const prompt = buildPrompt(retrieval?.context ?? "", promptHistory, parsed.message, cart);
+    const userProfile: UserProfileContext | undefined = userRecord
+      ? {
+          name: userRecord.name,
+          email: userRecord.email,
+          defaultAddress: userRecord.addresses[0]
+            ? {
+                name: userRecord.addresses[0].name,
+                phone: userRecord.addresses[0].phone,
+                line1: userRecord.addresses[0].line1,
+                line2: userRecord.addresses[0].line2,
+                city: userRecord.addresses[0].city,
+                state: userRecord.addresses[0].state,
+                pincode: userRecord.addresses[0].pincode,
+                country: userRecord.addresses[0].country,
+              }
+            : null,
+          totalAddresses: userRecord.addresses.length,
+        }
+      : undefined;
+
+    const prompt = buildPrompt(retrieval?.context ?? "", promptHistory, parsed.message, cart, userProfile);
     const toolContext: ToolContext = {
       userId: user.userId,
       role: mapRole(user.role),

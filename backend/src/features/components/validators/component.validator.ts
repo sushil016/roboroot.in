@@ -162,6 +162,7 @@ export function validateCreateComponent(data: any): ValidationResult<CreateCompo
     unitPriceCents: Math.round(data.unitPriceCents),
   };
 
+  if (data.slug?.trim()) result.slug = data.slug.trim();
   if (data.sku?.trim()) result.sku = data.sku.trim();
   if (data.description?.trim()) result.description = data.description.trim();
   if (data.typicalUseCase?.trim()) result.typicalUseCase = data.typicalUseCase.trim();
@@ -289,6 +290,7 @@ export function validateUpdateComponent(data: any): ValidationResult<UpdateCompo
   const updateData: UpdateComponentRequest = {};
 
   if (data.name !== undefined) updateData.name = data.name.trim();
+  if (data.slug !== undefined) updateData.slug = data.slug?.trim() || undefined;
   if (data.sku !== undefined) updateData.sku = data.sku?.trim() || null;
   if (data.description !== undefined) updateData.description = data.description?.trim() || null;
   if (data.typicalUseCase !== undefined) updateData.typicalUseCase = data.typicalUseCase?.trim() || null;

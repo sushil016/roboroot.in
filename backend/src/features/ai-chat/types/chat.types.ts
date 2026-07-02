@@ -61,6 +61,8 @@ export interface OrderSsePayload {
   totalCents: number;
   estimatedDelivery?: string;
   trackingUrl?: string;
+  /** True when the order is still awaiting payment (PENDING_PAYMENT) and can be paid in-chat. */
+  payable?: boolean;
 }
 
 export interface PaymentSsePayload {

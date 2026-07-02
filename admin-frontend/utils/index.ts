@@ -15,6 +15,7 @@ export function productToForm(product: Product): ProductForm {
   return {
     id: product.id,
     name: product.name,
+    slug: product.slug || "",
     sku: product.sku || "",
     description: product.description || "",
     typicalUseCase: product.typicalUseCase || "",

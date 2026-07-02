@@ -23,7 +23,7 @@ const getAnthropicMessagesUrl = (): string => {
 const ANTHROPIC_MESSAGES_URL = getAnthropicMessagesUrl();
 const DEFAULT_ANTHROPIC_MODEL = "claude-3-5-sonnet-20241022";
 const DEFAULT_NVIDIA_BASE_URL = "https://integrate.api.nvidia.com/v1";
-const DEFAULT_NVIDIA_MODEL = "abacusai/dracarys-llama-3.1-70b-instruct";
+const DEFAULT_NVIDIA_MODEL = "mistralai/mistral-large-3-675b-instruct-2512";
 
 type ClaudeContentBlock =
   | { type: "text"; text: string }
@@ -162,9 +162,16 @@ function extractSseEvents(toolName: ToolName, data: unknown): ChatSseEvent[] {
       if (obj["addressRequired"] === true) {
         return [{ type: "address_required" }];
       }
+      const events: ChatSseEvent[] = [];
+      const orderData = obj["order"] as Record<string, unknown>;
+      if (orderData) {
+        events.push(...extractOrderEvents(orderData));
+      }
       const p = obj["payment"] as Record<string, unknown>;
-      if (p) return extractPaymentEvents(p);
-      return [];
+      if (p) {
+        events.push(...extractPaymentEvents(p));
+      }
+      return events;
     }
 
     default:
@@ -173,27 +180,34 @@ function extractSseEvents(toolName: ToolName, data: unknown): ChatSseEvent[] {
 }
 
 function extractOrderEvents(data: Record<string, unknown>): ChatSseEvent[] {
-  const orderId = stringField(data, "id") ?? stringField(data, "orderId");
+  // place_order returns { order, paymentUrl } — unwrap to the order entity.
+  const order =
+    data["order"] && typeof data["order"] === "object" && !Array.isArray(data["order"])
+      ? (data["order"] as Record<string, unknown>)
+      : data;
+
+  const orderId = stringField(order, "id") ?? stringField(order, "orderId");
   if (!orderId) return [];
 
-  const rawStatus = stringField(data, "status") ?? "confirmed";
+  const rawStatus = stringField(order, "status") ?? "confirmed";
   const status = mapOrderStatus(rawStatus);
+  const payable = rawStatus.toUpperCase() === "PENDING_PAYMENT";
 
-  const rawItems = data["items"];
+  const rawItems = order["items"];
   const items: OrderSseItem[] = Array.isArray(rawItems)
     ? rawItems.map((item) => {
         const i = item as Record<string, unknown>;
         const component = (i["component"] ?? {}) as Record<string, unknown>;
         return {
-          name: stringField(component, "name") ?? stringField(i, "name") ?? "Item",
+          name: stringField(component, "name") ?? stringField(i, "name") ?? stringField(i, "description") ?? "Item",
           qty: numberField(i, "quantity") ?? 1,
           priceCents: numberField(i, "unitPriceCents") ?? numberField(component, "priceCents") ?? 0,
         };
       })
     : [];
 
-  const totalCents = numberField(data, "totalAmountCents") ?? 0;
-  const trackingUrl = stringField(data, "trackingUrl");
+  const totalCents = numberField(order, "totalAmountCents") ?? 0;
+  const trackingUrl = stringField(order, "trackingUrl");
 
   const payload: OrderSsePayload = {
     orderId,
@@ -201,6 +215,7 @@ function extractOrderEvents(data: Record<string, unknown>): ChatSseEvent[] {
     items,
     totalCents,
     ...(trackingUrl && { trackingUrl }),
+    ...(payable && { payable: true }),
     estimatedDelivery: estimatedDeliveryDate(),
   };
 

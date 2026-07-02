@@ -15,6 +15,7 @@ export type ProductType =
 export type Product = {
   id: string;
   name: string;
+  slug: string | null;
   sku: string | null;
   description: string | null;
   typicalUseCase: string | null;
@@ -175,6 +176,7 @@ export type LoginResponse = {
 export type ProductForm = {
   id: string;
   name: string;
+  slug: string;
   sku: string;
   description: string;
   typicalUseCase: string;

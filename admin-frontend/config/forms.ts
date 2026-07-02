@@ -54,6 +54,7 @@ export const orderStatuses = [
 export const emptyProductForm: ProductForm = {
   id: "",
   name: "",
+  slug: "",
   sku: "",
   description: "",
   typicalUseCase: "",

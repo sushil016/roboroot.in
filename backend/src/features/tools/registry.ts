@@ -167,4 +167,13 @@ export const toolRegistry: ClaudeToolDefinition[] = [
       additionalProperties: false,
     },
   },
+  {
+    name: "get_user_profile",
+    description: "Get the current authenticated user's full profile including name, email, phone, college, and all saved shipping addresses. Call this FIRST when the user wants to place an order or checkout, so you know their default shipping address.",
+    input_schema: {
+      type: "object",
+      properties: {},
+      additionalProperties: false,
+    },
+  },
 ];

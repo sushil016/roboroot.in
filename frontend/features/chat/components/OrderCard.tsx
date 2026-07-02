@@ -1,16 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { Package, CheckCircle2, Clock, Truck, MapPin } from "lucide-react";
+import { useState } from "react";
+import { Package, CheckCircle2, Clock, Truck, MapPin, CreditCard, Loader2, AlertCircle, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { ChatOrderCard } from "../types/chat.types";
+import { startRazorpayCheckout } from "../services/checkout.service";
 
 interface OrderCardProps {
   order: ChatOrderCard;
 }
 
 const STATUS_STEPS = ["confirmed", "processing", "shipped", "delivered"] as const;
-type OrderStatus = (typeof STATUS_STEPS)[number] | "cancelled";
 
 const STEP_LABELS: Record<string, string> = {
   confirmed: "Confirmed",
@@ -27,12 +28,36 @@ const STEP_ICONS = {
   delivered: MapPin,
 };
 
+type PayState = "idle" | "initiating" | "paid" | "error";
+
 export function OrderCard({ order }: OrderCardProps) {
   const currentIdx = STATUS_STEPS.indexOf(order.status as (typeof STATUS_STEPS)[number]);
   const isCancelled = order.status === "cancelled";
 
+  const [payState, setPayState] = useState<PayState>("idle");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const isPayable = Boolean(order.payable) && payState !== "paid";
+
+  async function handlePay() {
+    setPayState("initiating");
+    setErrorMessage(null);
+    try {
+      await startRazorpayCheckout(order.orderId, {
+        onSuccess: () => setPayState("paid"),
+        onDismiss: () => setPayState("idle"),
+        onError: (message) => {
+          setErrorMessage(message);
+          setPayState("error");
+        },
+      });
+    } catch (e) {
+      setErrorMessage(e instanceof Error ? e.message : "Could not open the payment gateway.");
+      setPayState("error");
+    }
+  }
+
   return (
-    <div className="mt-4 overflow-hidden rounded-xl border border-border bg-card shadow-sm animate-in fade-in duration-200">
+    <div className="mt-4 overflow-hidden rounded-2xl border border-border bg-card shadow-sm animate-in fade-in slide-in-from-bottom-1 duration-300">
       {/* Header */}
       <div className="flex items-center justify-between bg-muted/60 px-4 py-3 border-b border-border">
         <div className="flex items-center gap-2 text-foreground">
@@ -44,15 +69,17 @@ export function OrderCard({ order }: OrderCardProps) {
             "rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider border",
             isCancelled
               ? "bg-red-500/10 border-red-500/20 text-red-500 dark:text-red-400"
-              : "bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400",
+              : isPayable
+                ? "bg-amber-500/10 border-amber-500/20 text-amber-600 dark:text-amber-400"
+                : "bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400",
           )}
         >
-          {STEP_LABELS[order.status] ?? order.status}
+          {isPayable ? "Payment Pending" : payState === "paid" ? "Paid" : STEP_LABELS[order.status] ?? order.status}
         </span>
       </div>
 
       {/* Status timeline progress flow */}
-      {!isCancelled && (
+      {!isCancelled && !isPayable && (
         <div className="px-4 py-5 border-b border-border/50">
           <div className="flex items-center justify-between">
             {STATUS_STEPS.map((step, idx) => {
@@ -129,7 +156,60 @@ export function OrderCard({ order }: OrderCardProps) {
         </div>
       </div>
 
+      {/* Pay Now — in-chat Razorpay popup for orders awaiting payment */}
+      {isPayable && (
+        <div className="p-3 bg-card border-t border-border">
+          <button
+            type="button"
+            onClick={handlePay}
+            disabled={payState === "initiating"}
+            className={cn(
+              "flex w-full items-center justify-center gap-2 rounded-xl py-3 text-xs font-bold uppercase tracking-[0.14em] text-primary-foreground transition cursor-pointer shadow-sm active:scale-[0.98] duration-150",
+              payState === "initiating"
+                ? "bg-secondary text-secondary-foreground border border-border cursor-not-allowed"
+                : "bg-primary hover:bg-primary/95 hover:shadow-md",
+            )}
+          >
+            {payState === "initiating" ? (
+              <>
+                <Loader2 className="size-4 animate-spin" />
+                Opening Gateway…
+              </>
+            ) : (
+              <>
+                <CreditCard className="size-4" />
+                Pay ₹{(order.totalCents / 100).toLocaleString("en-IN")}
+              </>
+            )}
+          </button>
+          {payState === "error" && errorMessage && (
+            <p className="mt-2.5 flex items-center justify-center gap-1.5 text-center text-[10px] font-bold text-red-600">
+              <AlertCircle className="size-3 shrink-0" />
+              {errorMessage}
+            </p>
+          )}
+          <p className="mt-2.5 text-center text-[9px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+            🔒 Secure Razorpay checkout · UPI · Cards · Net Banking
+          </p>
+        </div>
+      )}
+
+      {/* Paid confirmation → link into profile */}
+      {payState === "paid" && (
+        <div className="p-3 bg-card border-t border-border">
+          <Link
+            href={`/orders/${order.orderId}`}
+            className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-emerald-500 py-3 text-[10px] font-bold uppercase tracking-[0.14em] text-white hover:bg-emerald-600 transition cursor-pointer shadow-sm active:scale-[0.98] duration-150"
+          >
+            <CheckCircle2 className="size-3.5" />
+            Payment Successful · View in Profile
+            <ArrowRight className="size-3.5" />
+          </Link>
+        </div>
+      )}
+
       {/* Primary Actions row */}
+      {!isPayable && payState !== "paid" && (
       <div className="flex gap-2 p-3 bg-card border-t border-border">
         {order.trackingUrl ? (
           <a
@@ -156,6 +236,7 @@ export function OrderCard({ order }: OrderCardProps) {
           Invoice
         </Link>
       </div>
+      )}
     </div>
   );
 }

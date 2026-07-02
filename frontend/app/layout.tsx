@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Syne, JetBrains_Mono } from "next/font/google";
+import { Syne, JetBrains_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { AppProvider } from "@/providers/AppProvider";
 import { Toaster } from "@/components/ui/sonner";
@@ -15,6 +15,15 @@ const syne = Syne({
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
+});
+
+// Primary UI/body typeface. globals.css already maps --font-sans to Inter but the
+// font was never actually loaded — wiring it here upgrades the whole app (and the
+// chat, which relies on font-sans) to real Inter for a cleaner, premium feel.
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
 });
 
 const SITE_URL = "https://roboroot.in";
@@ -137,7 +146,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
         />
       </head>
-      <body className={`${syne.variable} ${jetbrainsMono.variable} font-sans antialiased`} suppressHydrationWarning>
+      <body className={`${syne.variable} ${jetbrainsMono.variable} ${inter.variable} font-sans antialiased`} suppressHydrationWarning>
         <AppProvider>
           <LayoutWrapper>{children}</LayoutWrapper>
           <Toaster />

@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import { prisma } from "../lib/prisma.js";
 import { ComponentProductType } from "../generated/prisma/client.js";
 import { uploadFileToAzure, FileType } from "../services/azure-storage.service.js";
+import { generateUniqueSlug } from "../features/components/services/component.service.js";
 
 // A robust CSV line splitter that respects quotes
 function splitCSVLine(line: string): string[] {
@@ -131,6 +132,8 @@ export async function bulkImportController(req: Request, res: Response): Promise
         const category = row.category || "Electronics Components";
         const subcategory = row.subcategory || "General";
         const brand = row.brand || null;
+        const slug = row.slug || null;
+        const productType = (row.productType || row.product_type || "ELECTRONICS_COMPONENT") as ComponentProductType;
 
         const tags = row.tags
           ? row.tags.split(",").map((t) => t.trim()).filter(Boolean)
@@ -152,33 +155,40 @@ export async function bulkImportController(req: Request, res: Response): Promise
         }
 
         if (existing) {
+          const updateData: any = {
+            name,
+            sku,
+            description,
+            typicalUseCase,
+            vendorLink,
+            imageUrl,
+            category,
+            subcategory,
+            brand,
+            productType,
+            tags,
+            isBestSeller,
+            isRobomaniacItem,
+            isSoftware,
+            unitPriceCents,
+            discountedPriceCents,
+            stockQuantity,
+            isActive,
+          };
+          if (slug) {
+            updateData.slug = await generateUniqueSlug(slug, existing.id);
+          }
           await tx.component.update({
             where: { id: existing.id },
-            data: {
-              name,
-              sku,
-              description,
-              typicalUseCase,
-              vendorLink,
-              imageUrl,
-              category,
-              subcategory,
-              brand,
-              tags,
-              isBestSeller,
-              isRobomaniacItem,
-              isSoftware,
-              unitPriceCents,
-              discountedPriceCents,
-              stockQuantity,
-              isActive,
-            },
+            data: updateData,
           });
           updatedCount++;
         } else {
+          const finalSlug = slug ? await generateUniqueSlug(slug) : await generateUniqueSlug(name);
           await tx.component.create({
             data: {
               name,
+              slug: finalSlug,
               sku,
               description,
               typicalUseCase,
@@ -187,6 +197,7 @@ export async function bulkImportController(req: Request, res: Response): Promise
               category,
               subcategory,
               brand,
+              productType,
               tags,
               isBestSeller,
               isRobomaniacItem,
@@ -229,10 +240,12 @@ export async function bulkExportController(req: Request, res: Response): Promise
     const headers = [
       "id",
       "name",
+      "slug",
       "sku",
       "category",
       "subcategory",
       "brand",
+      "productType",
       "unitPrice",
       "discountedPrice",
       "stockQuantity",
@@ -253,10 +266,12 @@ export async function bulkExportController(req: Request, res: Response): Promise
       const row = [
         p.id,
         `"${p.name.replace(/"/g, '""')}"`,
+        p.slug ? `"${p.slug.replace(/"/g, '""')}"` : "",
         p.sku ? `"${p.sku.replace(/"/g, '""')}"` : "",
         `"${p.category.replace(/"/g, '""')}"`,
         `"${p.subcategory.replace(/"/g, '""')}"`,
         p.brand ? `"${p.brand.replace(/"/g, '""')}"` : "",
+        p.productType,
         (p.unitPriceCents / 100).toFixed(2),
         p.discountedPriceCents ? (p.discountedPriceCents / 100).toFixed(2) : "",
         p.stockQuantity.toString(),

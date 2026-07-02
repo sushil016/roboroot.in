@@ -36,6 +36,8 @@ export interface ChatOrderCard {
   totalCents: number;
   estimatedDelivery?: string;
   trackingUrl?: string;
+  /** Order is awaiting payment and can be paid via the in-chat Razorpay popup. */
+  payable?: boolean;
 }
 
 export interface ChatPaymentCard {

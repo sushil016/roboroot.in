@@ -10,7 +10,8 @@ export type ToolName =
   | "get_cart"
   | "list_addresses"
   | "checkout_cart"
-  | "compare_prices";
+  | "compare_prices"
+  | "get_user_profile";
 
 export type ToolActorRole = "guest" | "user" | "admin";
 

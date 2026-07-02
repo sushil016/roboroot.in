@@ -56,6 +56,7 @@ export const toolSchemas = {
   compare_prices: z.object({
     componentId: z.string().trim().min(1),
   }),
+  get_user_profile: z.object({}),
 } satisfies Record<ToolName, z.ZodType>;
 
 export type SearchProductsParams = z.infer<typeof toolSchemas.search_products>;
@@ -70,3 +71,4 @@ export type GetCartParams = z.infer<typeof toolSchemas.get_cart>;
 export type ListAddressesParams = z.infer<typeof toolSchemas.list_addresses>;
 export type CheckoutCartParams = z.infer<typeof toolSchemas.checkout_cart>;
 export type ComparePricesParams = z.infer<typeof toolSchemas.compare_prices>;
+export type GetUserProfileParams = z.infer<typeof toolSchemas.get_user_profile>;
