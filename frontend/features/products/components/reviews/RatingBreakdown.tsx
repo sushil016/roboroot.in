@@ -26,7 +26,7 @@ export function RatingBreakdown({
   };
 
   return (
-    <div className="bg-white rounded-2xl p-6 border border-[#D8D8C4] shadow-xs space-y-6">
+    <div className="bg-white rounded-2xl p-6 border border-[#D2D2D0] shadow-xs space-y-6">
       <div className="flex items-center gap-6">
         <div className="text-center shrink-0">
           <div className="flex items-baseline justify-center gap-1">

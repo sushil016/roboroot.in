@@ -57,6 +57,23 @@ export const toolSchemas = {
     componentId: z.string().trim().min(1),
   }),
   get_user_profile: z.object({}),
+  compose_bom: z.object({
+    description: z.string().trim().min(1),
+  }),
+  fetch_competitor_price: z.object({
+    componentId: z.string().trim().min(1),
+    platforms: z.array(z.string().trim()).optional(),
+  }),
+  bulk_order: z.object({
+    fileUrl: z.string().trim().min(1).optional(),
+    csvContent: z.string().trim().min(1).optional(),
+  }),
+  confirm_bulk_order: z.object({
+    items: z.array(z.object({
+      componentId: z.string().trim().min(1),
+      quantity: z.coerce.number().int().min(1),
+    })).min(1),
+  }),
 } satisfies Record<ToolName, z.ZodType>;
 
 export type SearchProductsParams = z.infer<typeof toolSchemas.search_products>;

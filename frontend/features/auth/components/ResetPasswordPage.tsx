@@ -57,7 +57,7 @@ function ResetPasswordForm() {
       className="space-y-6"
     >
       <div className="text-center space-y-2">
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#EAEADB] mx-auto">
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#E8E8E6] mx-auto">
           <Lock className="h-5 w-5 text-zinc-600" />
         </div>
         <h1 className="text-2xl font-bold tracking-tight">Set new password</h1>
@@ -78,7 +78,7 @@ function ResetPasswordForm() {
             onChange={(e) => setNewPassword(e.target.value)}
             required
             minLength={8}
-            className="border-[#D8D8C4] focus-visible:ring-[#1CA2D1]"
+            className="border-[#D2D2D0] focus-visible:ring-[#1CA2D1]"
           />
           <Input
             type="password"
@@ -86,7 +86,7 @@ function ResetPasswordForm() {
             value={confirm}
             onChange={(e) => setConfirm(e.target.value)}
             required
-            className="border-[#D8D8C4] focus-visible:ring-[#1CA2D1]"
+            className="border-[#D2D2D0] focus-visible:ring-[#1CA2D1]"
           />
           {error && <p className="text-sm text-red-500">{error}</p>}
           <Button

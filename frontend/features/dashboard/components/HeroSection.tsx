@@ -63,7 +63,7 @@ export function HeroSection() {
   return (
     <section className="bg-transparent px-4 sm:px-6 py-6 relative z-10">
       <div
-        className="mx-auto max-w-7xl relative overflow-hidden bg-zinc-950 rounded-3xl border border-[#D8D8C4] shadow-md group"
+        className="mx-auto max-w-7xl relative overflow-hidden bg-zinc-950 rounded-3xl border border-[#D2D2D0] shadow-md group"
         style={{ minHeight: 440 }}
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}

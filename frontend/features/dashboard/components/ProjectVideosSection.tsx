@@ -7,7 +7,7 @@ import { projectVideoSlots } from "@/features/dashboard/data/homepage";
 
 export function ProjectVideosSection() {
   return (
-    <section className="border-b border-[#D8D8C4] bg-background">
+    <section className="border-b border-[#D2D2D0] bg-background">
       <div className="mx-auto max-w-7xl px-4 py-12">
         <motion.div
           initial={{ opacity: 0, y: 22 }}
@@ -44,7 +44,7 @@ export function ProjectVideosSection() {
                 hidden: { opacity: 0, y: 28 },
                 show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
               }}
-              className="card-hover-bar rounded-xl border border-[#D8D8C4] bg-[#F3F3E4] p-4 shadow-sm"
+              className="card-hover-bar rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] p-4 shadow-sm"
             >
               <div className="flex aspect-video items-center justify-center rounded-xl bg-zinc-950 text-white">
                 <Film className="h-10 w-10 text-[#1CA2D1]" />

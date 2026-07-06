@@ -42,16 +42,16 @@ export default function ProductsPage() {
     );
   }, [productSearch, products]);
 
-  async function handleArchiveProduct(product: Product) {
+  async function handleDeleteProduct(product: Product) {
     if (!token) return;
-    if (!window.confirm(`Archive ${product.name}?`)) return;
+    if (!window.confirm(`Are you sure you want to delete ${product.name}? This will remove it from the catalog.`)) return;
     setIsLoading(true);
     try {
       await archiveProduct(product.id, token);
-      setStatus(`Archived ${product.name}`);
+      setStatus(`Deleted ${product.name}`);
       setProducts((prev) => prev.filter((p) => p.id !== product.id));
     } catch (error) {
-      setStatus(error instanceof Error ? error.message : "Failed to archive product");
+      setStatus(error instanceof Error ? error.message : "Failed to delete product");
     } finally {
       setIsLoading(false);
     }
@@ -64,7 +64,7 @@ export default function ProductsPage() {
       onSearch={setProductSearch}
       onNew={() => router.push("/products/new")}
       onEdit={(p) => router.push(`/products/${p.id}`)}
-      onArchive={handleArchiveProduct}
+      onDelete={handleDeleteProduct}
     />
   );
 }

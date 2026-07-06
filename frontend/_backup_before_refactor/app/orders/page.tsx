@@ -31,7 +31,7 @@ const STATUS_STYLES: Record<string, string> = {
 
 function OrderSkeleton() {
   return (
-    <div className="rounded-2xl border border-[#D8D8C4] bg-white p-5 space-y-4">
+    <div className="rounded-2xl border border-[#D2D2D0] bg-white p-5 space-y-4">
       <div className="flex items-start justify-between gap-4">
         <div className="space-y-2">
           <Skeleton className="h-3.5 w-20" />
@@ -63,7 +63,7 @@ export default function OrdersPage() {
   if (!isAuthenticated) {
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center gap-5 px-4 text-center">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#EAEADB]">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#E8E8E6]">
           <PackageCheck className="h-7 w-7 text-zinc-400" />
         </div>
         <div>
@@ -97,12 +97,12 @@ export default function OrdersPage() {
           <MagicCard
             className="rounded-2xl [--color-background:#ffffff]"
             gradientFrom="#1CA2D1"
-            gradientTo="#EAEADB"
+            gradientTo="#E8E8E6"
             gradientColor="#1CA2D1"
             gradientOpacity={0.05}
           >
             <div className="flex flex-col items-center gap-5 p-14 text-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#EAEADB]">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#E8E8E6]">
                 <PackageCheck className="h-7 w-7 text-zinc-300" />
               </div>
               <div>
@@ -127,7 +127,7 @@ export default function OrdersPage() {
               <MagicCard
                 className="rounded-2xl [--color-background:#ffffff]"
                 gradientFrom="#1CA2D1"
-                gradientTo="#EAEADB"
+                gradientTo="#E8E8E6"
                 gradientColor="#1CA2D1"
                 gradientOpacity={0.05}
               >
@@ -157,7 +157,7 @@ export default function OrdersPage() {
                       </p>
                       <Link
                         href={`/orders/${order.id}`}
-                        className="inline-flex items-center gap-1.5 rounded-xl border border-[#D8D8C4] px-4 py-2 text-xs font-semibold text-[#222222] hover:bg-[#EAEADB] hover:border-[#222222] transition-colors"
+                        className="inline-flex items-center gap-1.5 rounded-xl border border-[#D2D2D0] px-4 py-2 text-xs font-semibold text-[#222222] hover:bg-[#E8E8E6] hover:border-[#222222] transition-colors"
                       >
                         View Details
                         <ArrowRight className="h-3 w-3" />
@@ -170,9 +170,9 @@ export default function OrdersPage() {
                       {order.items.map((item) => (
                         <div
                           key={item.id}
-                          className="w-36 shrink-0 rounded-xl border border-[#D8D8C4] bg-[#FAFAED] p-2.5"
+                          className="w-36 shrink-0 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] p-2.5"
                         >
-                          <div className="aspect-square overflow-hidden rounded-lg bg-[#F3F3E4] mb-2">
+                          <div className="aspect-square overflow-hidden rounded-lg bg-[#F2F2F0] mb-2">
                             <ProductImage
                               src={item.component?.imageUrl}
                               alt={item.description}

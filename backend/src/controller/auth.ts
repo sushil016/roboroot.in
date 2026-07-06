@@ -37,7 +37,15 @@ function isLocalhostUrl(url?: string) {
   return /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?/.test(url || "");
 }
 
-function getFrontendUrl() {
+function getFrontendUrl(req?: Request) {
+  if (req) {
+    const host = (req.headers["x-forwarded-host"] as string) || req.get("host") || "";
+    const isLocal = /^(localhost|127\.0\.0\.1)(:\d+)?$/.test(host);
+    if (!isLocal && host) {
+      return `https://${host}`;
+    }
+  }
+
   const configuredUrl = process.env.FRONTEND_URL?.trim();
   if (configuredUrl && !(process.env.NODE_ENV === "production" && isLocalhostUrl(configuredUrl))) {
     return configuredUrl;
@@ -414,19 +422,19 @@ export async function googleCallbackController(req: Request, res: Response): Pro
     // Set httpOnly cookies instead of exposing tokens in URL
     setAuthCookies(res, result.accessToken, result.refreshToken);
 
-    const frontendUrl = getFrontendUrl();
+    const frontendUrl = getFrontendUrl(req);
     const redirectQuery = state ? `&redirect=${encodeURIComponent(state)}` : "";
     res.redirect(`${frontendUrl}/callback?provider=google${redirectQuery}`);
   } catch (error) {
     if (error instanceof AuthError) {
       // Redirect to frontend with error
-      const frontendUrl = getFrontendUrl();
+      const frontendUrl = getFrontendUrl(req);
       res.redirect(`${frontendUrl}/login?error=${encodeURIComponent(error.message)}`);
       return;
     }
 
     console.error("Google callback error:", error);
-    const frontendUrl = getFrontendUrl();
+    const frontendUrl = getFrontendUrl(req);
     res.redirect(`${frontendUrl}/login?error=authentication_failed`);
   }
 }
@@ -476,19 +484,19 @@ export async function githubCallbackController(req: Request, res: Response): Pro
     // Set httpOnly cookies instead of exposing tokens in URL
     setAuthCookies(res, result.accessToken, result.refreshToken);
 
-    const frontendUrl = getFrontendUrl();
+    const frontendUrl = getFrontendUrl(req);
     const redirectQuery = state ? `&redirect=${encodeURIComponent(state)}` : "";
     res.redirect(`${frontendUrl}/callback?provider=github${redirectQuery}`);
   } catch (error) {
     if (error instanceof AuthError) {
       // Redirect to frontend with error
-      const frontendUrl = getFrontendUrl();
+      const frontendUrl = getFrontendUrl(req);
       res.redirect(`${frontendUrl}/login?error=${encodeURIComponent(error.message)}`);
       return;
     }
 
     console.error("GitHub callback error:", error);
-    const frontendUrl = getFrontendUrl();
+    const frontendUrl = getFrontendUrl(req);
     res.redirect(`${frontendUrl}/login?error=authentication_failed`);
   }
 }

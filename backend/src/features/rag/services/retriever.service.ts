@@ -36,7 +36,7 @@ export async function hybridRetrieve(query: string, incomingFilters: Record<stri
     Promise.resolve(rerankDocumentHits(documentHits)),
   ]);
 
-  const context = buildContext({
+  const context = await buildContext({
     catalogHits,
     documentHits: rankedDocuments,
     graphHits,

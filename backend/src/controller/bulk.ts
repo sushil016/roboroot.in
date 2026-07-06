@@ -3,6 +3,7 @@ import { prisma } from "../lib/prisma.js";
 import { ComponentProductType } from "../generated/prisma/client.js";
 import { uploadFileToAzure, FileType } from "../services/azure-storage.service.js";
 import { generateUniqueSlug } from "../features/components/services/component.service.js";
+import { cacheInvalidate } from "../lib/redis.js";
 
 // A robust CSV line splitter that respects quotes
 function splitCSVLine(line: string): string[] {
@@ -79,6 +80,17 @@ function parseCSV(csvText: string): Record<string, string>[] {
   return result;
 }
 
+function getRowValue(row: Record<string, string>, possibleKeys: string[]): string | undefined {
+  const normalizedKeys = possibleKeys.map((k) => k.toLowerCase().replace(/[^a-z0-9]/g, ""));
+  for (const rowKey of Object.keys(row)) {
+    const normRowKey = rowKey.toLowerCase().replace(/[^a-z0-9]/g, "");
+    if (normalizedKeys.includes(normRowKey)) {
+      return row[rowKey]?.trim();
+    }
+  }
+  return undefined;
+}
+
 /**
  * POST /api/admin/products/bulk-import
  * Accepts a CSV file in request body (or text field "csv")
@@ -108,55 +120,105 @@ export async function bulkImportController(req: Request, res: Response): Promise
     let createdCount = 0;
     let updatedCount = 0;
 
-    // Process all rows in a database transaction to ensure atomicity
-    await prisma.$transaction(async (tx) => {
-      for (const row of rows) {
-        const name = row.name || row.Name;
-        if (!name) continue; // Skip rows without a name
+    // Process all rows sequentially to avoid transaction timeouts
+    for (const row of rows) {
+      const name = getRowValue(row, ["name", "title"]);
+      if (!name) continue; // Skip rows without a name
 
-        // Parse price (Rupees to Cents)
-        const unitPrice = parseFloat(row.unitPrice || row.price || "0");
-        const unitPriceCents = Math.round(unitPrice * 100);
+      // Parse price (Rupees to Cents)
+      const unitPrice = parseFloat(getRowValue(row, ["unitPrice", "price"]) || "0");
+      const unitPriceCents = Math.round(unitPrice * 100);
 
-        const discountedPriceVal = row.discountedPrice || row.salePrice;
-        const discountedPriceCents = discountedPriceVal
-          ? Math.round(parseFloat(discountedPriceVal) * 100)
-          : null;
+      const discountedPriceVal = getRowValue(row, ["discountedPrice", "salePrice", "discounted_price"]);
+      const discountedPriceCents = discountedPriceVal
+        ? Math.round(parseFloat(discountedPriceVal) * 100)
+        : null;
 
-        const stockQuantity = parseInt(row.stockQuantity || row.stock || "0", 10);
-        const sku = row.sku || row.SKU || null;
-        const description = row.description || row.Description || null;
-        const typicalUseCase = row.typicalUseCase || null;
-        const vendorLink = row.vendorLink || null;
-        const imageUrl = row.imageUrl || null;
-        const category = row.category || "Electronics Components";
-        const subcategory = row.subcategory || "General";
-        const brand = row.brand || null;
-        const slug = row.slug || null;
-        const productType = (row.productType || row.product_type || "ELECTRONICS_COMPONENT") as ComponentProductType;
+      const stockQuantity = parseInt(getRowValue(row, ["stockQuantity", "stock", "stock_quantity"]) || "0", 10);
+      const sku = getRowValue(row, ["sku"]) || null;
+      const description = getRowValue(row, ["description", "desc"]) || null;
+      const typicalUseCase = getRowValue(row, ["typicalUseCase", "typical_use_case"]) || null;
+      const vendorLink = getRowValue(row, ["vendorLink", "vendor_link"]) || null;
+      const imageUrl = getRowValue(row, ["imageUrl", "image_url", "image"]) || null;
+      const category = getRowValue(row, ["category"]) || "Electronics Components";
+      const subcategory = getRowValue(row, ["subcategory"]) || "General";
+      const brand = getRowValue(row, ["brand"]) || null;
+      const slug = getRowValue(row, ["slug"]) || null;
+      const productType = (getRowValue(row, ["productType", "product_type"]) || "ELECTRONICS_COMPONENT") as ComponentProductType;
 
-        const tags = row.tags
-          ? row.tags.split(",").map((t) => t.trim()).filter(Boolean)
-          : [];
+      const tagsVal = getRowValue(row, ["tags"]);
+      const tags = tagsVal
+        ? tagsVal.split(",").map((t) => t.trim()).filter(Boolean)
+        : [];
 
-        const isBestSeller = row.isBestSeller === "true" || row.isBestSeller === "1";
-        const isRobomaniacItem = row.isRobomaniacItem === "true" || row.isRobomaniacItem === "1";
-        const isSoftware = row.isSoftware === "true" || row.isSoftware === "1";
-        const isActive = row.isActive !== "false" && row.isActive !== "0";
+      const isBestSellerVal = getRowValue(row, ["isBestSeller", "is_best_seller", "bestseller"]);
+      const isBestSeller = isBestSellerVal === "true" || isBestSellerVal === "1";
 
-        // Try to match by ID or SKU
-        const id = row.id || row.ID || null;
-        let existing = null;
+      const isRobomaniacItemVal = getRowValue(row, ["isRobomaniacItem", "is_robomaniac_item", "robomaniac"]);
+      const isRobomaniacItem = isRobomaniacItemVal === "true" || isRobomaniacItemVal === "1";
 
-        if (id) {
-          existing = await tx.component.findUnique({ where: { id } });
-        } else if (sku) {
-          existing = await tx.component.findUnique({ where: { sku } });
+      const isSoftwareVal = getRowValue(row, ["isSoftware", "is_software", "software"]);
+      const isSoftware = isSoftwareVal === "true" || isSoftwareVal === "1";
+
+      const isActiveVal = getRowValue(row, ["isActive", "is_active", "active"]);
+      const isActive = isActiveVal !== "false" && isActiveVal !== "0";
+
+      console.log(`[CSV Import Row Debug] Parsed values for "${name}":`, {
+        sku,
+        description,
+        typicalUseCase,
+        imageUrl,
+        tags,
+      });
+
+      // Try to match by SKU first (since SKU is a unique constraint field), then by ID
+      const id = getRowValue(row, ["id"]) || null;
+      let existing = null;
+
+      if (sku) {
+        existing = await prisma.component.findUnique({ where: { sku } });
+      }
+      if (!existing && id) {
+        existing = await prisma.component.findUnique({ where: { id } });
+      }
+
+      if (existing) {
+        const updateData: any = {
+          name,
+          sku,
+          description,
+          typicalUseCase,
+          vendorLink,
+          imageUrl,
+          category,
+          subcategory,
+          brand,
+          productType,
+          tags,
+          isBestSeller,
+          isRobomaniacItem,
+          isSoftware,
+          unitPriceCents,
+          discountedPriceCents,
+          stockQuantity,
+          isActive,
+        };
+        if (slug) {
+          updateData.slug = await generateUniqueSlug(slug, existing.id);
+        } else if (name !== existing.name) {
+          updateData.slug = await generateUniqueSlug(name, existing.id);
         }
-
-        if (existing) {
-          const updateData: any = {
+        await prisma.component.update({
+          where: { id: existing.id },
+          data: updateData,
+        });
+        updatedCount++;
+      } else {
+        const finalSlug = slug ? await generateUniqueSlug(slug) : await generateUniqueSlug(name);
+        await prisma.component.create({
+          data: {
             name,
+            slug: finalSlug,
             sku,
             description,
             typicalUseCase,
@@ -174,44 +236,14 @@ export async function bulkImportController(req: Request, res: Response): Promise
             discountedPriceCents,
             stockQuantity,
             isActive,
-          };
-          if (slug) {
-            updateData.slug = await generateUniqueSlug(slug, existing.id);
-          }
-          await tx.component.update({
-            where: { id: existing.id },
-            data: updateData,
-          });
-          updatedCount++;
-        } else {
-          const finalSlug = slug ? await generateUniqueSlug(slug) : await generateUniqueSlug(name);
-          await tx.component.create({
-            data: {
-              name,
-              slug: finalSlug,
-              sku,
-              description,
-              typicalUseCase,
-              vendorLink,
-              imageUrl,
-              category,
-              subcategory,
-              brand,
-              productType,
-              tags,
-              isBestSeller,
-              isRobomaniacItem,
-              isSoftware,
-              unitPriceCents,
-              discountedPriceCents,
-              stockQuantity,
-              isActive,
-            },
-          });
-          createdCount++;
-        }
+          },
+        });
+        createdCount++;
       }
-    });
+    }
+
+    // Invalidate components cache so updates reflect immediately
+    await cacheInvalidate("http:/api/components*");
 
     res.status(200).json({
       success: true,

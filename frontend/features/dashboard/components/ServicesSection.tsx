@@ -6,7 +6,7 @@ import { homeIcons } from "@/features/dashboard/components/home-icons";
 
 export function ServicesSection() {
   return (
-    <section className="border-y border-[#D8D8C4] bg-background">
+    <section className="border-y border-[#D2D2D0] bg-background">
       <div className="mx-auto max-w-7xl px-4 py-12">
         <motion.div
           initial={{ opacity: 0, y: 22 }}
@@ -40,7 +40,7 @@ export function ServicesSection() {
                     hidden: { opacity: 0, x: 24 },
                     show: { opacity: 1, x: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
                   }}
-                  className="card-hover-bar w-72 shrink-0 rounded-xl border border-[#D8D8C4] bg-[#F3F3E4] p-6"
+                  className="card-hover-bar w-72 shrink-0 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] p-6"
                 >
                   <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-background text-[#1CA2D1] shadow-sm">
                     <Icon className="h-6 w-6" />

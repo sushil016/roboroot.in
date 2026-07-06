@@ -2,11 +2,13 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Heart, Package, ShoppingCart, Zap } from "lucide-react";
+import { Heart, Package, ShoppingCart, Zap, ArrowRight, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 import type { Component } from "@/types/marketplace.types";
-import { formatPrice } from "@/store/cart.store";
+import { useCartStore, formatPrice } from "@/store/cart.store";
 import { productImageUrl } from "@/features/products/data/catalog";
 
 interface ProductRevealCardProps {
@@ -37,7 +39,12 @@ export function ProductRevealCard({
   className,
   compact = false,
 }: ProductRevealCardProps) {
+  const router = useRouter();
   const [hovered, setHovered] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
+  const addItem = useCartStore((state) => state.addItem);
+  const itemQuantity = useCartStore((state) => state.getItemQuantity(component.id));
+
   const isOutOfStock = component.stockQuantity === 0;
   const isLowStock = !isOutOfStock && component.stockQuantity <= 10;
   const accent = CATEGORY_ACCENT[component.category] ?? "#1CA2D1";
@@ -88,7 +95,7 @@ export function ProductRevealCard({
             </span>
           )}
           {component.isRobomaniacItem && (
-            <span className="rounded-md border border-[#D8D8C4] bg-white/95 px-1.5 py-0.5 text-[8px] sm:text-[10px] font-bold text-zinc-600">
+            <span className="rounded-md border border-[#D2D2D0] bg-white/95 px-1.5 py-0.5 text-[8px] sm:text-[10px] font-bold text-zinc-600">
               Robomaniac
             </span>
           )}
@@ -106,8 +113,8 @@ export function ProductRevealCard({
             isWishlisted
               ? "border-transparent bg-[#1CA2D1] text-white scale-100 opacity-100"
               : hovered
-              ? "border-[#D8D8C4] bg-white text-zinc-400 opacity-100 scale-100"
-              : "border-[#D8D8C4] bg-white text-zinc-400 opacity-0 scale-90"
+              ? "border-[#D2D2D0] bg-white text-zinc-400 opacity-100 scale-100"
+              : "border-[#D2D2D0] bg-white text-zinc-400 opacity-0 scale-90"
           )}
           onClick={(e) => {
             e.preventDefault();
@@ -216,22 +223,62 @@ export function ProductRevealCard({
 
         {/* Add to cart button */}
         <button
-          disabled={isOutOfStock}
+          disabled={isOutOfStock || isAdding}
           onClick={(e) => {
             e.preventDefault();
-            if (!isOutOfStock) onAddToCart?.(component, 1);
+            e.stopPropagation();
+
+            if (itemQuantity > 0) {
+              router.push("/cart");
+              return;
+            }
+
+            if (isOutOfStock) return;
+
+            setIsAdding(true);
+            setTimeout(() => {
+              addItem(component, 1);
+              toast.success("Added to cart!", {
+                description: component.name,
+              });
+              setIsAdding(false);
+            }, 750);
           }}
           className={cn(
-            "mt-3 flex w-full items-center justify-center gap-1.5 rounded-xl py-2 sm:py-2.5 text-[10px] sm:text-[12px] font-bold transition-all duration-200",
+            "mt-3 flex w-full items-center justify-center gap-1.5 rounded-xl py-2 sm:py-2.5 text-[10px] sm:text-[12px] font-bold transition-all duration-200 relative overflow-hidden",
             isOutOfStock
               ? "cursor-not-allowed bg-zinc-100 text-zinc-400"
+              : isAdding
+              ? "bg-zinc-200 text-zinc-500 cursor-wait"
+              : itemQuantity > 0
+              ? "bg-emerald-600 text-white shadow-md shadow-emerald-600/20"
               : hovered
-              ? "bg-[#1CA2D1] text-white shadow-md shadow-[#1CA2D1]/20"
-              : "bg-[#F3F3E4] text-[#222222] hover:bg-[#1CA2D1] hover:text-white"
+              ? "bg-zinc-900 text-[#F2F2F0] shadow-md shadow-zinc-900/20"
+              : "bg-zinc-100 text-[#222222] hover:bg-zinc-900 hover:text-[#F2F2F0]"
           )}
         >
           {isOutOfStock ? (
             "Out of Stock"
+          ) : isAdding ? (
+            <>
+              <Loader2 className="h-3 w-3 sm:h-3.5 sm:w-3.5 animate-spin shrink-0" />
+              <motion.span
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+              >
+                Adding...
+              </motion.span>
+            </>
+          ) : itemQuantity > 0 ? (
+            <>
+              <ArrowRight className="h-3 w-3 sm:h-3.5 sm:w-3.5 shrink-0" />
+              <motion.span
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+              >
+                Go to Cart
+              </motion.span>
+            </>
           ) : (
             <>
               <ShoppingCart className="h-3 w-3 sm:h-3.5 sm:w-3.5 shrink-0" />
@@ -251,14 +298,14 @@ export function ProductRevealCardSkeleton({ compact = false }: { compact?: boole
         className={cn("animate-pulse bg-[#F0F0E8]", compact ? "aspect-[4/3]" : "aspect-square")}
       />
       <div className="space-y-2.5 px-4 py-4">
-        <div className="h-2.5 w-14 animate-pulse rounded-full bg-[#EAEADB]" />
-        <div className="h-4 w-full animate-pulse rounded-md bg-[#EAEADB]" />
-        <div className="h-4 w-3/4 animate-pulse rounded-md bg-[#EAEADB]" />
+        <div className="h-2.5 w-14 animate-pulse rounded-full bg-[#E8E8E6]" />
+        <div className="h-4 w-full animate-pulse rounded-md bg-[#E8E8E6]" />
+        <div className="h-4 w-3/4 animate-pulse rounded-md bg-[#E8E8E6]" />
         <div className="flex items-center justify-between pt-2">
-          <div className="h-6 w-20 animate-pulse rounded-md bg-[#EAEADB]" />
-          <div className="h-2.5 w-16 animate-pulse rounded-full bg-[#EAEADB]" />
+          <div className="h-6 w-20 animate-pulse rounded-md bg-[#E8E8E6]" />
+          <div className="h-2.5 w-16 animate-pulse rounded-full bg-[#E8E8E6]" />
         </div>
-        <div className="h-9 w-full animate-pulse rounded-xl bg-[#EAEADB]" />
+        <div className="h-9 w-full animate-pulse rounded-xl bg-[#E8E8E6]" />
       </div>
     </div>
   );

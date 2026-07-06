@@ -52,7 +52,7 @@ function AnnouncementBar() {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -28, opacity: 0 }}
           transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-          className="absolute inset-0 flex items-center justify-center gap-2 text-sm font-semibold text-[#FAFAED]"
+          className="absolute inset-0 flex items-center justify-center gap-2 text-sm font-semibold text-[#F2F2F0]"
         >
           <span>{msg.icon}</span>
           <span>{msg.text}</span>
@@ -87,10 +87,10 @@ export function Header() {
   });
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-[#D8D8C4] bg-[#FAFAED] text-zinc-950">
+    <header className="sticky top-0 z-50 w-full border-b border-[#D2D2D0] bg-[#F2F2F0] text-zinc-950">
       <AnnouncementBar />
 
-      <div className="border-b border-[#D8D8C4]">
+      <div className="border-b border-[#D2D2D0]">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3">
           <a
             href="mailto:support@roboroot.in"
@@ -116,14 +116,14 @@ export function Header() {
               type="button"
               onClick={openCommandPalette}
               aria-label="Open search"
-              className="flex w-full max-w-xl items-center gap-2 overflow-hidden rounded-full border border-[#D8D8C4] bg-[#F3F3E4] pl-5 pr-2 shadow-sm transition hover:border-[#1CA2D1]/40 hover:shadow-md h-12 text-left"
+              className="flex w-full max-w-xl items-center gap-2 overflow-hidden rounded-full border border-[#D2D2D0] bg-[#F2F2F0] pl-5 pr-2 shadow-sm transition hover:border-[#1CA2D1]/40 hover:shadow-md h-12 text-left"
             >
               <Search className="h-4 w-4 shrink-0 text-zinc-400" />
               <span className="flex-1 text-sm font-medium text-zinc-400">
                 Search Arduino, ESP32, sensors...
               </span>
               {shortcutKey && (
-                <kbd className="shrink-0 hidden sm:inline-flex items-center px-1.5 py-0.5 text-[10px] font-bold text-zinc-400 bg-[#EAEADB] border border-[#D8D8C4] rounded-md leading-none select-none">
+                <kbd className="shrink-0 hidden sm:inline-flex items-center px-1.5 py-0.5 text-[10px] font-bold text-zinc-400 bg-[#E8E8E6] border border-[#D2D2D0] rounded-md leading-none select-none">
                   {shortcutKey}
                 </kbd>
               )}
@@ -178,7 +178,7 @@ export function Header() {
         </div>
       </div>
 
-      <div className="hidden border-b border-[#D8D8C4] lg:block">
+      <div className="hidden border-b border-[#D2D2D0] lg:block">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4">
           <nav className="flex h-14 items-center text-sm font-bold text-zinc-800">
             <div
@@ -186,7 +186,7 @@ export function Header() {
               onMouseEnter={() => setOpenMenu('catalog')}
               onMouseLeave={() => setOpenMenu(null)}
             >
-              <Link href="/categories" className="flex h-full items-center gap-2 bg-[#EAEADB] px-5 text-zinc-950 link-underline-left transition" onClick={() => setOpenMenu(null)}>
+              <Link href="/categories" className="flex h-full items-center gap-2 bg-[#E8E8E6] px-5 text-zinc-950 link-underline-left transition" onClick={() => setOpenMenu(null)}>
                 <Menu className="h-5 w-5" />
                 All Categories
                 <ChevronDown className="h-4 w-4" />
@@ -227,7 +227,7 @@ export function Header() {
               Robotics Kits
             </Link>
           </nav>
-          <Link href="/components" className="btn-underline-white flex h-14 items-center gap-2 border-x border-[#D8D8C4] bg-[#1CA2D1] px-5 text-sm font-bold text-white transition hover:opacity-90">
+          <Link href="/components" className="btn-underline-white flex h-14 items-center gap-2 border-x border-[#D2D2D0] bg-[#1CA2D1] px-5 text-sm font-bold text-white transition hover:opacity-90">
             <ShoppingBag className="h-5 w-5" />
             Browse Store
           </Link>
@@ -236,13 +236,13 @@ export function Header() {
 
       <div className="lg:hidden">
         {mobileMenuOpen && (
-          <div className="space-y-2 border-t border-[#D8D8C4] bg-[#FAFAED] px-4 py-4">
-            <form action="/components" className="flex overflow-hidden rounded-md border border-[#D8D8C4]">
+          <div className="space-y-2 border-t border-[#D2D2D0] bg-[#F2F2F0] px-4 py-4">
+            <form action="/components" className="flex overflow-hidden rounded-md border border-[#D2D2D0]">
               <input
                 name="search"
                 aria-label="Search components"
                 placeholder="Search parts"
-                className="h-11 min-w-0 flex-1 bg-[#F3F3E4] px-3 text-sm outline-none"
+                className="h-11 min-w-0 flex-1 bg-[#F2F2F0] px-3 text-sm outline-none"
               />
               <button className="bg-[#1CA2D1] px-4 text-sm font-bold text-white">
                 <Search className="h-4 w-4" />
@@ -265,7 +265,7 @@ export function Header() {
               All Categories
             </Link>
             {categoryTree.length > 0 && (
-              <div className="rounded-md border border-[#D8D8C4] bg-[#F3F3E4] p-3">
+              <div className="rounded-md border border-[#D2D2D0] bg-[#F2F2F0] p-3">
                 <p className="mb-2 text-xs font-black uppercase tracking-wide text-[#1CA2D1]">
                   Category tree
                 </p>
@@ -274,7 +274,7 @@ export function Header() {
                     <Link
                       key={cat.category}
                       href={`/components?category=${encodeURIComponent(cat.category)}`}
-                      className="rounded-md bg-[#FAFAED] px-3 py-2 text-sm font-bold text-zinc-800"
+                      className="rounded-md bg-[#F2F2F0] px-3 py-2 text-sm font-bold text-zinc-800"
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       {cat.category}
@@ -319,7 +319,7 @@ export function Header() {
             {!isAuthenticated && (
               <div className="grid grid-cols-2 gap-2 pt-2">
                 <Link href="/login" className="block">
-                  <Button variant="outline" className="w-full border-[#D8D8C4]">
+                  <Button variant="outline" className="w-full border-[#D2D2D0]">
                     Login
                   </Button>
                 </Link>
@@ -348,9 +348,9 @@ function CatalogMegaMenu({
 
   return (
     <div className={`absolute top-full z-50 pt-2 ${align === 'wide' ? '-left-72' : 'left-0'}`}>
-      <div className="w-[960px] max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl border border-[#D8D8C4] bg-[#F3F3E4] shadow-2xl shadow-zinc-200/60">
+      <div className="w-[960px] max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] shadow-2xl shadow-zinc-200/60">
 
-        <div className="flex items-center justify-between border-b border-[#D8D8C4] bg-[#FAFAED] px-6 py-4">
+        <div className="flex items-center justify-between border-b border-[#D2D2D0] bg-[#F2F2F0] px-6 py-4">
           <div>
             <p className="text-[10px] font-black uppercase tracking-[0.20em] text-[#1CA2D1]">
               Browse Catalog
@@ -402,7 +402,7 @@ function CatalogMegaMenu({
           ))}
         </div>
 
-        <div className="flex items-center justify-between border-t border-[#D8D8C4] bg-[#FAFAED]/80 px-6 py-3">
+        <div className="flex items-center justify-between border-t border-[#D2D2D0] bg-[#F2F2F0]/80 px-6 py-3">
           <div className="flex items-center gap-5 text-[11px] font-bold text-zinc-500">
             <Link href="/components?isBestSeller=true" onClick={onClose} className="transition-colors hover:text-[#1CA2D1]">↗ Best Sellers</Link>
             <Link href="/projects" onClick={onClose} className="transition-colors hover:text-[#1CA2D1]">↗ Projects</Link>

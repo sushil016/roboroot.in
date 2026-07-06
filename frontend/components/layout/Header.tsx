@@ -55,7 +55,7 @@ function AnnouncementBar() {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -28, opacity: 0 }}
           transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-          className="absolute inset-0 flex items-center justify-center gap-2 text-sm font-semibold text-[#FAFAED]"
+          className="absolute inset-0 flex items-center justify-center gap-2 text-sm font-semibold text-[#F2F2F0]"
         >
           <span>{msg.icon}</span>
           <span>{msg.text}</span>
@@ -93,10 +93,10 @@ export function Header() {
   });
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-[#D8D8C4] bg-background text-zinc-950">
+    <header className="sticky top-0 z-50 w-full border-b border-[#D2D2D0] bg-background text-zinc-950">
       <AnnouncementBar />
 
-      <div className="border-b border-[#D8D8C4]">
+      <div className="border-b border-[#D2D2D0]">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3">
           <a
             href="mailto:support@roboroot.in"
@@ -122,14 +122,14 @@ export function Header() {
               type="button"
               onClick={openCommandPalette}
               aria-label="Open search"
-              className="flex w-full max-w-xl items-center gap-2 overflow-hidden rounded-full border border-[#D8D8C4] bg-[#F3F3E4] pl-5 pr-2 shadow-sm transition hover:border-[#1CA2D1]/40 hover:shadow-md h-12 text-left"
+              className="flex w-full max-w-xl items-center gap-2 overflow-hidden rounded-full border border-[#D2D2D0] bg-[#F2F2F0] pl-5 pr-2 shadow-sm transition hover:border-[#1CA2D1]/40 hover:shadow-md h-12 text-left"
             >
               <Search className="h-4 w-4 shrink-0 text-zinc-400" />
               <span className="flex-1 text-sm font-medium text-zinc-400">
                 Search Arduino, ESP32, sensors...
               </span>
               {shortcutKey && (
-                <kbd className="shrink-0 hidden sm:inline-flex items-center px-1.5 py-0.5 text-[10px] font-bold text-zinc-400 bg-[#EAEADB] border border-[#D8D8C4] rounded-md leading-none select-none">
+                <kbd className="shrink-0 hidden sm:inline-flex items-center px-1.5 py-0.5 text-[10px] font-bold text-zinc-400 bg-[#E8E8E6] border border-[#D2D2D0] rounded-md leading-none select-none">
                   {shortcutKey}
                 </kbd>
               )}
@@ -195,7 +195,7 @@ export function Header() {
         </div>
       </div>
 
-      <div className="hidden border-b border-[#D8D8C4] lg:block">
+      <div className="hidden border-b border-[#D2D2D0] lg:block">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 relative">
           <nav className="flex h-14 items-center text-sm font-bold text-zinc-800">
             <div
@@ -203,7 +203,7 @@ export function Header() {
               onMouseEnter={() => setOpenMenu('catalog')}
               onMouseLeave={() => setOpenMenu(null)}
             >
-              <Link href="/categories" className="flex h-full items-center gap-2 bg-[#EAEADB] px-5 text-zinc-950 link-underline-left transition" onClick={() => setOpenMenu(null)}>
+              <Link href="/categories" className="flex h-full items-center gap-2 bg-[#E8E8E6] px-5 text-zinc-950 link-underline-left transition" onClick={() => setOpenMenu(null)}>
                 <Menu className="h-5 w-5" />
                 All Categories
                 <ChevronDown className="h-4 w-4" />
@@ -234,7 +234,7 @@ export function Header() {
               Careers
             </Link>
           </nav>
-          <Link href="/components" className="btn-underline-white flex h-14 items-center gap-2 border-x border-[#D8D8C4] bg-[#1CA2D1] px-5 text-sm font-bold text-white transition hover:opacity-90">
+          <Link href="/components" className="btn-underline-white flex h-14 items-center gap-2 border-x border-[#D2D2D0] bg-[#1CA2D1] px-5 text-sm font-bold text-white transition hover:opacity-90">
             <ShoppingBag className="h-5 w-5" />
             Browse Store
           </Link>
@@ -259,12 +259,12 @@ export function Header() {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 220 }}
-              className="fixed bottom-0 right-0 top-0 z-50 w-80 max-w-[85vw] bg-background p-6 shadow-2xl border-l border-[#D8D8C4] lg:hidden flex flex-col justify-between h-full"
+              className="fixed bottom-0 right-0 top-0 z-50 w-80 max-w-[85vw] bg-background p-6 shadow-2xl border-l border-[#D2D2D0] lg:hidden flex flex-col justify-between h-full"
             >
               <div className="flex flex-col h-full justify-between">
                 <div>
                   {/* Drawer Header */}
-                  <div className="flex items-center justify-between pb-4 border-b border-[#D8D8C4]">
+                  <div className="flex items-center justify-between pb-4 border-b border-[#D2D2D0]">
                     <div className="flex items-center gap-2">
                       <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#1CA2D1]/10 text-[#1CA2D1]">
                         <Menu className="h-4 w-4" />
@@ -275,7 +275,7 @@ export function Header() {
                       variant="ghost"
                       size="icon"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="h-8 w-8 rounded-lg border border-[#D8D8C4] hover:border-zinc-950"
+                      className="h-8 w-8 rounded-lg border border-[#D2D2D0] hover:border-zinc-950"
                     >
                       <X className="h-4 w-4" />
                     </Button>
@@ -285,7 +285,7 @@ export function Header() {
                   <div className="mt-6 space-y-2.5 overflow-y-auto max-h-[calc(100vh-200px)] pr-1">
                     <Link
                       href="/components"
-                      className="flex items-center gap-3 rounded-xl border border-[#D8D8C4]/60 bg-[#FAFAED]/40 px-4 py-3 text-sm font-bold text-zinc-800 hover:bg-[#1CA2D1]/5 hover:text-[#1CA2D1] hover:border-[#1CA2D1]/30 transition-all"
+                      className="flex items-center gap-3 rounded-xl border border-[#D2D2D0]/60 bg-[#F2F2F0]/40 px-4 py-3 text-sm font-bold text-zinc-800 hover:bg-[#1CA2D1]/5 hover:text-[#1CA2D1] hover:border-[#1CA2D1]/30 transition-all"
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       <Cpu className="h-4 w-4 text-[#1CA2D1]" />
@@ -293,7 +293,7 @@ export function Header() {
                     </Link>
                     <Link
                       href="/projects"
-                      className="flex items-center gap-3 rounded-xl border border-[#D8D8C4]/60 bg-[#FAFAED]/40 px-4 py-3 text-sm font-bold text-zinc-800 hover:bg-[#1CA2D1]/5 hover:text-[#1CA2D1] hover:border-[#1CA2D1]/30 transition-all"
+                      className="flex items-center gap-3 rounded-xl border border-[#D2D2D0]/60 bg-[#F2F2F0]/40 px-4 py-3 text-sm font-bold text-zinc-800 hover:bg-[#1CA2D1]/5 hover:text-[#1CA2D1] hover:border-[#1CA2D1]/30 transition-all"
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       <BookOpen className="h-4 w-4 text-[#1CA2D1]" />
@@ -301,7 +301,7 @@ export function Header() {
                     </Link>
                     <Link
                       href="/stem-store"
-                      className="flex items-center gap-3 rounded-xl border border-[#D8D8C4]/60 bg-[#FAFAED]/40 px-4 py-3 text-sm font-bold text-zinc-800 hover:bg-[#1CA2D1]/5 hover:text-[#1CA2D1] hover:border-[#1CA2D1]/30 transition-all"
+                      className="flex items-center gap-3 rounded-xl border border-[#D2D2D0]/60 bg-[#F2F2F0]/40 px-4 py-3 text-sm font-bold text-zinc-800 hover:bg-[#1CA2D1]/5 hover:text-[#1CA2D1] hover:border-[#1CA2D1]/30 transition-all"
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       <ShoppingBag className="h-4 w-4 text-[#1CA2D1]" />
@@ -309,7 +309,7 @@ export function Header() {
                     </Link>
                     <Link
                       href="/track-order"
-                      className="flex items-center gap-3 rounded-xl border border-[#D8D8C4]/60 bg-[#FAFAED]/40 px-4 py-3 text-sm font-bold text-zinc-800 hover:bg-[#1CA2D1]/5 hover:text-[#1CA2D1] hover:border-[#1CA2D1]/30 transition-all"
+                      className="flex items-center gap-3 rounded-xl border border-[#D2D2D0]/60 bg-[#F2F2F0]/40 px-4 py-3 text-sm font-bold text-zinc-800 hover:bg-[#1CA2D1]/5 hover:text-[#1CA2D1] hover:border-[#1CA2D1]/30 transition-all"
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       <PackageCheck className="h-4 w-4 text-[#1CA2D1]" />
@@ -317,7 +317,7 @@ export function Header() {
                     </Link>
                     <Link
                       href="/bulk-order"
-                      className="flex items-center gap-3 rounded-xl border border-[#D8D8C4]/60 bg-[#FAFAED]/40 px-4 py-3 text-sm font-bold text-zinc-800 hover:bg-[#1CA2D1]/5 hover:text-[#1CA2D1] hover:border-[#1CA2D1]/30 transition-all"
+                      className="flex items-center gap-3 rounded-xl border border-[#D2D2D0]/60 bg-[#F2F2F0]/40 px-4 py-3 text-sm font-bold text-zinc-800 hover:bg-[#1CA2D1]/5 hover:text-[#1CA2D1] hover:border-[#1CA2D1]/30 transition-all"
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       <Layers className="h-4 w-4 text-[#1CA2D1]" />
@@ -325,7 +325,7 @@ export function Header() {
                     </Link>
                     <Link
                       href="/about"
-                      className="flex items-center gap-3 rounded-xl border border-[#D8D8C4]/60 bg-[#FAFAED]/40 px-4 py-3 text-sm font-bold text-zinc-800 hover:bg-[#1CA2D1]/5 hover:text-[#1CA2D1] hover:border-[#1CA2D1]/30 transition-all"
+                      className="flex items-center gap-3 rounded-xl border border-[#D2D2D0]/60 bg-[#F2F2F0]/40 px-4 py-3 text-sm font-bold text-zinc-800 hover:bg-[#1CA2D1]/5 hover:text-[#1CA2D1] hover:border-[#1CA2D1]/30 transition-all"
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       <Info className="h-4 w-4 text-[#1CA2D1]" />
@@ -333,7 +333,7 @@ export function Header() {
                     </Link>
                     <Link
                       href="/careers"
-                      className="flex items-center gap-3 rounded-xl border border-[#D8D8C4]/60 bg-[#FAFAED]/40 px-4 py-3 text-sm font-bold text-zinc-800 hover:bg-[#1CA2D1]/5 hover:text-[#1CA2D1] hover:border-[#1CA2D1]/30 transition-all"
+                      className="flex items-center gap-3 rounded-xl border border-[#D2D2D0]/60 bg-[#F2F2F0]/40 px-4 py-3 text-sm font-bold text-zinc-800 hover:bg-[#1CA2D1]/5 hover:text-[#1CA2D1] hover:border-[#1CA2D1]/30 transition-all"
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       <Users className="h-4 w-4 text-[#1CA2D1]" />
@@ -341,7 +341,7 @@ export function Header() {
                     </Link>
                     <Link
                       href="/cart"
-                      className="flex items-center gap-3 rounded-xl border border-[#D8D8C4]/60 bg-[#FAFAED]/40 px-4 py-3 text-sm font-bold text-zinc-800 hover:bg-[#1CA2D1]/5 hover:text-[#1CA2D1] hover:border-[#1CA2D1]/30 transition-all"
+                      className="flex items-center gap-3 rounded-xl border border-[#D2D2D0]/60 bg-[#F2F2F0]/40 px-4 py-3 text-sm font-bold text-zinc-800 hover:bg-[#1CA2D1]/5 hover:text-[#1CA2D1] hover:border-[#1CA2D1]/30 transition-all"
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       <ShoppingCart className="h-4 w-4 text-[#1CA2D1]" />
@@ -351,11 +351,11 @@ export function Header() {
                 </div>
 
                 {/* Drawer Footer */}
-                <div className="pt-4 border-t border-[#D8D8C4] space-y-3">
+                <div className="pt-4 border-t border-[#D2D2D0] space-y-3">
                   {!isAuthenticated ? (
                     <div className="grid grid-cols-2 gap-2">
                       <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="block">
-                        <Button variant="outline" className="w-full border-[#D8D8C4] rounded-xl font-bold">
+                        <Button variant="outline" className="w-full border-[#D2D2D0] rounded-xl font-bold">
                           Login
                         </Button>
                       </Link>
@@ -366,7 +366,7 @@ export function Header() {
                       </Link>
                     </div>
                   ) : (
-                    <div className="flex items-center gap-3 p-3 rounded-xl bg-[#FAFAED]/60 border border-[#D8D8C4]/60">
+                    <div className="flex items-center gap-3 p-3 rounded-xl bg-[#F2F2F0]/60 border border-[#D2D2D0]/60">
                       <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#1CA2D1] text-sm font-black text-white">
                         {(user?.name || user?.email || "?")[0].toUpperCase()}
                       </div>
@@ -397,9 +397,9 @@ function CatalogMegaMenu({
 
   return (
     <div className="absolute top-full left-4 right-4 z-50 pt-2">
-      <div className="w-full overflow-hidden rounded-xl border border-[#D8D8C4] bg-[#F3F3E4] shadow-2xl shadow-zinc-200/60">
+      <div className="w-full overflow-hidden rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] shadow-2xl shadow-zinc-200/60">
 
-        <div className="flex items-center justify-between border-b border-[#D8D8C4] bg-background px-6 py-4">
+        <div className="flex items-center justify-between border-b border-[#D2D2D0] bg-background px-6 py-4">
           <div>
             <p className="text-[10px] font-black uppercase tracking-[0.20em] text-[#1CA2D1]">
               Browse Catalog
@@ -423,7 +423,7 @@ function CatalogMegaMenu({
               key={cat.category}
               href={`/components?category=${encodeURIComponent(cat.category)}`}
               onClick={onClose}
-              className="group/cat flex items-center gap-3 rounded-xl border border-[#D8D8C4] bg-background/40 p-3 transition-all hover:bg-[#1CA2D1]/10 hover:border-[#1CA2D1]/30"
+              className="group/cat flex items-center gap-3 rounded-xl border border-[#D2D2D0] bg-background/40 p-3 transition-all hover:bg-[#1CA2D1]/10 hover:border-[#1CA2D1]/30"
             >
               <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#1CA2D1]/10 text-xs font-bold text-[#1CA2D1] group-hover/cat:bg-[#1CA2D1] group-hover/cat:text-white transition-colors">
                 {idx + 1}
@@ -440,7 +440,7 @@ function CatalogMegaMenu({
           ))}
         </div>
 
-        <div className="flex items-center justify-between border-t border-[#D8D8C4] bg-background/80 px-6 py-3">
+        <div className="flex items-center justify-between border-t border-[#D2D2D0] bg-background/80 px-6 py-3">
           <div className="flex items-center gap-5 text-[11px] font-bold text-zinc-500">
             <Link href="/components?isBestSeller=true" onClick={onClose} className="transition-colors hover:text-[#1CA2D1]">↗ Best Sellers</Link>
             <Link href="/projects" onClick={onClose} className="transition-colors hover:text-[#1CA2D1]">↗ Projects</Link>

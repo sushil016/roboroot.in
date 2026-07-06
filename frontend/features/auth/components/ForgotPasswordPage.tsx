@@ -37,7 +37,7 @@ export function ForgotPasswordPage() {
       className="space-y-6"
     >
       <div className="text-center space-y-2">
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#EAEADB] mx-auto">
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#E8E8E6] mx-auto">
           <Mail className="h-5 w-5 text-zinc-600" />
         </div>
         <h1 className="text-2xl font-bold tracking-tight">Reset your password</h1>
@@ -47,12 +47,12 @@ export function ForgotPasswordPage() {
       </div>
 
       {sent ? (
-        <div className="rounded-2xl border border-[#D8D8C4] bg-[#FAFAED] p-6 text-center space-y-3">
+        <div className="rounded-2xl border border-[#D2D2D0] bg-[#F2F2F0] p-6 text-center space-y-3">
           <p className="text-sm font-semibold text-[#222222]">Check your inbox</p>
           <p className="text-sm text-zinc-500">
             If this email is registered, you&apos;ll receive a reset link within a few minutes.
           </p>
-          <Button asChild variant="outline" className="border-[#D8D8C4] mt-2">
+          <Button asChild variant="outline" className="border-[#D2D2D0] mt-2">
             <Link href="/login">Back to login</Link>
           </Button>
         </div>
@@ -64,7 +64,7 @@ export function ForgotPasswordPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="border-[#D8D8C4] focus-visible:ring-[#1CA2D1]"
+            className="border-[#D2D2D0] focus-visible:ring-[#1CA2D1]"
           />
           {error && <p className="text-sm text-red-500">{error}</p>}
           <Button

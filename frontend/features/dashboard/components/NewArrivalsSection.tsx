@@ -137,7 +137,7 @@ function NewArrivalCard({ component }: { component: Component }) {
   };
 
   return (
-    <div className="group relative flex flex-col h-full w-full overflow-hidden rounded-2xl border border-[#D8D8C4] bg-white p-3 sm:p-4 transition-all duration-300 hover:border-[#1CA2D1]/40 hover:shadow-xl hover:-translate-y-1">
+    <div className="group relative flex flex-col h-full w-full overflow-hidden rounded-2xl border border-[#D2D2D0] bg-white p-3 sm:p-4 transition-all duration-300 hover:border-[#1CA2D1]/40 hover:shadow-xl hover:-translate-y-1">
       {/* New Badge */}
       <div className="absolute left-2 top-2 sm:left-3 sm:top-3 z-10 flex items-center gap-0.5 sm:gap-1 rounded-full bg-emerald-600 px-2 py-0.5 sm:px-2.5 sm:py-1 text-[8px] sm:text-[9px] font-black uppercase tracking-wider text-white shadow-sm">
         <span>NEW</span>
@@ -155,14 +155,14 @@ function NewArrivalCard({ component }: { component: Component }) {
         className={`absolute right-2 top-2 sm:right-3 sm:top-3 z-10 flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full shadow-sm border transition-all duration-200 ${
           isWishlisted
             ? "border-transparent bg-[#1CA2D1] text-white scale-100"
-            : "border-[#D8D8C4] bg-[#FAFAED]/90 text-zinc-500 hover:bg-white hover:text-zinc-800"
+            : "border-[#D2D2D0] bg-[#F2F2F0]/90 text-zinc-500 hover:bg-white hover:text-zinc-800"
         }`}
       >
         <Heart className="h-3 w-3 sm:h-3.5 sm:w-3.5" fill={isWishlisted ? "currentColor" : "none"} />
       </button>
 
       {/* Image container */}
-      <Link href={`/components/${component.slug}`} className="relative flex aspect-square w-full shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[#FAFAED]/60 p-2 sm:p-4">
+      <Link href={`/components/${component.slug}`} className="relative flex aspect-square w-full shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[#F2F2F0]/60 p-2 sm:p-4">
         {component.imageUrl ? (
           <img
             src={component.imageUrl}
@@ -195,7 +195,7 @@ function NewArrivalCard({ component }: { component: Component }) {
           {/* Tags */}
           <div className="mt-1.5 flex h-5 items-center gap-1 overflow-hidden">
             {component.tags.slice(0, 2).map((tag) => (
-              <span key={tag} className="rounded bg-[#FAFAED] px-1.5 py-0.5 text-[8px] sm:text-[9px] font-semibold text-zinc-500">
+              <span key={tag} className="rounded bg-[#F2F2F0] px-1.5 py-0.5 text-[8px] sm:text-[9px] font-semibold text-zinc-500">
                 #{tag}
               </span>
             ))}
@@ -203,7 +203,7 @@ function NewArrivalCard({ component }: { component: Component }) {
         </div>
 
         {/* Price and Add button */}
-        <div className="mt-3 flex items-center justify-between border-t border-[#FAFAED] pt-2 sm:pt-3 flex-shrink-0">
+        <div className="mt-3 flex items-center justify-between border-t border-[#F2F2F0] pt-2 sm:pt-3 flex-shrink-0">
           <div className="flex flex-col">
             {component.discountedPriceCents && component.discountedPriceCents < component.unitPriceCents ? (
               <>
@@ -280,12 +280,12 @@ export function NewArrivalsSection() {
                 <div key={i} className="overflow-hidden rounded-2xl border border-[#E4E4D8] bg-white animate-pulse h-[280px] sm:h-[380px]">
                   <div className="aspect-square bg-[#F0F0E8]" />
                   <div className="space-y-2.5 px-4 py-4">
-                    <div className="h-2.5 w-14 rounded-full bg-[#EAEADB]" />
-                    <div className="h-4 w-full rounded-md bg-[#EAEADB]" />
-                    <div className="h-4 w-3/4 rounded-md bg-[#EAEADB]" />
+                    <div className="h-2.5 w-14 rounded-full bg-[#E8E8E6]" />
+                    <div className="h-4 w-full rounded-md bg-[#E8E8E6]" />
+                    <div className="h-4 w-3/4 rounded-md bg-[#E8E8E6]" />
                     <div className="flex items-center justify-between pt-2">
-                      <div className="h-6 w-20 rounded-md bg-[#EAEADB]" />
-                      <div className="h-2.5 w-16 rounded-full bg-[#EAEADB]" />
+                      <div className="h-6 w-20 rounded-md bg-[#E8E8E6]" />
+                      <div className="h-2.5 w-16 rounded-full bg-[#E8E8E6]" />
                     </div>
                   </div>
                 </div>

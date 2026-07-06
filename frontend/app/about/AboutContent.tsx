@@ -72,7 +72,7 @@ export function AboutContent() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: idx * 0.05, duration: 0.4 }}
-                  className="bg-white border border-[#D8D8C4] rounded-2xl p-6 shadow-xs hover:shadow-md transition duration-200"
+                  className="bg-white border border-[#D2D2D0] rounded-2xl p-6 shadow-xs hover:shadow-md transition duration-200"
                 >
                   <div className="p-3 bg-[#1CA2D1]/10 rounded-xl text-[#1CA2D1] w-fit mb-4">
                     <Icon className="w-6 h-6" />
@@ -86,7 +86,7 @@ export function AboutContent() {
         </section>
 
         {/* Milestone Timeline */}
-        <section className="space-y-8 bg-white border border-[#D8D8C4] rounded-3xl p-8 shadow-xs">
+        <section className="space-y-8 bg-white border border-[#D2D2D0] rounded-3xl p-8 shadow-xs">
           <div className="text-center">
             <h2 className="text-3xl font-extrabold text-[#222222] flex items-center justify-center gap-2">
               <Milestone className="w-6 h-6 text-[#1CA2D1]" />
@@ -104,7 +104,7 @@ export function AboutContent() {
                 </div>
 
                 {/* Bullet dot */}
-                <span className="absolute -left-2 top-2 w-4 h-4 rounded-full border-4 border-[#F3F3E4] bg-[#1CA2D1] ring-4 ring-[#1CA2D1]/20 transition group-hover:scale-110" />
+                <span className="absolute -left-2 top-2 w-4 h-4 rounded-full border-4 border-[#F2F2F0] bg-[#1CA2D1] ring-4 ring-[#1CA2D1]/20 transition group-hover:scale-110" />
 
                 {/* Content */}
                 <div>

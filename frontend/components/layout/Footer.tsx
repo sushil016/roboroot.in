@@ -63,7 +63,7 @@ export function Footer() {
       >
         <path
           d="M0,0 H1440 V20 L1160,20 L940,52 L0,52 Z"
-          fill="#FAFAED"
+          fill="#F2F2F0"
         />
       </svg>
       <div className="container mx-auto px-4 pb-12 pt-6">
@@ -83,18 +83,18 @@ export function Footer() {
               Empowering students and makers to build innovative solutions.
             </p>
             <div className="text-sm text-zinc-400">
-              <p className="font-semibold text-[#FAFAED]">roboroot.in</p>
+              <p className="font-semibold text-[#F2F2F0]">roboroot.in</p>
               <p>Making robotics accessible for everyone</p>
             </div>
           </div>
 
           {footerGroups.map((group) => (
             <div key={group.title}>
-              <h3 className="mb-4 font-semibold text-[#FAFAED]">{group.title}</h3>
+              <h3 className="mb-4 font-semibold text-[#F2F2F0]">{group.title}</h3>
               <ul className="space-y-2">
                 {group.links.map(([label, href]) => (
                   <li key={href}>
-                    <Link href={href} className="footer-link-underline pb-0.5 text-sm text-zinc-400 hover:text-[#FAFAED] transition-colors">
+                    <Link href={href} className="footer-link-underline pb-0.5 text-sm text-zinc-400 hover:text-[#F2F2F0] transition-colors">
                       {label}
                     </Link>
                   </li>
@@ -104,7 +104,7 @@ export function Footer() {
           ))}
 
           <div className="md:col-start-5">
-            <h4 className="mb-3 font-semibold text-[#FAFAED]">Connect With Us</h4>
+            <h4 className="mb-3 font-semibold text-[#F2F2F0]">Connect With Us</h4>
             <div className="flex space-x-3">
               <a href="https://twitter.com/roboroot" target="_blank" rel="noopener noreferrer"
                 className="rounded-md border border-zinc-800 p-2 text-zinc-400 hover:border-[#1CA2D1] hover:text-[#1CA2D1] transition-colors" aria-label="Twitter">

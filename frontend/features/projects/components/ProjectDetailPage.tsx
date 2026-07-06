@@ -63,7 +63,7 @@ export function ProjectDetailPage() {
   if (isLoading) {
     return (
       <div className="bg-[#f2f2f0] min-h-screen">
-        <div className="bg-[#FAFAED] border-b border-[#D8D8C4] px-6 py-4">
+        <div className="bg-[#F2F2F0] border-b border-[#D2D2D0] px-6 py-4">
           <Skeleton className="h-4 w-40 rounded-full" />
         </div>
         <div className="container mx-auto px-4 py-8">
@@ -90,7 +90,7 @@ export function ProjectDetailPage() {
   if (error || !project) {
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center gap-5 px-4 text-center">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#EAEADB]">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#E8E8E6]">
           <Package className="h-7 w-7 text-zinc-400" />
         </div>
         <div>
@@ -135,7 +135,7 @@ export function ProjectDetailPage() {
   return (
     <div className="bg-[#f2f2f0] text-[#222222] min-h-screen pb-20 lg:pb-12">
       {/* ── Breadcrumb nav ── */}
-      <div className="border-b border-[#D8D8C4] bg-[#FAFAED] px-4 sm:px-6 py-3">
+      <div className="border-b border-[#D2D2D0] bg-[#F2F2F0] px-4 sm:px-6 py-3">
         <div className="mx-auto flex max-w-7xl items-center gap-2 text-xs font-medium text-zinc-500">
           <Link href="/" className="hover:text-[#222222] transition-colors">Home</Link>
           <span>/</span>
@@ -157,7 +157,7 @@ export function ProjectDetailPage() {
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white rounded-2xl p-4 border border-[#D8D8C4] shadow-xs space-y-4"
+              className="bg-white rounded-2xl p-4 border border-[#D2D2D0] shadow-xs space-y-4"
             >
               {/* Main Image Slider */}
               <div className="relative aspect-video rounded-xl overflow-hidden bg-zinc-150 group border border-[#E4E4D8]">
@@ -248,7 +248,7 @@ export function ProjectDetailPage() {
             </motion.div>
 
             {/* Quick stats panel */}
-            <div className="bg-white rounded-2xl p-5 border border-[#D8D8C4] shadow-xs space-y-4">
+            <div className="bg-white rounded-2xl p-5 border border-[#D2D2D0] shadow-xs space-y-4">
               <h3 className="text-sm font-bold text-[#222222] uppercase tracking-wider">Build Overview</h3>
               
               <div className="grid grid-cols-2 gap-4">
@@ -300,7 +300,7 @@ export function ProjectDetailPage() {
 
             {/* Tutorial Video */}
             {project.youtubeUrl && (
-              <div className="bg-white rounded-2xl p-5 border border-[#D8D8C4] shadow-xs space-y-3">
+              <div className="bg-white rounded-2xl p-5 border border-[#D2D2D0] shadow-xs space-y-3">
                 <div className="flex items-center gap-2 text-sm font-bold text-[#222222]">
                   <Play className="w-4 h-4 text-red-500 fill-current" />
                   <span>Tutorial Video</span>
@@ -328,7 +328,7 @@ export function ProjectDetailPage() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.05 }}
-              className="bg-white rounded-2xl p-6 border border-[#D8D8C4] shadow-xs space-y-4"
+              className="bg-white rounded-2xl p-6 border border-[#D2D2D0] shadow-xs space-y-4"
             >
               <div className="space-y-2">
                 <div className="flex items-center gap-1.5 text-xs font-bold text-[#1CA2D1]">
@@ -392,7 +392,7 @@ export function ProjectDetailPage() {
                 {project.preBuiltStock > 0 && (
                   <button
                     onClick={handlePreBuiltClick}
-                    className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-white border border-[#D8D8C4] hover:bg-zinc-50 text-xs font-bold text-zinc-700 transition active:scale-95 cursor-pointer"
+                    className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-white border border-[#D2D2D0] hover:bg-zinc-50 text-xs font-bold text-zinc-700 transition active:scale-95 cursor-pointer"
                   >
                     <Package className="w-4 h-4 shrink-0 text-[#1CA2D1]" />
                     <span>Order Pre-Built Kit</span>
@@ -417,7 +417,7 @@ export function ProjectDetailPage() {
             </motion.div>
 
             {/* Description */}
-            <div className="bg-white rounded-2xl p-6 border border-[#D8D8C4] shadow-xs space-y-4">
+            <div className="bg-white rounded-2xl p-6 border border-[#D2D2D0] shadow-xs space-y-4">
               <h3 className="text-lg font-bold text-[#222222]">About This Project</h3>
               <p className="text-sm leading-7 text-zinc-600 whitespace-pre-wrap">
                 {project.description}
@@ -426,7 +426,7 @@ export function ProjectDetailPage() {
 
             {/* Learning Outcomes */}
             {project.learningOutcomes && project.learningOutcomes.length > 0 && (
-              <div className="bg-white rounded-2xl p-6 border border-[#D8D8C4] shadow-xs space-y-4">
+              <div className="bg-white rounded-2xl p-6 border border-[#D2D2D0] shadow-xs space-y-4">
                 <h3 className="text-lg font-bold text-[#222222] flex items-center gap-2">
                   <GraduationCap className="w-5 h-5 text-[#1CA2D1]" />
                   What You&apos;ll Learn
@@ -445,7 +445,7 @@ export function ProjectDetailPage() {
 
             {/* Prerequisites */}
             {project.prerequisites && project.prerequisites.length > 0 && (
-              <div className="bg-white rounded-2xl p-6 border border-[#D8D8C4] shadow-xs space-y-4">
+              <div className="bg-white rounded-2xl p-6 border border-[#D2D2D0] shadow-xs space-y-4">
                 <h3 className="text-lg font-bold text-[#222222] flex items-center gap-2">
                   <AlertCircle className="w-5 h-5 text-amber-500" />
                   Prerequisites
@@ -464,7 +464,7 @@ export function ProjectDetailPage() {
 
             {/* PDF Documentation Resources */}
             {project.pdfUrls && project.pdfUrls.length > 0 && (
-              <div className="bg-white rounded-2xl p-6 border border-[#D8D8C4] shadow-xs space-y-4">
+              <div className="bg-white rounded-2xl p-6 border border-[#D2D2D0] shadow-xs space-y-4">
                 <h3 className="text-lg font-bold text-[#222222] flex items-center gap-2">
                   <FileText className="w-4.5 h-4.5 text-[#1CA2D1]" />
                   Documentation & Handbooks
@@ -506,7 +506,7 @@ export function ProjectDetailPage() {
 
             {/* External Links Resources */}
             {project.externalLinks && project.externalLinks.length > 0 && (
-              <div className="bg-white rounded-2xl p-6 border border-[#D8D8C4] shadow-xs space-y-4">
+              <div className="bg-white rounded-2xl p-6 border border-[#D2D2D0] shadow-xs space-y-4">
                 <h3 className="text-lg font-bold text-[#222222] flex items-center gap-2">
                   <ExternalLink className="w-4.5 h-4.5 text-[#1CA2D1]" />
                   Additional Links
@@ -575,7 +575,7 @@ export function ProjectDetailPage() {
           {project.preBuiltStock > 0 && (
             <button
               onClick={handlePreBuiltClick}
-              className="h-10 px-3 rounded-xl border border-[#D8D8C4] hover:bg-zinc-50 text-xs font-bold text-zinc-700 transition active:scale-95 flex items-center justify-center shrink-0"
+              className="h-10 px-3 rounded-xl border border-[#D2D2D0] hover:bg-zinc-50 text-xs font-bold text-zinc-700 transition active:scale-95 flex items-center justify-center shrink-0"
               aria-label="Order pre-built project"
             >
               <Package className="w-4 h-4" />

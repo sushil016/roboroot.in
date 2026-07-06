@@ -81,11 +81,11 @@ export function CategoryCard({
     >
       {/*
         Override --color-background so MagicCard's inner "bg-background" fill
-        uses our beige (#F3F3E4) instead of the page background (#f2f2f0).
+        uses our beige (#F2F2F0) instead of the page background (#f2f2f0).
       */}
       <div
         className="h-full rounded-xl sm:rounded-2xl"
-        style={{ "--color-background": "#F3F3E4" } as React.CSSProperties}
+        style={{ "--color-background": "#F2F2F0" } as React.CSSProperties}
       >
         <Link href={href} className="block h-full rounded-xl sm:rounded-2xl group">
           <MagicCard
@@ -182,7 +182,7 @@ export function CategoryCard({
 
               {/* CTA — hidden on mobile */}
               <div className="hidden sm:block">
-                <span className="inline-flex items-center gap-1.5 rounded-xl bg-[#EAEADB] px-4 py-2 text-sm font-semibold text-gray-700 group-hover:bg-[#222222] group-hover:text-white transition-colors duration-200">
+                <span className="inline-flex items-center gap-1.5 rounded-xl bg-[#E8E8E6] px-4 py-2 text-sm font-semibold text-gray-700 group-hover:bg-[#222222] group-hover:text-white transition-colors duration-200">
                   View Products
                   <ArrowRight className="h-3.5 w-3.5" />
                 </span>

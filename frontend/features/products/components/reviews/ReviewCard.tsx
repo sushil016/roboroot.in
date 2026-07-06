@@ -34,7 +34,7 @@ export function ReviewCard({
   };
 
   return (
-    <div className="bg-white rounded-2xl p-5 border border-[#D8D8C4] shadow-xs space-y-4 hover:border-zinc-300 transition-colors">
+    <div className="bg-white rounded-2xl p-5 border border-[#D2D2D0] shadow-xs space-y-4 hover:border-zinc-300 transition-colors">
       <div className="flex items-start justify-between gap-4">
         {/* Rating and Title */}
         <div className="flex items-center gap-3">

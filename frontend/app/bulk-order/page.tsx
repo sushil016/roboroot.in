@@ -207,7 +207,7 @@ export default function BulkOrderPage() {
 
             <div className="grid gap-6 sm:grid-cols-1">
               {OFFERS.map(({ icon: Icon, title, desc }) => (
-                <div key={title} className="bg-white border border-[#D8D8C4] rounded-2xl p-5 shadow-2xs flex gap-4 items-start">
+                <div key={title} className="bg-white border border-[#D2D2D0] rounded-2xl p-5 shadow-2xs flex gap-4 items-start">
                   <div className="p-2.5 bg-[#1CA2D1]/10 rounded-xl text-[#1CA2D1] shrink-0">
                     <Icon className="w-6 h-6" />
                   </div>
@@ -222,7 +222,7 @@ export default function BulkOrderPage() {
 
           {/* RIGHT — Quote Request Form */}
           <div className="lg:col-span-7">
-            <div className="bg-white border border-[#D8D8C4] rounded-3xl p-6 sm:p-8 shadow-xs">
+            <div className="bg-white border border-[#D2D2D0] rounded-3xl p-6 sm:p-8 shadow-xs">
               
               {formSubmitted ? (
                 <div className="text-center py-8 space-y-6">

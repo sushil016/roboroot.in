@@ -25,9 +25,9 @@ export function CategorySidebar({ activeCategory }: CategorySidebarProps) {
 
   return (
     <aside className="sticky top-20 h-[calc(100vh-6rem)] w-full overflow-y-auto scrollbar-hide">
-      <div className="overflow-hidden rounded-2xl border border-[#D8D8C4] bg-[#F3F3E4]">
+      <div className="overflow-hidden rounded-2xl border border-[#D2D2D0] bg-[#F2F2F0]">
 
-        <div className="flex items-center gap-3 border-b border-[#D8D8C4] bg-[#EAEADB] px-4 py-4">
+        <div className="flex items-center gap-3 border-b border-[#D2D2D0] bg-[#E8E8E6] px-4 py-4">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#1CA2D1]/10 ring-1 ring-[#1CA2D1]/20">
             <LayoutGrid className="h-4 w-4 text-[#1CA2D1]" />
           </div>
@@ -56,7 +56,7 @@ export function CategorySidebar({ activeCategory }: CategorySidebarProps) {
                   onMouseEnter={() => setHovered(cat.category)}
                   onMouseLeave={() => setHovered(null)}
                   className={`group relative w-full overflow-hidden rounded-xl px-3 py-2.5 text-left transition-colors ${
-                    isExpanded ? "bg-[#EAEADB]" : "hover:bg-[#EAEADB]/60"
+                    isExpanded ? "bg-[#E8E8E6]" : "hover:bg-[#E8E8E6]/60"
                   }`}
                 >
                   <motion.div
@@ -85,7 +85,7 @@ export function CategorySidebar({ activeCategory }: CategorySidebarProps) {
 
                     <div className="flex items-center gap-1.5">
                       {cat.count > 0 && (
-                        <span className="rounded-md bg-[#D8D8C4] px-1.5 py-0.5 text-[10px] font-black tabular-nums text-zinc-600">
+                        <span className="rounded-md bg-[#D2D2D0] px-1.5 py-0.5 text-[10px] font-black tabular-nums text-zinc-600">
                           {cat.count}
                         </span>
                       )}
@@ -113,7 +113,7 @@ export function CategorySidebar({ activeCategory }: CategorySidebarProps) {
                       transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
                       className="overflow-hidden"
                     >
-                      <div className="mb-1 mt-0.5 space-y-0.5 ml-8 border-l border-[#D8D8C4] pl-3">
+                      <div className="mb-1 mt-0.5 space-y-0.5 ml-8 border-l border-[#D2D2D0] pl-3">
                         <motion.div
                           initial={{ x: -6, opacity: 0 }}
                           animate={{ x: 0, opacity: 1 }}
@@ -121,7 +121,7 @@ export function CategorySidebar({ activeCategory }: CategorySidebarProps) {
                         >
                           <Link
                             href={categoryHref}
-                            className="group/sub flex items-center gap-2 rounded-lg px-2.5 py-2 text-xs font-bold text-[#1CA2D1] transition-colors hover:bg-[#EAEADB]"
+                            className="group/sub flex items-center gap-2 rounded-lg px-2.5 py-2 text-xs font-bold text-[#1CA2D1] transition-colors hover:bg-[#E8E8E6]"
                           >
                             <span className="h-1 w-1 shrink-0 rounded-full bg-[#1CA2D1]" />
                             All {cat.category}
@@ -140,9 +140,9 @@ export function CategorySidebar({ activeCategory }: CategorySidebarProps) {
                           >
                             <Link
                               href={`/components?category=${encodeURIComponent(cat.category)}&subcategory=${encodeURIComponent(sub.name)}`}
-                              className="group/sub flex items-center gap-2 rounded-lg px-2.5 py-2 text-xs font-semibold text-zinc-500 transition-colors hover:bg-[#EAEADB] hover:text-[#1CA2D1]"
+                              className="group/sub flex items-center gap-2 rounded-lg px-2.5 py-2 text-xs font-semibold text-zinc-500 transition-colors hover:bg-[#E8E8E6] hover:text-[#1CA2D1]"
                             >
-                              <span className="h-1 w-1 shrink-0 rounded-full bg-[#D8D8C4] transition-colors group-hover/sub:bg-[#1CA2D1]" />
+                              <span className="h-1 w-1 shrink-0 rounded-full bg-[#D2D2D0] transition-colors group-hover/sub:bg-[#1CA2D1]" />
                               {sub.name}
                               {sub.count > 0 && (
                                 <span className="ml-auto text-[10px] tabular-nums text-zinc-400">
@@ -161,7 +161,7 @@ export function CategorySidebar({ activeCategory }: CategorySidebarProps) {
           })}
         </nav>
 
-        <div className="border-t border-[#D8D8C4] p-3">
+        <div className="border-t border-[#D2D2D0] p-3">
           <Link
             href="/components"
             className="block w-full rounded-xl bg-zinc-950 py-2.5 text-center text-sm font-black text-white transition hover:bg-[#1CA2D1]"

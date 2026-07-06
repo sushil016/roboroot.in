@@ -46,7 +46,7 @@ function VerifyEmailContent() {
     >
       {status === "loading" && (
         <>
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#EAEADB] mx-auto">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#E8E8E6] mx-auto">
             <Loader2 className="h-5 w-5 text-zinc-600 animate-spin" />
           </div>
           <h1 className="text-2xl font-bold tracking-tight">Verifying your email…</h1>
@@ -120,13 +120,13 @@ function ResendButton() {
         placeholder="Your email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className="flex-1 rounded-xl border border-[#D8D8C4] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1CA2D1]"
+        className="flex-1 rounded-xl border border-[#D2D2D0] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1CA2D1]"
       />
       <button
         type="button"
         onClick={handleResend}
         disabled={loading || !email}
-        className="rounded-xl bg-[#EAEADB] px-4 py-2 text-sm font-semibold text-zinc-700 hover:bg-[#D8D8C4] disabled:opacity-50 transition-colors"
+        className="rounded-xl bg-[#E8E8E6] px-4 py-2 text-sm font-semibold text-zinc-700 hover:bg-[#D2D2D0] disabled:opacity-50 transition-colors"
       >
         {loading ? "…" : "Resend"}
       </button>

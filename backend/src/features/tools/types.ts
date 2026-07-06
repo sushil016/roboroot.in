@@ -11,7 +11,11 @@ export type ToolName =
   | "list_addresses"
   | "checkout_cart"
   | "compare_prices"
-  | "get_user_profile";
+  | "get_user_profile"
+  | "compose_bom"
+  | "fetch_competitor_price"
+  | "bulk_order"
+  | "confirm_bulk_order";
 
 export type ToolActorRole = "guest" | "user" | "admin";
 

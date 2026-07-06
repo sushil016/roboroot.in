@@ -24,7 +24,7 @@ export function LoginForm() {
   });
 
   return (
-    <div className="rounded-2xl border border-[#D8D8C4] bg-white px-8 py-8 shadow-lg">
+    <div className="rounded-2xl border border-[#D2D2D0] bg-white px-8 py-8 shadow-lg">
       <form onSubmit={handleSubmit((d) => login(d))} className="space-y-5">
         {/* Email */}
         <div className="space-y-1.5">
@@ -37,7 +37,7 @@ export function LoginForm() {
             disabled={isLoading}
             className={cn(
               "w-full rounded-xl border bg-[#EBEBEB] px-4 py-3 text-sm font-medium text-[#222222] placeholder:text-zinc-400 outline-none transition focus:border-[#1CA2D1] focus:bg-white focus:ring-2 focus:ring-[#1CA2D1]/20",
-              errors.email ? "border-red-400" : "border-[#D8D8C4]"
+              errors.email ? "border-red-400" : "border-[#D2D2D0]"
             )}
           />
           {errors.email && (
@@ -65,7 +65,7 @@ export function LoginForm() {
               disabled={isLoading}
               className={cn(
                 "w-full rounded-xl border bg-[#EBEBEB] px-4 py-3 pr-11 text-sm font-medium text-[#222222] placeholder:text-zinc-400 outline-none transition focus:border-[#1CA2D1] focus:bg-white focus:ring-2 focus:ring-[#1CA2D1]/20",
-                errors.password ? "border-red-400" : "border-[#D8D8C4]"
+                errors.password ? "border-red-400" : "border-[#D2D2D0]"
               )}
             />
             <button
@@ -95,9 +95,9 @@ export function LoginForm() {
 
       {/* Divider */}
       <div className="my-6 flex items-center gap-3">
-        <div className="h-px flex-1 bg-[#D8D8C4]" />
+        <div className="h-px flex-1 bg-[#D2D2D0]" />
         <span className="text-xs font-semibold text-zinc-400">OR</span>
-        <div className="h-px flex-1 bg-[#D8D8C4]" />
+        <div className="h-px flex-1 bg-[#D2D2D0]" />
       </div>
 
       <OAuthButtons isLoading={isLoading} />

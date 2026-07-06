@@ -109,9 +109,9 @@ export function ProjectFiltersComponent({ filters, onFilterChange }: ProjectFilt
     filters.preBuiltAvailable;
 
   return (
-    <div className="rounded-2xl bg-[#F3F3E4] overflow-hidden">
+    <div className="rounded-2xl bg-[#F2F2F0] overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between px-5 py-4 border-b border-[#D8D8C4] bg-zinc-950">
+      <div className="flex items-center justify-between px-5 py-4 border-b border-[#D2D2D0] bg-zinc-950">
         <div className="flex items-center gap-2">
           <SlidersHorizontal className="h-5 w-5 text-[#1CA2D1]" />
           <h2 className="text-xl font-black text-white">Filters</h2>
@@ -127,7 +127,7 @@ export function ProjectFiltersComponent({ filters, onFilterChange }: ProjectFilt
         )}
       </div>
 
-      <div className="divide-y divide-[#D8D8C4]">
+      <div className="divide-y divide-[#D2D2D0]">
         {/* Category */}
         <div className="px-5 py-5">
           <p className="text-xs font-black text-zinc-500 uppercase tracking-widest mb-3">
@@ -145,7 +145,7 @@ export function ProjectFiltersComponent({ filters, onFilterChange }: ProjectFilt
                   className={`px-3 py-1 rounded-lg text-sm font-bold transition-all ${
                     isSelected
                       ? 'bg-[#1CA2D1] text-white'
-                      : 'text-zinc-600 hover:text-zinc-950 hover:bg-[#EAEADB]'
+                      : 'text-zinc-600 hover:text-zinc-950 hover:bg-[#E8E8E6]'
                   }`}
                 >
                   {getCategoryLabel(category)}
@@ -172,7 +172,7 @@ export function ProjectFiltersComponent({ filters, onFilterChange }: ProjectFilt
                   className={`px-3 py-2 rounded-lg text-sm font-bold text-left transition-all ${
                     isSelected
                       ? 'bg-[#1CA2D1] text-white'
-                      : 'text-zinc-600 hover:text-zinc-950 hover:bg-[#EAEADB]'
+                      : 'text-zinc-600 hover:text-zinc-950 hover:bg-[#E8E8E6]'
                   }`}
                 >
                   {getDifficultyLabel(difficulty)}
@@ -194,7 +194,7 @@ export function ProjectFiltersComponent({ filters, onFilterChange }: ProjectFilt
               value={minCost}
               onChange={(e) => setMinCost(e.target.value)}
               min="0"
-              className="border border-[#D8D8C4] rounded-lg text-sm font-bold bg-white"
+              className="border border-[#D2D2D0] rounded-lg text-sm font-bold bg-white"
             />
             <span className="text-zinc-400 shrink-0">—</span>
             <Input
@@ -203,12 +203,12 @@ export function ProjectFiltersComponent({ filters, onFilterChange }: ProjectFilt
               value={maxCost}
               onChange={(e) => setMaxCost(e.target.value)}
               min="0"
-              className="border border-[#D8D8C4] rounded-lg text-sm font-bold bg-white"
+              className="border border-[#D2D2D0] rounded-lg text-sm font-bold bg-white"
             />
           </div>
           <button
             onClick={handleCostFilter}
-            className="w-full py-2 rounded-lg text-sm font-black text-[#1CA2D1] hover:bg-[#EAEADB] transition-colors"
+            className="w-full py-2 rounded-lg text-sm font-black text-[#1CA2D1] hover:bg-[#E8E8E6] transition-colors"
           >
             Apply
           </button>
@@ -226,7 +226,7 @@ export function ProjectFiltersComponent({ filters, onFilterChange }: ProjectFilt
               value={minTime}
               onChange={(e) => setMinTime(e.target.value)}
               min="0"
-              className="border border-[#D8D8C4] rounded-lg text-sm font-bold bg-white"
+              className="border border-[#D2D2D0] rounded-lg text-sm font-bold bg-white"
             />
             <span className="text-zinc-400 shrink-0">—</span>
             <Input
@@ -235,12 +235,12 @@ export function ProjectFiltersComponent({ filters, onFilterChange }: ProjectFilt
               value={maxTime}
               onChange={(e) => setMaxTime(e.target.value)}
               min="0"
-              className="border border-[#D8D8C4] rounded-lg text-sm font-bold bg-white"
+              className="border border-[#D2D2D0] rounded-lg text-sm font-bold bg-white"
             />
           </div>
           <button
             onClick={handleTimeFilter}
-            className="w-full py-2 rounded-lg text-sm font-black text-[#1CA2D1] hover:bg-[#EAEADB] transition-colors"
+            className="w-full py-2 rounded-lg text-sm font-black text-[#1CA2D1] hover:bg-[#E8E8E6] transition-colors"
           >
             Apply
           </button>
@@ -257,7 +257,7 @@ export function ProjectFiltersComponent({ filters, onFilterChange }: ProjectFilt
               className={`px-3 py-2 rounded-lg text-sm font-bold text-left transition-all ${
                 filters.isFeatured
                   ? 'bg-[#1CA2D1] text-white'
-                  : 'text-zinc-600 hover:text-zinc-950 hover:bg-[#EAEADB]'
+                  : 'text-zinc-600 hover:text-zinc-950 hover:bg-[#E8E8E6]'
               }`}
             >
               Featured Only
@@ -267,7 +267,7 @@ export function ProjectFiltersComponent({ filters, onFilterChange }: ProjectFilt
               className={`px-3 py-2 rounded-lg text-sm font-bold text-left transition-all ${
                 filters.preBuiltAvailable
                   ? 'bg-[#1CA2D1] text-white'
-                  : 'text-zinc-600 hover:text-zinc-950 hover:bg-[#EAEADB]'
+                  : 'text-zinc-600 hover:text-zinc-950 hover:bg-[#E8E8E6]'
               }`}
             >
               Pre-Built Available

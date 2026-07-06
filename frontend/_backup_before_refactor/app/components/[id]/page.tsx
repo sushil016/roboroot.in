@@ -120,7 +120,7 @@ export default function ComponentDetailPage() {
   if (isLoading) {
     return (
       <div className="bg-[#f2f2f0]">
-        <div className="bg-[#FAFAED] border-b border-[#D8D8C4] px-6 py-4">
+        <div className="bg-[#F2F2F0] border-b border-[#D2D2D0] px-6 py-4">
           <Skeleton className="h-4 w-40 rounded-full" />
         </div>
         <DetailSkeleton />
@@ -132,7 +132,7 @@ export default function ComponentDetailPage() {
   if (error || !component) {
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center gap-5 px-4 text-center">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#EAEADB]">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#E8E8E6]">
           <Package className="h-7 w-7 text-zinc-400" />
         </div>
         <div>
@@ -180,7 +180,7 @@ export default function ComponentDetailPage() {
   return (
     <div className="bg-[#f2f2f0] text-[#222222]">
       {/* ── Breadcrumb nav ── */}
-      <div className="border-b border-[#D8D8C4] bg-[#FAFAED] px-6 py-3">
+      <div className="border-b border-[#D2D2D0] bg-[#F2F2F0] px-6 py-3">
         <div className="mx-auto flex max-w-7xl items-center gap-2 text-xs font-medium text-zinc-500">
           <Link href="/" className="hover:text-[#222222] transition-colors">Home</Link>
           <span>/</span>
@@ -228,7 +228,7 @@ export default function ComponentDetailPage() {
               {TRUST.map(({ icon: Icon, label }) => (
                 <div
                   key={label}
-                  className="flex flex-col items-center gap-1.5 rounded-xl border border-[#D8D8C4] bg-white p-3 text-center"
+                  className="flex flex-col items-center gap-1.5 rounded-xl border border-[#D2D2D0] bg-white p-3 text-center"
                 >
                   <Icon className="h-4 w-4 text-[#1CA2D1]" />
                   <p className="text-[10px] font-semibold leading-tight text-zinc-600">{label}</p>
@@ -256,7 +256,7 @@ export default function ComponentDetailPage() {
                   </span>
                 )}
                 {component.isRobomaniacItem && (
-                  <span className="rounded-full border border-[#D8D8C4] bg-white px-3 py-0.5 text-[11px] font-semibold text-zinc-600">
+                  <span className="rounded-full border border-[#D2D2D0] bg-white px-3 py-0.5 text-[11px] font-semibold text-zinc-600">
                     Robomaniac
                   </span>
                 )}
@@ -280,7 +280,7 @@ export default function ComponentDetailPage() {
             </div>
 
             {/* Stock + qty + actions */}
-            <div className="rounded-2xl border border-[#D8D8C4] bg-white p-5 shadow-sm space-y-5">
+            <div className="rounded-2xl border border-[#D2D2D0] bg-white p-5 shadow-sm space-y-5">
               {/* Stock indicator */}
               <div
                 className={cn(
@@ -316,10 +316,10 @@ export default function ComponentDetailPage() {
                     Quantity
                   </p>
                   <div className="flex items-center gap-3">
-                    <div className="flex items-center overflow-hidden rounded-xl border border-[#D8D8C4] bg-[#FAFAED]">
+                    <div className="flex items-center overflow-hidden rounded-xl border border-[#D2D2D0] bg-[#F2F2F0]">
                       <button
                         onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                        className="flex h-10 w-10 items-center justify-center text-zinc-600 hover:bg-[#EAEADB] transition-colors"
+                        className="flex h-10 w-10 items-center justify-center text-zinc-600 hover:bg-[#E8E8E6] transition-colors"
                       >
                         <Minus className="h-3.5 w-3.5" />
                       </button>
@@ -337,7 +337,7 @@ export default function ComponentDetailPage() {
                       />
                       <button
                         onClick={() => setQuantity(Math.min(maxQty, quantity + 1))}
-                        className="flex h-10 w-10 items-center justify-center text-zinc-600 hover:bg-[#EAEADB] transition-colors"
+                        className="flex h-10 w-10 items-center justify-center text-zinc-600 hover:bg-[#E8E8E6] transition-colors"
                       >
                         <Plus className="h-3.5 w-3.5" />
                       </button>
@@ -385,7 +385,7 @@ export default function ComponentDetailPage() {
                   "inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl border text-sm font-semibold transition-all",
                   isWishlisted
                     ? "border-[#1CA2D1]/40 bg-[#1CA2D1]/8 text-[#1CA2D1]"
-                    : "border-[#D8D8C4] text-zinc-600 hover:border-[#222222] hover:text-[#222222]"
+                    : "border-[#D2D2D0] text-zinc-600 hover:border-[#222222] hover:text-[#222222]"
                 )}
               >
                 <Heart
@@ -419,7 +419,7 @@ export default function ComponentDetailPage() {
           className="mt-12"
         >
           {/* Tab bar */}
-          <div className="relative flex border-b border-[#D8D8C4]">
+          <div className="relative flex border-b border-[#D2D2D0]">
             {TABS.map((tab) => (
               <button
                 key={tab.id}
@@ -482,7 +482,7 @@ export default function ComponentDetailPage() {
                         {component.tags.map((tag) => (
                           <span
                             key={tag}
-                            className="rounded-full border border-[#D8D8C4] bg-white px-3 py-1 text-xs font-medium text-zinc-600"
+                            className="rounded-full border border-[#D2D2D0] bg-white px-3 py-1 text-xs font-medium text-zinc-600"
                           >
                             {tag}
                           </span>
@@ -496,7 +496,7 @@ export default function ComponentDetailPage() {
               {activeTab === "specs" && (
                 <div className="max-w-2xl">
                   <h2 className="mb-5 text-lg font-bold text-[#222222]">Specifications</h2>
-                  <div className="divide-y divide-[#D8D8C4] rounded-2xl border border-[#D8D8C4] bg-white overflow-hidden">
+                  <div className="divide-y divide-[#D2D2D0] rounded-2xl border border-[#D2D2D0] bg-white overflow-hidden">
                     {(
                       [
                         ["Category", component.category],
@@ -533,7 +533,7 @@ export default function ComponentDetailPage() {
                       href={component.vendorLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-4 rounded-2xl border border-[#D8D8C4] bg-white p-5 transition hover:border-[#1CA2D1]/40 hover:shadow-sm group"
+                      className="flex items-center gap-4 rounded-2xl border border-[#D2D2D0] bg-white p-5 transition hover:border-[#1CA2D1]/40 hover:shadow-sm group"
                     >
                       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#1CA2D1]/10">
                         <ExternalLink className="h-4 w-4 text-[#1CA2D1]" />
@@ -547,14 +547,14 @@ export default function ComponentDetailPage() {
                       <ExternalLink className="h-4 w-4 text-zinc-300 group-hover:text-[#1CA2D1] shrink-0 transition-colors" />
                     </a>
                   ) : (
-                    <div className="flex flex-col items-center gap-3 rounded-2xl border border-[#D8D8C4] bg-white p-10 text-center">
+                    <div className="flex flex-col items-center gap-3 rounded-2xl border border-[#D2D2D0] bg-white p-10 text-center">
                       <ExternalLink className="h-8 w-8 text-zinc-200" />
                       <p className="text-sm text-zinc-400">No datasheet or resources linked yet.</p>
                     </div>
                   )}
 
                   {/* Support links */}
-                  <div className="rounded-2xl border border-[#D8D8C4] bg-white p-5">
+                  <div className="rounded-2xl border border-[#D2D2D0] bg-white p-5">
                     <p className="mb-3 text-xs font-bold uppercase tracking-[0.15em] text-zinc-400">
                       Need Help?
                     </p>
@@ -585,7 +585,7 @@ export default function ComponentDetailPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="mt-4 border-t border-[#D8D8C4] pt-10"
+            className="mt-4 border-t border-[#D2D2D0] pt-10"
           >
             <div className="mb-6 flex items-center justify-between">
               <div>

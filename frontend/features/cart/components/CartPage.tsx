@@ -50,12 +50,12 @@ export function CartPage() {
             <MagicCard
               className="rounded-2xl [--color-background:#ffffff]"
               gradientFrom="#1CA2D1"
-              gradientTo="#EAEADB"
+              gradientTo="#E8E8E6"
               gradientColor="#1CA2D1"
               gradientOpacity={0.05}
             >
               <div className="flex flex-col items-center gap-5 p-16 text-center">
-                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#EAEADB]">
+                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#E8E8E6]">
                   <ShoppingBag className="h-9 w-9 text-zinc-300" />
                 </div>
                 <div>
@@ -90,14 +90,14 @@ export function CartPage() {
                     <MagicCard
                       className="rounded-2xl [--color-background:#ffffff]"
                       gradientFrom="#1CA2D1"
-                      gradientTo="#EAEADB"
+                      gradientTo="#E8E8E6"
                       gradientColor="#1CA2D1"
                       gradientOpacity={0.05}
                     >
                       <div className="p-5">
                         <div className="grid gap-3 grid-cols-[80px_minmax(0,1fr)] sm:grid-cols-[108px_minmax(0,1fr)]">
                           <Link href={`/components/${item.component.slug}`}>
-                            <div className="aspect-square overflow-hidden rounded-xl bg-[#F3F3E4] w-20 h-20 sm:w-28 sm:h-28">
+                            <div className="aspect-square overflow-hidden rounded-xl bg-[#F2F2F0] w-20 h-20 sm:w-28 sm:h-28">
                               <ProductImage
                                 src={item.component.imageUrl}
                                 alt={item.component.name}
@@ -126,11 +126,11 @@ export function CartPage() {
                             </div>
                             <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
                               {/* Qty selector */}
-                              <div className="flex items-center overflow-hidden rounded-xl border border-[#D8D8C4]">
+                              <div className="flex items-center overflow-hidden rounded-xl border border-[#D2D2D0]">
                                 <button
                                   onClick={() => updateQuantity(item.component.id, item.quantity - 1)}
                                   disabled={item.quantity <= 1}
-                                  className="h-7 w-7 sm:h-9 sm:w-9 flex items-center justify-center text-zinc-600 hover:bg-[#EAEADB] disabled:opacity-40 transition-colors"
+                                  className="h-7 w-7 sm:h-9 sm:w-9 flex items-center justify-center text-zinc-600 hover:bg-[#E8E8E6] disabled:opacity-40 transition-colors"
                                 >
                                   <Minus className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                                 </button>
@@ -139,7 +139,7 @@ export function CartPage() {
                                   onChange={(e) =>
                                     updateQuantity(item.component.id, Number(e.target.value) || 1)
                                   }
-                                  className="w-10 sm:w-12 h-7 sm:h-9 text-center text-xs sm:text-sm font-bold text-[#222222] bg-white outline-none border-x border-[#D8D8C4]"
+                                  className="w-10 sm:w-12 h-7 sm:h-9 text-center text-xs sm:text-sm font-bold text-[#222222] bg-white outline-none border-x border-[#D2D2D0]"
                                   type="number"
                                   min="1"
                                   max={item.component.stockQuantity}
@@ -147,7 +147,7 @@ export function CartPage() {
                                 <button
                                   onClick={() => updateQuantity(item.component.id, item.quantity + 1)}
                                   disabled={item.quantity >= item.component.stockQuantity}
-                                  className="h-7 w-7 sm:h-9 sm:w-9 flex items-center justify-center text-zinc-600 hover:bg-[#EAEADB] disabled:opacity-40 transition-colors"
+                                  className="h-7 w-7 sm:h-9 sm:w-9 flex items-center justify-center text-zinc-600 hover:bg-[#E8E8E6] disabled:opacity-40 transition-colors"
                                 >
                                   <Plus className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                                 </button>
@@ -181,7 +181,7 @@ export function CartPage() {
 
               <button
                 onClick={() => clearCart()}
-                className="w-full h-10 rounded-xl border border-[#D8D8C4] bg-white text-sm font-semibold text-zinc-500 hover:border-red-200 hover:text-red-500 transition-colors"
+                className="w-full h-10 rounded-xl border border-[#D2D2D0] bg-white text-sm font-semibold text-zinc-500 hover:border-red-200 hover:text-red-500 transition-colors"
               >
                 Clear Cart
               </button>
@@ -192,7 +192,7 @@ export function CartPage() {
               <MagicCard
                 className="rounded-2xl [--color-background:#ffffff]"
                 gradientFrom="#1CA2D1"
-                gradientTo="#EAEADB"
+                gradientTo="#E8E8E6"
                 gradientColor="#1CA2D1"
                 gradientOpacity={0.07}
               >
@@ -210,11 +210,11 @@ export function CartPage() {
                       </span>
                     </div>
                     {subtotal < 50000 && subtotal > 0 && (
-                      <p className="text-[11px] text-zinc-400 bg-[#FAFAED] rounded-lg px-3 py-2">
+                      <p className="text-[11px] text-zinc-400 bg-[#F2F2F0] rounded-lg px-3 py-2">
                         Add ₹{formatPrice(50000 - subtotal).replace("₹", "")} more for free shipping
                       </p>
                     )}
-                    <div className="border-t border-[#D8D8C4] pt-3">
+                    <div className="border-t border-[#D2D2D0] pt-3">
                       <div className="flex justify-between">
                         <span className="text-base font-bold text-[#222222]">Total</span>
                         <span className="text-xl font-bold text-[#1CA2D1]">{formatPrice(total)}</span>
@@ -231,7 +231,7 @@ export function CartPage() {
                   </button>
                   <Link
                     href="/components"
-                    className="flex h-10 w-full items-center justify-center rounded-xl border border-[#D8D8C4] text-sm font-semibold text-zinc-600 hover:border-[#222222] hover:text-[#222222] transition-colors"
+                    className="flex h-10 w-full items-center justify-center rounded-xl border border-[#D2D2D0] text-sm font-semibold text-zinc-600 hover:border-[#222222] hover:text-[#222222] transition-colors"
                   >
                     Continue Shopping
                   </Link>

@@ -3,6 +3,7 @@ import type { ToolName } from "./types.js";
 export interface ClaudeToolDefinition {
   name: ToolName;
   description: string;
+  requiresAuth?: boolean;
   input_schema: {
     type: "object";
     properties: Record<string, unknown>;
@@ -15,6 +16,7 @@ export const toolRegistry: ClaudeToolDefinition[] = [
   {
     name: "search_products",
     description: "Search RoboRoot products, projects, documents, and related compatibility context.",
+    requiresAuth: false,
     input_schema: {
       type: "object",
       properties: {
@@ -115,6 +117,7 @@ export const toolRegistry: ClaudeToolDefinition[] = [
   {
     name: "get_product_details",
     description: "Fetch full component details and graph relation IDs for a product.",
+    requiresAuth: false,
     input_schema: {
       type: "object",
       properties: {
@@ -158,6 +161,7 @@ export const toolRegistry: ClaudeToolDefinition[] = [
   {
     name: "compare_prices",
     description: "Fetch competitor price analysis details (Amazon, Flipkart, Robu, ElectronicsComp, Quartz Components) for a RoboRoot product.",
+    requiresAuth: false,
     input_schema: {
       type: "object",
       properties: {
@@ -176,4 +180,72 @@ export const toolRegistry: ClaudeToolDefinition[] = [
       additionalProperties: false,
     },
   },
+  {
+    name: "compose_bom",
+    description: "Generate a structured Bill of Materials (BOM) based on a project description.",
+    input_schema: {
+      type: "object",
+      properties: {
+        description: { type: "string" },
+      },
+      required: ["description"],
+      additionalProperties: false,
+    },
+  },
+  {
+    name: "fetch_competitor_price",
+    description: "Perform live competitor price query comparisons for a product component.",
+    input_schema: {
+      type: "object",
+      properties: {
+        componentId: { type: "string" },
+        platforms: {
+          type: "array",
+          items: { type: "string" },
+        },
+      },
+      required: ["componentId"],
+      additionalProperties: false,
+    },
+  },
+  {
+    name: "bulk_order",
+    description: "Process a bulk order CSV/Excel file context, returns a mapped preview of items to confirm.",
+    input_schema: {
+      type: "object",
+      properties: {
+        fileUrl: { type: "string" },
+        csvContent: { type: "string" },
+      },
+      additionalProperties: false,
+    },
+  },
+  {
+    name: "confirm_bulk_order",
+    description: "Commit the confirmed bulk order preview items into the user's cart.",
+    input_schema: {
+      type: "object",
+      properties: {
+        items: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              componentId: { type: "string" },
+              quantity: { type: "number" },
+            },
+            required: ["componentId", "quantity"],
+            additionalProperties: false,
+          },
+        },
+      },
+      required: ["items"],
+      additionalProperties: false,
+    },
+  },
 ];
+
+export function isAuthRequired(toolName: ToolName): boolean {
+  const definition = toolRegistry.find((t) => t.name === toolName);
+  return definition?.requiresAuth !== false;
+}

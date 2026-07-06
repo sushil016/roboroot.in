@@ -74,7 +74,7 @@ export function ReviewFormModal({
       />
 
       {/* Modal Content */}
-      <div className="relative bg-white w-full max-w-lg rounded-2xl border border-[#D8D8C4] shadow-2xl overflow-hidden z-10 animate-in fade-in zoom-in-95 duration-150">
+      <div className="relative bg-white w-full max-w-lg rounded-2xl border border-[#D2D2D0] shadow-2xl overflow-hidden z-10 animate-in fade-in zoom-in-95 duration-150">
         <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-100">
           <div>
             <h3 className="font-extrabold text-base sm:text-lg text-[#222222]">
@@ -147,7 +147,7 @@ export function ReviewFormModal({
               placeholder="Summarize your experience..."
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full h-11 px-4 text-sm border border-[#D8D8C4] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1CA2D1]/20 focus:border-[#1CA2D1] transition-all"
+              className="w-full h-11 px-4 text-sm border border-[#D2D2D0] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1CA2D1]/20 focus:border-[#1CA2D1] transition-all"
             />
           </div>
 
@@ -161,7 +161,7 @@ export function ReviewFormModal({
               placeholder="What did you like or dislike? How is the quality?"
               value={body}
               onChange={(e) => setBody(e.target.value)}
-              className="w-full p-4 text-sm border border-[#D8D8C4] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1CA2D1]/20 focus:border-[#1CA2D1] transition-all resize-none"
+              className="w-full p-4 text-sm border border-[#D2D2D0] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1CA2D1]/20 focus:border-[#1CA2D1] transition-all resize-none"
             />
           </div>
 
@@ -171,7 +171,7 @@ export function ReviewFormModal({
               Add Photo (Optional)
             </label>
             <div className="flex items-center gap-3">
-              <label className="h-14 w-14 shrink-0 rounded-xl border-2 border-dashed border-[#D8D8C4] hover:border-[#1CA2D1] cursor-pointer flex flex-col items-center justify-center text-zinc-400 hover:text-[#1CA2D1] transition-all bg-zinc-50">
+              <label className="h-14 w-14 shrink-0 rounded-xl border-2 border-dashed border-[#D2D2D0] hover:border-[#1CA2D1] cursor-pointer flex flex-col items-center justify-center text-zinc-400 hover:text-[#1CA2D1] transition-all bg-zinc-50">
                 <span className="text-[20px] font-light leading-none">+</span>
                 <span className="text-[8px] font-bold uppercase tracking-wider mt-1">Upload</span>
                 <input
@@ -182,7 +182,7 @@ export function ReviewFormModal({
                 />
               </label>
               {previewUrl && (
-                <div className="relative h-14 w-14 rounded-xl overflow-hidden border border-[#D8D8C4] group">
+                <div className="relative h-14 w-14 rounded-xl overflow-hidden border border-[#D2D2D0] group">
                   <img src={previewUrl} alt="Preview" className="h-full w-full object-cover" />
                   <button
                     type="button"

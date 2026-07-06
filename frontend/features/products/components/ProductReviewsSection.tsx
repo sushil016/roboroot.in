@@ -99,7 +99,7 @@ export function ProductReviewsSection({
   const breakdown = data?.breakdown ?? { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
 
   return (
-    <section className="space-y-8 border-t border-[#D8D8C4] pt-10">
+    <section className="space-y-8 border-t border-[#D2D2D0] pt-10">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#1CA2D1]">

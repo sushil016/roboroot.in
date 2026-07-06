@@ -4,6 +4,7 @@ import { logger } from "../../../lib/logger.js";
 import { buildPrompt, hybridRetrieve } from "../../rag/index.js";
 import type { UserProfileContext } from "../../rag/services/prompt-builder.service.js";
 import { classifyChatMessage } from "../services/intent.service.js";
+import { classifyIntent } from "../services/router.service.js";
 import { runClaudeToolLoop } from "../services/anthropic.service.js";
 import {
   getCachedStaticChatAnswer,
@@ -33,7 +34,29 @@ export async function chatHandler(req: Request, res: Response): Promise<void> {
     }
 
     sendSse(res, "status", { status: "classifying" });
+    
+    // Fetch cart and user profile first to verify intents and active states
+    const [cart, userRecord] = await Promise.all([
+      cartService.getCart(user.userId),
+      prisma.user.findUnique({
+        where: { id: user.userId },
+        select: {
+          name: true,
+          email: true,
+          addresses: {
+            where: { isDefault: true },
+            take: 1,
+          },
+        },
+      }),
+    ]);
+
+    const routerResult = classifyIntent(parsed.message, true, cart.items.length === 0);
     const classification = classifyChatMessage(parsed.message);
+    if (routerResult.intent === "action") {
+      classification.intent = "action";
+    }
+
     const cacheCandidate = isStaticChatCacheCandidate(parsed.message, classification.intent);
     const history = await loadSessionHistory(user.userId, parsed.sessionId);
     const promptHistory = history
@@ -69,23 +92,10 @@ export async function chatHandler(req: Request, res: Response): Promise<void> {
     if (!isGreeting) {
       sendSse(res, "status", { status: "retrieving", intent: classification.intent });
     }
-    const [retrieval, cart, userRecord] = await Promise.all([
-      classification.intent === "action" || isGreeting
-        ? Promise.resolve(null)
-        : hybridRetrieve(parsed.message),
-      cartService.getCart(user.userId),
-      prisma.user.findUnique({
-        where: { id: user.userId },
-        select: {
-          name: true,
-          email: true,
-          addresses: {
-            where: { isDefault: true },
-            take: 1,
-          },
-        },
-      }),
-    ]);
+
+    const retrieval = classification.intent === "action" || isGreeting
+      ? null
+      : await hybridRetrieve(parsed.message);
 
     const userProfile: UserProfileContext | undefined = userRecord
       ? {

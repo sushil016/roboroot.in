@@ -14,14 +14,14 @@ export function ProductsView({
   onSearch,
   onNew,
   onEdit,
-  onArchive,
+  onDelete,
 }: {
   products: Product[];
   productSearch: string;
   onSearch: (value: string) => void;
   onNew: () => void;
   onEdit: (product: Product) => void;
-  onArchive: (product: Product) => void;
+  onDelete: (product: Product) => void;
 }) {
   const { token, setStatus, setIsLoading } = useAdmin();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -136,7 +136,7 @@ export function ProductsView({
                 <p className="mt-2 font-extrabold text-[#222222]">{priceLabel(product.unitPriceCents)}</p>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <button className="admin-action" onClick={() => onEdit(product)} type="button">Edit</button>
-                  <button className="admin-action" onClick={() => onArchive(product)} type="button">Archive</button>
+                  <button className="admin-action text-red-600 hover:text-red-800" onClick={() => onDelete(product)} type="button">Delete</button>
                 </div>
               </div>
             </div>

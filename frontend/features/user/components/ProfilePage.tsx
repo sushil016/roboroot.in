@@ -47,7 +47,7 @@ export function ProfilePage() {
   if (!isAuthenticated && !isLoading) {
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center gap-5 px-4 text-center">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#EAEADB]">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#E8E8E6]">
           <User className="h-7 w-7 text-zinc-400" />
         </div>
         <div>
@@ -86,7 +86,7 @@ export function ProfilePage() {
         <div className="max-w-2xl space-y-4">
           <Skeleton className="h-7 w-32" />
           <Skeleton className="h-4 w-64" />
-          <div className="rounded-2xl border border-[#D8D8C4] bg-white p-6 flex items-center gap-4">
+          <div className="rounded-2xl border border-[#D2D2D0] bg-white p-6 flex items-center gap-4">
             <Skeleton className="h-16 w-16 rounded-full shrink-0" />
             <div className="space-y-2 flex-1">
               <Skeleton className="h-5 w-36" />
@@ -135,7 +135,7 @@ export function ProfilePage() {
           <MagicCard
             className="rounded-2xl [--color-background:#ffffff]"
             gradientFrom="#1CA2D1"
-            gradientTo="#EAEADB"
+            gradientTo="#E8E8E6"
             gradientColor="#1CA2D1"
             gradientOpacity={0.06}
           >
@@ -164,7 +164,7 @@ export function ProfilePage() {
                   size="sm"
                   variant="outline"
                   onClick={() => setIsEditing(true)}
-                  className="shrink-0 border-[#D8D8C4]"
+                  className="shrink-0 border-[#D2D2D0]"
                 >
                   Edit
                 </Button>
@@ -181,7 +181,7 @@ export function ProfilePage() {
               <MagicCard
                 className="rounded-2xl [--color-background:#ffffff]"
                 gradientFrom="#1CA2D1"
-                gradientTo="#EAEADB"
+                gradientTo="#E8E8E6"
                 gradientColor="#1CA2D1"
                 gradientOpacity={0.06}
               >
@@ -201,7 +201,7 @@ export function ProfilePage() {
                           value={profileForm[key as keyof typeof profileForm]}
                           onChange={(e) => setProfileForm((p) => ({ ...p, [key]: e.target.value }))}
                           placeholder={placeholder}
-                          className="mt-1.5 border-[#D8D8C4] focus-visible:ring-[#1CA2D1]"
+                          className="mt-1.5 border-[#D2D2D0] focus-visible:ring-[#1CA2D1]"
                         />
                       </div>
                     ))}
@@ -213,7 +213,7 @@ export function ProfilePage() {
                     <Button
                       type="button"
                       variant="outline"
-                      className="border-[#D8D8C4]"
+                      className="border-[#D2D2D0]"
                       onClick={() => setIsEditing(false)}
                     >
                       Cancel
@@ -235,12 +235,12 @@ export function ProfilePage() {
                   <MagicCard
                     className="rounded-xl [--color-background:#ffffff]"
                     gradientFrom="#1CA2D1"
-                    gradientTo="#EAEADB"
+                    gradientTo="#E8E8E6"
                     gradientColor="#1CA2D1"
                     gradientOpacity={0.05}
                   >
                     <div className="flex items-center gap-4 p-4">
-                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#EAEADB]">
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#E8E8E6]">
                         <Icon className="h-4 w-4 text-zinc-600" />
                       </div>
                       <div className="min-w-0">

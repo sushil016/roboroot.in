@@ -70,7 +70,7 @@ export function AccountShell({ children }: { children: React.ReactNode }) {
     >
       <div className="flex flex-col md:flex-row w-full min-h-[calc(100vh-120px)] bg-[#f2f2f0]">
         {/* Mobile Account Navigation Header (hidden on desktop) */}
-        <div className="md:hidden border-b border-[#D8D8C4] bg-[#FAFAED] p-4 space-y-3.5">
+        <div className="md:hidden border-b border-[#D2D2D0] bg-[#F2F2F0] p-4 space-y-3.5">
           <div className="flex items-center gap-3">
             {isLoading ? (
               <div className="flex items-center gap-3 w-full">
@@ -135,7 +135,7 @@ export function AccountShell({ children }: { children: React.ReactNode }) {
                   className={`flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-bold whitespace-nowrap transition-all duration-200 border ${
                     isActive
                       ? "bg-[#1CA2D1] text-white border-transparent shadow-sm"
-                      : "bg-white text-zinc-600 border-[#D8D8C4] hover:text-[#222222]"
+                      : "bg-white text-zinc-600 border-[#D2D2D0] hover:text-[#222222]"
                   }`}
                 >
                   <Icon className="h-3.5 w-3.5" />
@@ -150,10 +150,10 @@ export function AccountShell({ children }: { children: React.ReactNode }) {
         <div className="hidden md:block shrink-0">
           <Sidebar
             collapsible="none"
-            className="border-r border-[#D8D8C4] bg-[#FAFAED] h-full"
+            className="border-r border-[#D2D2D0] bg-[#F2F2F0] h-full"
           >
             {/* User info header */}
-            <SidebarHeader className="border-b border-[#D8D8C4] p-4">
+            <SidebarHeader className="border-b border-[#D2D2D0] p-4">
               {isLoading ? (
                 <div className="flex items-center gap-3">
                   <Skeleton className="h-10 w-10 rounded-full" />
@@ -202,7 +202,7 @@ export function AccountShell({ children }: { children: React.ReactNode }) {
                           className={
                             isActive
                               ? "bg-[#1CA2D1]/10 text-[#1CA2D1] font-semibold hover:bg-[#1CA2D1]/15 hover:text-[#1CA2D1]"
-                              : "text-zinc-600 hover:text-[#222222] hover:bg-[#EAEADB]"
+                              : "text-zinc-600 hover:text-[#222222] hover:bg-[#E8E8E6]"
                           }
                         >
                           <Link href={href} className="flex items-center gap-2.5">
@@ -226,7 +226,7 @@ export function AccountShell({ children }: { children: React.ReactNode }) {
 
             {/* Admin Console link */}
             {user && ADMIN_ROLES.includes(user.role) && (
-              <div className="border-t border-[#D8D8C4] p-2">
+              <div className="border-t border-[#D2D2D0] p-2">
                 <a
                   href={ADMIN_URL}
                   target="_blank"
@@ -241,7 +241,7 @@ export function AccountShell({ children }: { children: React.ReactNode }) {
             )}
 
             {/* Logout */}
-            <SidebarFooter className="border-t border-[#D8D8C4] p-2">
+            <SidebarFooter className="border-t border-[#D2D2D0] p-2">
               <SidebarMenu>
                 <SidebarMenuItem>
                   <SidebarMenuButton

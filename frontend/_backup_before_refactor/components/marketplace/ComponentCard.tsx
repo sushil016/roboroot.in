@@ -46,7 +46,7 @@ export function ComponentCard({ component }: ComponentCardProps) {
 
   return (
     <Link href={`/components/${component.id}`}>
-      <Card className="card-hover-bar h-full cursor-pointer group transition border border-[#D8D8C4] bg-[#F3F3E4]">
+      <Card className="card-hover-bar h-full cursor-pointer group transition border border-[#D2D2D0] bg-[#F2F2F0]">
         <CardContent className="p-4">
           {/* Image */}
           <div className="relative aspect-square mb-4 bg-muted rounded-lg overflow-hidden">
@@ -58,7 +58,7 @@ export function ComponentCard({ component }: ComponentCardProps) {
                 toast.success(isWishlisted ? 'Removed from wishlist' : 'Saved to wishlist');
               }}
               className={`absolute bottom-2 right-2 z-10 flex h-9 w-9 items-center justify-center rounded-full shadow ${
-                isWishlisted ? 'bg-[#1CA2D1] text-white' : 'bg-[#F3F3E4] text-zinc-700'
+                isWishlisted ? 'bg-[#1CA2D1] text-white' : 'bg-[#F2F2F0] text-zinc-700'
               }`}
               aria-label="Toggle wishlist"
             >
@@ -103,7 +103,7 @@ export function ComponentCard({ component }: ComponentCardProps) {
           )}
 
           <div className="mb-3 flex flex-wrap gap-2">
-            <span className="rounded-full bg-[#FAFAED] px-2 py-1 text-xs font-semibold text-zinc-700">
+            <span className="rounded-full bg-[#F2F2F0] px-2 py-1 text-xs font-semibold text-zinc-700">
               {component.subcategory || component.category}
             </span>
             {component.isBestSeller && (

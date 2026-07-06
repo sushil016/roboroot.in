@@ -22,7 +22,7 @@ function ToggleRow({
   onChange: (v: boolean) => void;
 }) {
   return (
-    <div className="flex items-center justify-between gap-4 rounded-xl border border-[#D8D8C4] bg-[#FAFAED] px-4 py-3">
+    <div className="flex items-center justify-between gap-4 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-4 py-3">
       <div>
         <p className="text-sm font-semibold text-[#222222]">{label}</p>
         {description && <p className="text-xs text-zinc-500 mt-0.5">{description}</p>}
@@ -48,7 +48,7 @@ function ToggleRow({
 function SectionHeader({ icon: Icon, label }: { icon: React.FC<{ className?: string }>; label: string }) {
   return (
     <div className="flex items-center gap-2 mb-3">
-      <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#EAEADB]">
+      <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#E8E8E6]">
         <Icon className="h-3.5 w-3.5 text-zinc-600" />
       </div>
       <h2 className="text-xs font-bold uppercase tracking-[0.18em] text-zinc-400">{label}</h2>
@@ -64,7 +64,7 @@ export default function SettingsPage() {
   if (!isAuthenticated) {
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center gap-5 px-4 text-center">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#EAEADB]">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#E8E8E6]">
           <Settings className="h-7 w-7 text-zinc-400" />
         </div>
         <h1 className="text-2xl font-bold text-[#222222]">Login to manage settings</h1>
@@ -94,7 +94,7 @@ export default function SettingsPage() {
           <MagicCard
             className="rounded-2xl [--color-background:#ffffff]"
             gradientFrom="#1CA2D1"
-            gradientTo="#EAEADB"
+            gradientTo="#E8E8E6"
             gradientColor="#1CA2D1"
             gradientOpacity={0.05}
           >
@@ -106,7 +106,7 @@ export default function SettingsPage() {
                   {user?.role}
                 </span>
               </div>
-              <Button asChild size="sm" variant="outline" className="border-[#D8D8C4] shrink-0">
+              <Button asChild size="sm" variant="outline" className="border-[#D2D2D0] shrink-0">
                 <Link href="/profile">Edit Profile</Link>
               </Button>
             </div>
@@ -138,7 +138,7 @@ export default function SettingsPage() {
           <MagicCard
             className="rounded-2xl [--color-background:#ffffff]"
             gradientFrom="#1CA2D1"
-            gradientTo="#EAEADB"
+            gradientTo="#E8E8E6"
             gradientColor="#1CA2D1"
             gradientOpacity={0.05}
           >

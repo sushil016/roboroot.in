@@ -56,7 +56,7 @@ function FieldGroup({ label, children }: { label: string; children: React.ReactN
 }
 
 const inputCls =
-  "h-10 w-full rounded-xl border border-[#D8D8C4] bg-[#FAFAED] px-3 text-sm font-medium text-[#222222] outline-none transition-colors placeholder:text-zinc-400 focus:border-[#1CA2D1] focus:bg-white";
+  "h-10 w-full rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 text-sm font-medium text-[#222222] outline-none transition-colors placeholder:text-zinc-400 focus:border-[#1CA2D1] focus:bg-white";
 
 export function AddressBook() {
   const queryClient = useQueryClient();
@@ -148,7 +148,7 @@ export function AddressBook() {
       {/* Section header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#EAEADB]">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#E8E8E6]">
             <MapPin className="h-3.5 w-3.5 text-zinc-600" />
           </div>
           <h2 className="text-xs font-bold uppercase tracking-[0.18em] text-zinc-400">
@@ -159,7 +159,7 @@ export function AddressBook() {
           <button
             type="button"
             onClick={openNewForm}
-            className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-[#D8D8C4] bg-white px-3 text-xs font-semibold text-zinc-600 transition-colors hover:border-[#222222] hover:text-[#222222]"
+            className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-[#D2D2D0] bg-white px-3 text-xs font-semibold text-zinc-600 transition-colors hover:border-[#222222] hover:text-[#222222]"
           >
             <Plus className="h-3.5 w-3.5" />
             New Address
@@ -170,15 +170,15 @@ export function AddressBook() {
       {/* Address cards */}
       <div className="space-y-3">
         {addressesQuery.isLoading && (
-          <div className="flex items-center gap-3 rounded-2xl border border-[#D8D8C4] bg-white px-4 py-4">
+          <div className="flex items-center gap-3 rounded-2xl border border-[#D2D2D0] bg-white px-4 py-4">
             <div className="h-4 w-4 animate-spin rounded-full border-2 border-[#1CA2D1] border-t-transparent" />
             <p className="text-sm text-zinc-400">Loading addresses...</p>
           </div>
         )}
 
         {!addressesQuery.isLoading && addresses.length === 0 && !showForm && (
-          <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-[#D8D8C4] bg-[#FAFAED] py-12 text-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#EAEADB]">
+          <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-[#D2D2D0] bg-[#F2F2F0] py-12 text-center">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#E8E8E6]">
               <MapPin className="h-6 w-6 text-zinc-400" />
             </div>
             <div>
@@ -206,7 +206,7 @@ export function AddressBook() {
             <MagicCard
               className="rounded-2xl [--color-background:#ffffff]"
               gradientFrom="#1CA2D1"
-              gradientTo="#EAEADB"
+              gradientTo="#E8E8E6"
               gradientColor="#1CA2D1"
               gradientOpacity={0.04}
             >
@@ -240,7 +240,7 @@ export function AddressBook() {
                         type="button"
                         onClick={() => defaultMutation.mutate(address.id)}
                         disabled={defaultMutation.isPending}
-                        className="inline-flex h-8 items-center gap-1 rounded-lg border border-[#D8D8C4] px-2.5 text-xs font-semibold text-zinc-500 transition-colors hover:border-[#1CA2D1] hover:text-[#1CA2D1] disabled:opacity-50"
+                        className="inline-flex h-8 items-center gap-1 rounded-lg border border-[#D2D2D0] px-2.5 text-xs font-semibold text-zinc-500 transition-colors hover:border-[#1CA2D1] hover:text-[#1CA2D1] disabled:opacity-50"
                       >
                         <Star className="h-3 w-3" />
                         Set Default
@@ -249,7 +249,7 @@ export function AddressBook() {
                     <button
                       type="button"
                       onClick={() => editAddress(address)}
-                      className="inline-flex h-8 items-center gap-1 rounded-lg border border-[#D8D8C4] px-2.5 text-xs font-semibold text-zinc-500 transition-colors hover:border-[#222222] hover:text-[#222222]"
+                      className="inline-flex h-8 items-center gap-1 rounded-lg border border-[#D2D2D0] px-2.5 text-xs font-semibold text-zinc-500 transition-colors hover:border-[#222222] hover:text-[#222222]"
                     >
                       <Pencil className="h-3 w-3" />
                       Edit
@@ -283,7 +283,7 @@ export function AddressBook() {
             <MagicCard
               className="rounded-2xl [--color-background:#ffffff]"
               gradientFrom="#1CA2D1"
-              gradientTo="#EAEADB"
+              gradientTo="#E8E8E6"
               gradientColor="#1CA2D1"
               gradientOpacity={0.06}
             >
@@ -295,7 +295,7 @@ export function AddressBook() {
                   <button
                     type="button"
                     onClick={cancelForm}
-                    className="flex h-7 w-7 items-center justify-center rounded-lg text-zinc-400 hover:bg-[#EAEADB] hover:text-zinc-600 transition-colors"
+                    className="flex h-7 w-7 items-center justify-center rounded-lg text-zinc-400 hover:bg-[#E8E8E6] hover:text-zinc-600 transition-colors"
                   >
                     <X className="h-4 w-4" />
                   </button>
@@ -347,7 +347,7 @@ export function AddressBook() {
                   </FieldGroup>
                 </div>
 
-                <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-[#D8D8C4] bg-[#FAFAED] px-4 py-3 transition-colors hover:border-[#1CA2D1]">
+                <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-4 py-3 transition-colors hover:border-[#1CA2D1]">
                   <div className="relative flex shrink-0 items-center justify-center">
                     <input
                       type="checkbox"
@@ -357,7 +357,7 @@ export function AddressBook() {
                     />
                     <div
                       className={`h-4 w-4 rounded border-2 transition-colors ${
-                        form.isDefault ? "border-[#1CA2D1] bg-[#1CA2D1]" : "border-[#D8D8C4] bg-white"
+                        form.isDefault ? "border-[#1CA2D1] bg-[#1CA2D1]" : "border-[#D2D2D0] bg-white"
                       }`}
                     >
                       {form.isDefault && (
@@ -388,7 +388,7 @@ export function AddressBook() {
                   <button
                     type="button"
                     onClick={cancelForm}
-                    className="h-10 rounded-xl border border-[#D8D8C4] px-4 text-sm font-semibold text-zinc-600 transition-colors hover:border-[#222222] hover:text-[#222222]"
+                    className="h-10 rounded-xl border border-[#D2D2D0] px-4 text-sm font-semibold text-zinc-600 transition-colors hover:border-[#222222] hover:text-[#222222]"
                   >
                     Cancel
                   </button>

@@ -10,7 +10,7 @@ type SiteInfoPageProps = {
 
 export function SiteInfoPage({ eyebrow, title, description, sections }: SiteInfoPageProps) {
   return (
-    <div className="bg-[#F3F3E4] text-slate-950">
+    <div className="bg-[#F2F2F0] text-slate-950">
       <section className="border-b border-slate-200 bg-slate-50">
         <div className="mx-auto max-w-5xl px-4 py-12">
           <p className="text-sm font-black uppercase tracking-[0.18em] text-blue-700">{eyebrow}</p>
@@ -21,7 +21,7 @@ export function SiteInfoPage({ eyebrow, title, description, sections }: SiteInfo
       <main className="mx-auto max-w-5xl px-4 py-10">
         <div className="grid gap-5">
           {sections.map((section) => (
-            <section key={section.title} className="rounded-lg border border-slate-200 bg-[#F3F3E4] p-5 shadow-sm">
+            <section key={section.title} className="rounded-lg border border-slate-200 bg-[#F2F2F0] p-5 shadow-sm">
               <h2 className="text-2xl font-black">{section.title}</h2>
               <p className="mt-3 text-sm font-semibold leading-7 text-slate-600">{section.body}</p>
             </section>

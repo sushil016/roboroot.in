@@ -188,7 +188,7 @@ export default function CheckoutPage() {
             <MagicCard
               className="rounded-2xl [--color-background:#ffffff]"
               gradientFrom="#1CA2D1"
-              gradientTo="#EAEADB"
+              gradientTo="#E8E8E6"
               gradientColor="#1CA2D1"
               gradientOpacity={0.05}
             >
@@ -212,7 +212,7 @@ export default function CheckoutPage() {
                         className={`relative flex cursor-pointer flex-col gap-1.5 rounded-xl border p-4 transition-colors ${
                           !useNewAddress && selectedAddressId === savedAddress.id
                             ? "border-[#1CA2D1] bg-[#1CA2D1]/5"
-                            : "border-[#D8D8C4] hover:border-zinc-300"
+                            : "border-[#D2D2D0] hover:border-zinc-300"
                         }`}
                       >
                         <input
@@ -241,7 +241,7 @@ export default function CheckoutPage() {
                     ))}
                     <label
                       className={`relative flex cursor-pointer flex-col gap-1.5 rounded-xl border p-4 transition-colors ${
-                        useNewAddress ? "border-[#1CA2D1] bg-[#1CA2D1]/5" : "border-[#D8D8C4] hover:border-zinc-300"
+                        useNewAddress ? "border-[#1CA2D1] bg-[#1CA2D1]/5" : "border-[#D2D2D0] hover:border-zinc-300"
                       }`}
                     >
                       <input
@@ -269,7 +269,7 @@ export default function CheckoutPage() {
                         onChange={(e) => setAddress((prev) => ({ ...prev, [key]: e.target.value }))}
                         placeholder={placeholder}
                         required={required}
-                        className="h-11 rounded-xl border border-[#D8D8C4] bg-[#FAFAED] px-3 text-sm font-medium text-[#222222] outline-none transition-colors focus:border-[#1CA2D1] focus:bg-white placeholder:text-zinc-400"
+                        className="h-11 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 text-sm font-medium text-[#222222] outline-none transition-colors focus:border-[#1CA2D1] focus:bg-white placeholder:text-zinc-400"
                       />
                     ))}
                   </div>
@@ -279,7 +279,7 @@ export default function CheckoutPage() {
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="Order notes, GST details, delivery instructions (optional)"
-                  className="min-h-20 w-full rounded-xl border border-[#D8D8C4] bg-[#FAFAED] px-3 py-3 text-sm font-medium text-[#222222] outline-none transition-colors focus:border-[#1CA2D1] focus:bg-white placeholder:text-zinc-400 resize-none"
+                  className="min-h-20 w-full rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 py-3 text-sm font-medium text-[#222222] outline-none transition-colors focus:border-[#1CA2D1] focus:bg-white placeholder:text-zinc-400 resize-none"
                 />
               </div>
             </MagicCard>
@@ -290,7 +290,7 @@ export default function CheckoutPage() {
             <MagicCard
               className="rounded-2xl [--color-background:#ffffff]"
               gradientFrom="#1CA2D1"
-              gradientTo="#EAEADB"
+              gradientTo="#E8E8E6"
               gradientColor="#1CA2D1"
               gradientOpacity={0.05}
             >
@@ -308,7 +308,7 @@ export default function CheckoutPage() {
                       className={`relative flex cursor-pointer flex-col gap-1.5 rounded-xl border p-4 transition-colors ${
                         paymentGateway === value
                           ? "border-[#1CA2D1] bg-[#1CA2D1]/5"
-                          : "border-[#D8D8C4] hover:border-zinc-300"
+                          : "border-[#D2D2D0] hover:border-zinc-300"
                       }`}
                     >
                       <input
@@ -321,7 +321,7 @@ export default function CheckoutPage() {
                       {paymentGateway === value && (
                         <CheckCircle2 className="absolute right-3 top-3 h-4 w-4 text-[#1CA2D1]" />
                       )}
-                      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#EAEADB]">
+                      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#E8E8E6]">
                         <CreditCard className="h-4 w-4 text-[#222222]" />
                       </div>
                       <span className="text-sm font-bold text-[#222222]">{title}</span>
@@ -338,7 +338,7 @@ export default function CheckoutPage() {
             <MagicCard
               className="rounded-2xl [--color-background:#ffffff]"
               gradientFrom="#1CA2D1"
-              gradientTo="#EAEADB"
+              gradientTo="#E8E8E6"
               gradientColor="#1CA2D1"
               gradientOpacity={0.05}
             >
@@ -359,7 +359,7 @@ export default function CheckoutPage() {
                     value={couponCode}
                     onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
                     placeholder="Enter coupon code"
-                    className="h-11 flex-1 rounded-xl border border-[#D8D8C4] bg-[#FAFAED] px-3 text-sm font-bold uppercase tracking-wider text-[#222222] outline-none transition-colors focus:border-[#1CA2D1] focus:bg-white placeholder:text-zinc-300 placeholder:font-normal placeholder:tracking-normal"
+                    className="h-11 flex-1 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 text-sm font-bold uppercase tracking-wider text-[#222222] outline-none transition-colors focus:border-[#1CA2D1] focus:bg-white placeholder:text-zinc-300 placeholder:font-normal placeholder:tracking-normal"
                   />
                   <button
                     type="button"
@@ -373,7 +373,7 @@ export default function CheckoutPage() {
                     <button
                       type="button"
                       onClick={() => { setAppliedCoupon(null); setCouponCode(""); }}
-                      className="h-11 rounded-xl border border-[#D8D8C4] px-4 text-sm font-semibold text-zinc-500 hover:border-red-200 hover:text-red-500 transition-colors"
+                      className="h-11 rounded-xl border border-[#D2D2D0] px-4 text-sm font-semibold text-zinc-500 hover:border-red-200 hover:text-red-500 transition-colors"
                     >
                       Remove
                     </button>
@@ -397,7 +397,7 @@ export default function CheckoutPage() {
           <MagicCard
             className="rounded-2xl [--color-background:#ffffff]"
             gradientFrom="#1CA2D1"
-            gradientTo="#EAEADB"
+            gradientTo="#E8E8E6"
             gradientColor="#1CA2D1"
             gradientOpacity={0.07}
           >
@@ -408,7 +408,7 @@ export default function CheckoutPage() {
               <div className="space-y-3 max-h-64 overflow-y-auto">
                 {items.map((item) => (
                   <div key={item.component.id} className="flex gap-3">
-                    <div className="h-14 w-14 shrink-0 rounded-xl bg-[#F3F3E4] overflow-hidden">
+                    <div className="h-14 w-14 shrink-0 rounded-xl bg-[#F2F2F0] overflow-hidden">
                       <ProductImage
                         src={item.component.imageUrl}
                         alt={item.component.name}
@@ -430,7 +430,7 @@ export default function CheckoutPage() {
               </div>
 
               {/* Totals */}
-              <div className="space-y-2.5 border-t border-[#D8D8C4] pt-4 text-sm">
+              <div className="space-y-2.5 border-t border-[#D2D2D0] pt-4 text-sm">
                 <div className="flex justify-between text-zinc-600">
                   <span>Subtotal</span>
                   <span className="font-semibold text-[#222222]">{formatPrice(subtotal)}</span>
@@ -447,7 +447,7 @@ export default function CheckoutPage() {
                     <span className="font-semibold">-{formatPrice(discount)}</span>
                   </div>
                 )}
-                <div className="flex justify-between border-t border-[#D8D8C4] pt-2.5">
+                <div className="flex justify-between border-t border-[#D2D2D0] pt-2.5">
                   <span className="text-base font-bold text-[#222222]">Total</span>
                   <span className="text-xl font-bold text-[#1CA2D1]">{formatPrice(total)}</span>
                 </div>

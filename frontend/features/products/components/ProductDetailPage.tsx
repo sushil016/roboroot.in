@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import {
   ArrowLeft,
+  ArrowRight,
   Check,
   ExternalLink,
   Heart,
@@ -83,6 +84,7 @@ export function ProductDetailPage() {
   const router = useRouter();
   const { slug } = useParams() as { slug: string };
   const [quantity, setQuantity] = useState(1);
+  const [isAdding, setIsAdding] = useState(false);
   const [activeTab, setActiveTab] = useState<"description" | "specifications" | "warranty">("description");
   const [recentlyViewed, setRecentlyViewed] = useState<Component[]>([]);
 
@@ -238,11 +240,33 @@ export function ProductDetailPage() {
       return;
     }
     addItem(component!, quantity);
-    toast.success("Added to cart", { description: `${quantity}× ${component!.name}` });
+  }
+
+  function handleCartButtonClick() {
+    if (itemQty > 0) {
+      router.push("/cart");
+      return;
+    }
+
+    if (isAdding) return;
+    if (isOutOfStock) { toast.error("Out of stock"); return; }
+    if (quantity > component!.stockQuantity) {
+      toast.error(`Only ${component!.stockQuantity} available`);
+      return;
+    }
+
+    setIsAdding(true);
+    setTimeout(() => {
+      handleAddToCart();
+      toast.success("Added to cart", { description: `${quantity}× ${component!.name}` });
+      setIsAdding(false);
+    }, 850);
   }
 
   function handleBuyNow() {
-    handleAddToCart();
+    if (itemQty === 0) {
+      handleAddToCart();
+    }
     router.push("/cart");
   }
 
@@ -477,25 +501,53 @@ export function ProductDetailPage() {
                 {/* Main CTAs */}
                 <div className="grid gap-3 sm:grid-cols-2 pt-2">
                   <button
-                    onClick={handleAddToCart}
-                    disabled={isOutOfStock}
+                    onClick={handleCartButtonClick}
+                    disabled={isOutOfStock || isAdding}
                     className={cn(
-                      "inline-flex h-12 items-center justify-center gap-2 rounded-full text-sm font-bold transition-all active:scale-95 cursor-pointer border",
+                      "inline-flex h-12 items-center justify-center gap-2 rounded-full text-sm font-bold transition-all active:scale-95 cursor-pointer border relative overflow-hidden",
                       isOutOfStock
                         ? "cursor-not-allowed bg-zinc-100 text-zinc-400 border-zinc-200"
                         : itemQty > 0
-                        ? "bg-zinc-100 text-[#222222] border-zinc-300 hover:bg-zinc-200"
-                        : "bg-[#222222] text-white hover:bg-zinc-800 border-transparent shadow-xs"
+                        ? "bg-emerald-600 text-white border-transparent hover:bg-emerald-700 shadow-md"
+                        : "bg-zinc-900 text-[#F2F2F0] border-zinc-800 hover:bg-zinc-950 shadow-sm"
                     )}
                   >
-                    <ShoppingCart className="h-4.5 w-4.5 shrink-0" />
-                    {itemQty > 0 ? `In Cart (${itemQty})` : "Add to Cart"}
+                    {isAdding ? (
+                      <div className="flex items-center gap-2">
+                        <Loader2 className="h-4.5 w-4.5 animate-spin shrink-0" />
+                        <motion.span
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          transition={{ duration: 0.15 }}
+                          className="inline-block"
+                        >
+                          Adding to Cart...
+                        </motion.span>
+                      </div>
+                    ) : itemQty > 0 ? (
+                      <div className="flex items-center gap-2">
+                        <ArrowRight className="h-4.5 w-4.5 shrink-0 animate-bounce" />
+                        <motion.span
+                          initial={{ scale: 0.9, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                        >
+                          Go to Cart
+                        </motion.span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <ShoppingCart className="h-4.5 w-4.5 shrink-0" />
+                        <span>Add to Cart</span>
+                      </div>
+                    )}
                   </button>
                   
                   <button
                     onClick={handleBuyNow}
                     disabled={isOutOfStock}
-                    className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-[#1CA2D1] text-sm font-bold text-white transition-all hover:bg-[#1CA2D1]/90 disabled:cursor-not-allowed disabled:bg-zinc-100 disabled:text-zinc-400 active:scale-95 cursor-pointer shadow-xs border border-transparent"
+                    className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-zinc-900 text-sm font-bold text-[#F2F2F0] hover:bg-zinc-950 border border-zinc-800 transition-all disabled:cursor-not-allowed disabled:bg-zinc-100 disabled:text-zinc-400 active:scale-95 cursor-pointer shadow-xs"
                   >
                     <Zap className="h-4.5 w-4.5 shrink-0 fill-current" />
                     Buy Now
@@ -779,16 +831,25 @@ export function ProductDetailPage() {
           <div className="flex items-center gap-3">
             {/* Add to Cart icon button */}
             <button
-              onClick={handleAddToCart}
+              onClick={handleCartButtonClick}
+              disabled={isAdding}
               className={cn(
-                "w-11 h-11 flex items-center justify-center rounded-full transition cursor-pointer shrink-0 border",
-                itemQty > 0
-                  ? "bg-zinc-100 text-[#222222] border-zinc-300"
-                  : "bg-zinc-50 text-zinc-650 border-zinc-200"
+                "w-11 h-11 flex items-center justify-center rounded-full transition cursor-pointer shrink-0 border relative",
+                isAdding
+                  ? "bg-zinc-100 text-zinc-400 border-zinc-200 cursor-not-allowed"
+                  : itemQty > 0
+                  ? "bg-[#1CA2D1] text-white border-transparent shadow-sm"
+                  : "bg-zinc-50 text-zinc-650 border-zinc-200 hover:bg-zinc-100"
               )}
-              aria-label="Add to cart"
+              aria-label={itemQty > 0 ? "Go to cart" : "Add to cart"}
             >
-              <ShoppingCart className="h-5 w-5" />
+              {isAdding ? (
+                <Loader2 className="h-4.5 w-4.5 animate-spin" />
+              ) : itemQty > 0 ? (
+                <ArrowRight className="h-4.5 w-4.5" />
+              ) : (
+                <ShoppingCart className="h-5 w-5" />
+              )}
             </button>
 
             {/* Buy Now button */}

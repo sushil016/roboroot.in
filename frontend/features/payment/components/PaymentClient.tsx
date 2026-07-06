@@ -244,7 +244,7 @@ export function PaymentClient({ orderId }: PaymentClientProps) {
             <MagicCard
               className="rounded-2xl [--color-background:#ffffff]"
               gradientFrom="#1CA2D1"
-              gradientTo="#EAEADB"
+              gradientTo="#E8E8E6"
               gradientColor="#1CA2D1"
               gradientOpacity={0.05}
             >
@@ -258,7 +258,7 @@ export function PaymentClient({ orderId }: PaymentClientProps) {
                     <p className="text-xs text-zinc-400">{payment?.gateway || "TEST"}</p>
                   </div>
                 </div>
-                <div className="rounded-xl bg-[#FAFAED] border border-[#D8D8C4] p-4">
+                <div className="rounded-xl bg-[#F2F2F0] border border-[#D2D2D0] p-4">
                   <p className="text-xs font-medium leading-5 text-zinc-600">
                     Payments are processed securely via Razorpay. UPI, cards, and net banking are supported.
                     You will be redirected to the Razorpay modal to complete payment.
@@ -277,7 +277,7 @@ export function PaymentClient({ orderId }: PaymentClientProps) {
             <MagicCard
               className="rounded-2xl [--color-background:#ffffff]"
               gradientFrom="#1CA2D1"
-              gradientTo="#EAEADB"
+              gradientTo="#E8E8E6"
               gradientColor="#1CA2D1"
               gradientOpacity={0.05}
             >
@@ -287,9 +287,9 @@ export function PaymentClient({ orderId }: PaymentClientProps) {
                   {order.items.map((item) => (
                     <div
                       key={item.id}
-                      className="flex gap-4 rounded-xl border border-[#D8D8C4] bg-[#FAFAED] p-3"
+                      className="flex gap-4 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] p-3"
                     >
-                      <div className="h-14 w-14 shrink-0 rounded-lg bg-[#F3F3E4] overflow-hidden">
+                      <div className="h-14 w-14 shrink-0 rounded-lg bg-[#F2F2F0] overflow-hidden">
                         <ProductImage
                           src={item.component?.imageUrl}
                           alt={item.description}
@@ -319,7 +319,7 @@ export function PaymentClient({ orderId }: PaymentClientProps) {
           <MagicCard
             className="rounded-2xl [--color-background:#ffffff]"
             gradientFrom="#1CA2D1"
-            gradientTo="#EAEADB"
+            gradientTo="#E8E8E6"
             gradientColor="#1CA2D1"
             gradientOpacity={0.07}
           >
@@ -342,7 +342,7 @@ export function PaymentClient({ orderId }: PaymentClientProps) {
                   <span>Order status</span>
                   <span className="font-semibold text-[#222222]">{order.status}</span>
                 </div>
-                <div className="border-t border-[#D8D8C4] pt-2.5">
+                <div className="border-t border-[#D2D2D0] pt-2.5">
                   <div className="flex justify-between">
                     <span className="text-base font-bold text-[#222222]">Total</span>
                     <span className="text-xl font-bold text-[#1CA2D1]">
@@ -391,7 +391,7 @@ export function PaymentClient({ orderId }: PaymentClientProps) {
 
               <Link
                 href={`/orders/${order.id}`}
-                className="flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-[#D8D8C4] text-sm font-semibold text-zinc-600 hover:border-[#222222] hover:text-[#222222] transition-colors"
+                className="flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-[#D2D2D0] text-sm font-semibold text-zinc-600 hover:border-[#222222] hover:text-[#222222] transition-colors"
               >
                 <ArrowLeft className="h-3.5 w-3.5" />
                 View Order Detail

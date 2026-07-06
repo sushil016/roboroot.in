@@ -80,7 +80,7 @@ export default function TrackOrderPage() {
   if (!isAuthenticated) {
     return (
       <div className="min-h-[70vh] bg-[#f2f2f0] flex items-center justify-center px-6">
-        <div className="bg-white border border-[#D8D8C4] rounded-2xl p-8 max-w-md w-full text-center space-y-6 shadow-xs">
+        <div className="bg-white border border-[#D2D2D0] rounded-2xl p-8 max-w-md w-full text-center space-y-6 shadow-xs">
           <div className="w-16 h-16 bg-[#1CA2D1]/10 rounded-full flex items-center justify-center mx-auto text-[#1CA2D1]">
             <Lock className="w-7 h-7" />
           </div>
@@ -121,7 +121,7 @@ export default function TrackOrderPage() {
           <div className="lg:col-span-4 space-y-6">
             
             {/* Search Widget */}
-            <div className="bg-white rounded-2xl p-5 border border-[#D8D8C4] shadow-xs space-y-3">
+            <div className="bg-white rounded-2xl p-5 border border-[#D2D2D0] shadow-xs space-y-3">
               <h3 className="text-sm font-bold uppercase tracking-wider text-zinc-500">Find by Order ID</h3>
               <form onSubmit={handleSearchSubmit} className="flex gap-2">
                 <input
@@ -142,7 +142,7 @@ export default function TrackOrderPage() {
             </div>
 
             {/* Quick Orders List */}
-            <div className="bg-white rounded-2xl p-5 border border-[#D8D8C4] shadow-xs space-y-4">
+            <div className="bg-white rounded-2xl p-5 border border-[#D2D2D0] shadow-xs space-y-4">
               <h3 className="text-sm font-bold uppercase tracking-wider text-zinc-500">Your Recent Orders</h3>
 
               {isLoadingOrders ? (
@@ -194,12 +194,12 @@ export default function TrackOrderPage() {
           {/* RIGHT PANEL — Active Order timeline & breakdown */}
           <div className="lg:col-span-8">
             {isLoadingDetails ? (
-              <div className="bg-white rounded-2xl p-12 border border-[#D8D8C4] flex flex-col items-center justify-center gap-3">
+              <div className="bg-white rounded-2xl p-12 border border-[#D2D2D0] flex flex-col items-center justify-center gap-3">
                 <Loader2 className="w-8 h-8 animate-spin text-[#1CA2D1]" />
                 <p className="text-xs text-zinc-500 font-semibold">Loading shipment info...</p>
               </div>
             ) : detailsError || (activeOrderId && !order) ? (
-              <div className="bg-white rounded-2xl p-12 border border-[#D8D8C4] flex flex-col items-center justify-center gap-3 text-center">
+              <div className="bg-white rounded-2xl p-12 border border-[#D2D2D0] flex flex-col items-center justify-center gap-3 text-center">
                 <ShieldAlert className="w-10 h-10 text-red-500" />
                 <h3 className="font-black text-lg text-[#222222]">Order Not Found</h3>
                 <p className="text-xs text-zinc-400 max-w-sm">
@@ -210,7 +210,7 @@ export default function TrackOrderPage() {
               <div className="space-y-6">
                 
                 {/* Status Timeline Card */}
-                <div className="bg-white rounded-2xl p-6 border border-[#D8D8C4] shadow-xs space-y-8">
+                <div className="bg-white rounded-2xl p-6 border border-[#D2D2D0] shadow-xs space-y-8">
                   
                   {/* Timeline Header */}
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-zinc-150 pb-4">
@@ -297,7 +297,7 @@ export default function TrackOrderPage() {
                 </div>
 
                 {/* Items breakdown card */}
-                <div className="bg-white rounded-2xl p-6 border border-[#D8D8C4] shadow-xs space-y-4">
+                <div className="bg-white rounded-2xl p-6 border border-[#D2D2D0] shadow-xs space-y-4">
                   <h3 className="text-sm font-bold uppercase tracking-wider text-zinc-500">Order Items</h3>
                   <div className="divide-y divide-zinc-200">
                     {order.items?.map((item: any) => (
@@ -353,7 +353,7 @@ export default function TrackOrderPage() {
 
               </div>
             ) : (
-              <div className="bg-white rounded-2xl p-12 border border-[#D8D8C4] flex flex-col items-center justify-center gap-3 text-center">
+              <div className="bg-white rounded-2xl p-12 border border-[#D2D2D0] flex flex-col items-center justify-center gap-3 text-center">
                 <Package className="w-12 h-12 text-zinc-200" />
                 <h3 className="font-black text-lg text-[#222222]">Select an Order to Track</h3>
                 <p className="text-xs text-zinc-400 max-w-xs">

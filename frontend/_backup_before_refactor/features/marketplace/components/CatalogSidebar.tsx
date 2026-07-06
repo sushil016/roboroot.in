@@ -35,7 +35,7 @@ function SidebarSection({
   const [open, setOpen] = useState(defaultOpen);
 
   return (
-    <div className="border-b border-[#D8D8C4] py-4 last:border-b-0">
+    <div className="border-b border-[#D2D2D0] py-4 last:border-b-0">
       <button
         onClick={() => setOpen(!open)}
         className="flex w-full items-center justify-between gap-2 text-left"
@@ -114,7 +114,7 @@ export function CatalogSidebar({
   }
 
   return (
-    <aside className="sticky top-24 h-[calc(100vh-6rem)] overflow-y-auto border-r border-[#D8D8C4] px-4 pb-8 pt-5 scrollbar-hide">
+    <aside className="sticky top-24 h-[calc(100vh-6rem)] overflow-y-auto border-r border-[#D2D2D0] px-4 pb-8 pt-5 scrollbar-hide">
       {/* Sidebar header */}
       <div className="mb-5 flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -154,7 +154,7 @@ export function CatalogSidebar({
                   "rounded-full border px-3 py-1 text-xs font-semibold transition-all duration-150",
                   active
                     ? "border-[#222222] bg-[#222222] text-white"
-                    : "border-[#D8D8C4] bg-white text-zinc-600 hover:border-[#222222] hover:text-[#222222]"
+                    : "border-[#D2D2D0] bg-white text-zinc-600 hover:border-[#222222] hover:text-[#222222]"
                 )}
               >
                 {label}
@@ -175,7 +175,7 @@ export function CatalogSidebar({
               <input
                 value={minPrice}
                 onChange={(e) => onMinPrice(e.target.value)}
-                className="h-9 w-full rounded-xl border border-[#D8D8C4] bg-white pl-6 pr-3 text-[11px] font-semibold text-[#222222] outline-none transition-colors focus:border-[#1CA2D1]"
+                className="h-9 w-full rounded-xl border border-[#D2D2D0] bg-white pl-6 pr-3 text-[11px] font-semibold text-[#222222] outline-none transition-colors focus:border-[#1CA2D1]"
                 placeholder="Min"
                 type="number"
                 min="0"
@@ -188,7 +188,7 @@ export function CatalogSidebar({
               <input
                 value={maxPrice}
                 onChange={(e) => onMaxPrice(e.target.value)}
-                className="h-9 w-full rounded-xl border border-[#D8D8C4] bg-white pl-6 pr-3 text-[11px] font-semibold text-[#222222] outline-none transition-colors focus:border-[#1CA2D1]"
+                className="h-9 w-full rounded-xl border border-[#D2D2D0] bg-white pl-6 pr-3 text-[11px] font-semibold text-[#222222] outline-none transition-colors focus:border-[#1CA2D1]"
                 placeholder="Max"
                 type="number"
                 min="0"
@@ -271,7 +271,7 @@ export function CatalogSidebar({
                       transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
                       className="overflow-hidden"
                     >
-                      <div className="ml-3 mb-1 mt-0.5 space-y-0.5 border-l border-[#D8D8C4] pl-3">
+                      <div className="ml-3 mb-1 mt-0.5 space-y-0.5 border-l border-[#D2D2D0] pl-3">
                         <button
                           onClick={() => onFilterChange({ subcategory: undefined })}
                           className={cn(

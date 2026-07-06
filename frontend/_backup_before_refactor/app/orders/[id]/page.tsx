@@ -167,12 +167,12 @@ export default function OrderDetailPage() {
               <MagicCard
                 className="rounded-2xl [--color-background:#ffffff]"
                 gradientFrom="#1CA2D1"
-                gradientTo="#EAEADB"
+                gradientTo="#E8E8E6"
                 gradientColor="#1CA2D1"
                 gradientOpacity={0.05}
               >
                 <div className="p-5 grid gap-4 sm:grid-cols-[100px_minmax(0,1fr)_120px]">
-                  <div className="aspect-square overflow-hidden rounded-xl bg-[#F3F3E4]">
+                  <div className="aspect-square overflow-hidden rounded-xl bg-[#F2F2F0]">
                     <ProductImage
                       src={item.component?.imageUrl}
                       alt={item.description}
@@ -211,7 +211,7 @@ export default function OrderDetailPage() {
           <MagicCard
             className="rounded-2xl [--color-background:#ffffff]"
             gradientFrom="#1CA2D1"
-            gradientTo="#EAEADB"
+            gradientTo="#E8E8E6"
             gradientColor="#1CA2D1"
             gradientOpacity={0.07}
           >
@@ -232,7 +232,7 @@ export default function OrderDetailPage() {
                     {order.payments[0]?.status || "CREATED"}
                   </span>
                 </div>
-                <div className="flex justify-between border-t border-[#D8D8C4] pt-2.5">
+                <div className="flex justify-between border-t border-[#D2D2D0] pt-2.5">
                   <span className="text-base font-bold text-[#222222]">Total</span>
                   <span className="text-xl font-bold text-[#1CA2D1]">
                     {formatPrice(order.totalAmountCents)}
@@ -262,7 +262,7 @@ export default function OrderDetailPage() {
                   </button>
                 ) : (
                   !canPay && (
-                    <p className="rounded-xl bg-[#FAFAED] border border-[#D8D8C4] px-4 py-3 text-xs font-medium text-zinc-500">
+                    <p className="rounded-xl bg-[#F2F2F0] border border-[#D2D2D0] px-4 py-3 text-xs font-medium text-zinc-500">
                       This order can no longer be cancelled from the storefront.
                     </p>
                   )
@@ -276,13 +276,13 @@ export default function OrderDetailPage() {
             <MagicCard
               className="rounded-2xl [--color-background:#ffffff]"
               gradientFrom="#1CA2D1"
-              gradientTo="#EAEADB"
+              gradientTo="#E8E8E6"
               gradientColor="#1CA2D1"
               gradientOpacity={0.04}
             >
               <div className="p-5 space-y-3">
                 <div className="flex items-center gap-2">
-                  <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#EAEADB]">
+                  <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#E8E8E6]">
                     <MapPin className="h-3.5 w-3.5 text-[#222222]" />
                   </div>
                   <h3 className="text-sm font-bold text-[#222222]">Shipping Address</h3>
@@ -307,13 +307,13 @@ export default function OrderDetailPage() {
             <MagicCard
               className="rounded-2xl [--color-background:#ffffff]"
               gradientFrom="#1CA2D1"
-              gradientTo="#EAEADB"
+              gradientTo="#E8E8E6"
               gradientColor="#1CA2D1"
               gradientOpacity={0.04}
             >
               <div className="p-5 space-y-3">
                 <div className="flex items-center gap-2">
-                  <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#EAEADB]">
+                  <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#E8E8E6]">
                     <Truck className="h-3.5 w-3.5 text-[#222222]" />
                   </div>
                   <h3 className="text-sm font-bold text-[#222222]">Shipment Tracking</h3>
@@ -344,7 +344,7 @@ export default function OrderDetailPage() {
               </div>
             </MagicCard>
           ) : (
-            <div className="flex items-center gap-3 rounded-2xl border border-[#D8D8C4] bg-white px-4 py-3">
+            <div className="flex items-center gap-3 rounded-2xl border border-[#D2D2D0] bg-white px-4 py-3">
               <Truck className="h-4 w-4 text-zinc-300 shrink-0" />
               <p className="text-xs text-zinc-400 font-medium">
                 Tracking will appear here once your order ships.
@@ -358,7 +358,7 @@ export default function OrderDetailPage() {
               href={`${API_BASE_URL}/api/orders/${order.id}/invoice`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex h-10 w-full items-center justify-center gap-2 rounded-2xl border border-[#D8D8C4] bg-white text-xs font-semibold text-zinc-600 hover:border-[#222222] hover:text-[#222222] transition-colors"
+              className="flex h-10 w-full items-center justify-center gap-2 rounded-2xl border border-[#D2D2D0] bg-white text-xs font-semibold text-zinc-600 hover:border-[#222222] hover:text-[#222222] transition-colors"
             >
               <FileText className="h-3.5 w-3.5" />
               Download Invoice (PDF)

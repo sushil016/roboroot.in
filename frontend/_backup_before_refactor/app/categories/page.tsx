@@ -160,7 +160,7 @@ export default function CategoriesPage() {
                           transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
                           className="overflow-hidden"
                         >
-                          <div className="ml-3 pl-3 border-l border-[#D8D8C4] mt-0.5 mb-1 space-y-0.5">
+                          <div className="ml-3 pl-3 border-l border-[#D2D2D0] mt-0.5 mb-1 space-y-0.5">
                             <Link
                               href={`/components?category=${encodeURIComponent(cat.category)}`}
                               className="block px-2 py-1.5 text-xs font-semibold text-[#1CA2D1] hover:bg-white/70 rounded-lg transition-colors"
@@ -217,7 +217,7 @@ export default function CategoriesPage() {
           {isLoading && (
             <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
               {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="rounded-2xl border border-[#D8D8C4] overflow-hidden bg-white">
+                <div key={i} className="rounded-2xl border border-[#D2D2D0] overflow-hidden bg-white">
                   <Skeleton className="h-[200px] w-full rounded-none" />
                   <div className="p-5 space-y-3">
                     <Skeleton className="h-5 w-3/4" />
@@ -231,7 +231,7 @@ export default function CategoriesPage() {
           )}
 
           {!isLoading && filtered.length === 0 && (
-            <div className="flex min-h-64 flex-col items-center justify-center gap-3 rounded-2xl border border-[#D8D8C4] bg-white p-10 text-center">
+            <div className="flex min-h-64 flex-col items-center justify-center gap-3 rounded-2xl border border-[#D2D2D0] bg-white p-10 text-center">
               <PackageSearch className="h-10 w-10 text-zinc-300" />
               <p className="font-bold text-zinc-600">No categories found.</p>
               <p className="text-sm text-zinc-400">

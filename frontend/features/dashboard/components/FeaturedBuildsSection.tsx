@@ -28,7 +28,7 @@ export function FeaturedBuildsSection() {
         whileInView={{ opacity: 1, x: 0 }}
         viewport={{ once: true, margin: "-80px" }}
         transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-        className="rounded-2xl bg-zinc-950 p-6 text-[#FAFAED] sm:p-8"
+        className="rounded-2xl bg-zinc-950 p-6 text-[#F2F2F0] sm:p-8"
       >
         <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
           <div>
@@ -82,7 +82,7 @@ export function FeaturedBuildsSection() {
                 >
                   <Link
                     href={`/projects/${project.slug}`}
-                    className="card-hover-bar block rounded-xl border border-white/10 bg-[#F3F3E4]/5 p-5 transition"
+                    className="card-hover-bar block rounded-xl border border-white/10 bg-[#F2F2F0]/5 p-5 transition"
                   >
                     <Boxes className="h-8 w-8 text-[#1CA2D1]" />
                     <h3 className="mt-5 min-h-14 text-lg font-black leading-7">{project.title}</h3>
@@ -100,7 +100,7 @@ export function FeaturedBuildsSection() {
         whileInView={{ opacity: 1, x: 0 }}
         viewport={{ once: true, margin: "-80px" }}
         transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-        className="card-hover-bar rounded-2xl border border-[#D8D8C4] bg-[#F3F3E4] p-6 shadow-sm"
+        className="card-hover-bar rounded-2xl border border-[#D2D2D0] bg-[#F2F2F0] p-6 shadow-sm"
       >
         <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-background text-[#1CA2D1]">
           <PackageCheck className="h-6 w-6" />
@@ -111,11 +111,11 @@ export function FeaturedBuildsSection() {
           and why each component matters.
         </p>
         <div className="mt-6 space-y-3 text-sm font-bold text-zinc-700">
-          <div className="flex items-center justify-between border-b border-[#D8D8C4] pb-3">
+          <div className="flex items-center justify-between border-b border-[#D2D2D0] pb-3">
             <span>Catalog categories</span>
             <span className="text-[#1CA2D1]">8+</span>
           </div>
-          <div className="flex items-center justify-between border-b border-[#D8D8C4] pb-3">
+          <div className="flex items-center justify-between border-b border-[#D2D2D0] pb-3">
             <span>Project verticals</span>
             <span className="text-[#1CA2D1]">IoT, AI, UAV</span>
           </div>

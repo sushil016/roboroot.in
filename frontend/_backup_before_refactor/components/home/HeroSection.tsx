@@ -66,7 +66,7 @@ export function HeroSection() {
   const Icon = homeIcons[slide.icon];
 
   return (
-    <section className="border-b border-[#D8D8C4] bg-[#FAFAED]">
+    <section className="border-b border-[#D2D2D0] bg-[#F2F2F0]">
 
       {/* ── Full-width parallax slider ── */}
       <div
@@ -201,7 +201,7 @@ export function HeroSection() {
 
       {/* ── Service tiles strip ── */}
       <div className="mx-auto max-w-7xl px-4 py-8">
-        <div className="overflow-x-auto rounded-2xl border border-[#D8D8C4] bg-[#F3F3E4] shadow-sm scrollbar-hide">
+        <div className="overflow-x-auto rounded-2xl border border-[#D2D2D0] bg-[#F2F2F0] shadow-sm scrollbar-hide">
           <motion.div
             className="grid min-w-[760px] grid-cols-4 lg:min-w-0"
             initial="hidden"
@@ -220,7 +220,7 @@ export function HeroSection() {
                 >
                   <Link
                     href={item.href}
-                    className="card-hover-bar flex min-h-44 items-center justify-between border-r border-[#D8D8C4] px-7 py-6 last:border-r-0 transition"
+                    className="card-hover-bar flex min-h-44 items-center justify-between border-r border-[#D2D2D0] px-7 py-6 last:border-r-0 transition"
                   >
                     <span>
                       <span className="block text-2xl font-black leading-tight text-zinc-950 md:text-3xl">

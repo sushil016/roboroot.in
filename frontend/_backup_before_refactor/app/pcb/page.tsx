@@ -112,12 +112,12 @@ export default function PcbPage() {
               <MagicCard
                 className="rounded-2xl h-full [--color-background:#ffffff]"
                 gradientFrom="#1CA2D1"
-                gradientTo="#EAEADB"
+                gradientTo="#E8E8E6"
                 gradientColor="#1CA2D1"
                 gradientOpacity={0.06}
               >
                 <div className="p-5 space-y-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#EAEADB]">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#E8E8E6]">
                     <Icon className="h-5 w-5 text-[#222222]" />
                   </div>
                   <h3 className="font-bold text-[#222222]">{title}</h3>
@@ -141,7 +141,7 @@ export default function PcbPage() {
                 <MagicCard
                   className="rounded-2xl [--color-background:#ffffff]"
                   gradientFrom="#1CA2D1"
-                  gradientTo="#EAEADB"
+                  gradientTo="#E8E8E6"
                   gradientColor="#1CA2D1"
                   gradientOpacity={0.07}
                 >
@@ -158,7 +158,7 @@ export default function PcbPage() {
                     <div className="flex flex-col gap-2 sm:flex-row">
                       <button
                         onClick={() => { setSubmitted(false); setForm(initialForm); }}
-                        className="h-10 rounded-xl border border-[#D8D8C4] px-5 text-sm font-semibold text-zinc-600 hover:border-[#222222] hover:text-[#222222] transition-colors"
+                        className="h-10 rounded-xl border border-[#D2D2D0] px-5 text-sm font-semibold text-zinc-600 hover:border-[#222222] hover:text-[#222222] transition-colors"
                       >
                         Submit Another
                       </button>
@@ -177,7 +177,7 @@ export default function PcbPage() {
                 <MagicCard
                   className="rounded-2xl [--color-background:#ffffff]"
                   gradientFrom="#1CA2D1"
-                  gradientTo="#EAEADB"
+                  gradientTo="#E8E8E6"
                   gradientColor="#1CA2D1"
                   gradientOpacity={0.05}
                 >
@@ -193,7 +193,7 @@ export default function PcbPage() {
                           <select
                             value={form.boardLayers}
                             onChange={(e) => set("boardLayers", Number(e.target.value))}
-                            className="w-full h-11 rounded-xl border border-[#D8D8C4] bg-[#FAFAED] px-3 text-sm font-medium text-[#222222] outline-none focus:border-[#1CA2D1] focus:bg-white"
+                            className="w-full h-11 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 text-sm font-medium text-[#222222] outline-none focus:border-[#1CA2D1] focus:bg-white"
                           >
                             {[1, 2, 4, 6, 8, 10, 12].map((n) => (
                               <option key={n} value={n}>{n} Layer{n > 1 ? "s" : ""}</option>
@@ -209,7 +209,7 @@ export default function PcbPage() {
                             value={form.quantity}
                             onChange={(e) => set("quantity", Number(e.target.value))}
                             required
-                            className="w-full h-11 rounded-xl border border-[#D8D8C4] bg-[#FAFAED] px-3 text-sm font-medium text-[#222222] outline-none focus:border-[#1CA2D1] focus:bg-white"
+                            className="w-full h-11 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 text-sm font-medium text-[#222222] outline-none focus:border-[#1CA2D1] focus:bg-white"
                           />
                         </label>
                         <label className="space-y-1.5">
@@ -221,7 +221,7 @@ export default function PcbPage() {
                             value={form.boardSizeX}
                             onChange={(e) => set("boardSizeX", Number(e.target.value))}
                             required
-                            className="w-full h-11 rounded-xl border border-[#D8D8C4] bg-[#FAFAED] px-3 text-sm font-medium text-[#222222] outline-none focus:border-[#1CA2D1] focus:bg-white"
+                            className="w-full h-11 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 text-sm font-medium text-[#222222] outline-none focus:border-[#1CA2D1] focus:bg-white"
                           />
                         </label>
                         <label className="space-y-1.5">
@@ -233,7 +233,7 @@ export default function PcbPage() {
                             value={form.boardSizeY}
                             onChange={(e) => set("boardSizeY", Number(e.target.value))}
                             required
-                            className="w-full h-11 rounded-xl border border-[#D8D8C4] bg-[#FAFAED] px-3 text-sm font-medium text-[#222222] outline-none focus:border-[#1CA2D1] focus:bg-white"
+                            className="w-full h-11 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 text-sm font-medium text-[#222222] outline-none focus:border-[#1CA2D1] focus:bg-white"
                           />
                         </label>
                         <label className="space-y-1.5">
@@ -241,7 +241,7 @@ export default function PcbPage() {
                           <select
                             value={form.surfaceFinish}
                             onChange={(e) => set("surfaceFinish", e.target.value)}
-                            className="w-full h-11 rounded-xl border border-[#D8D8C4] bg-[#FAFAED] px-3 text-sm font-medium text-[#222222] outline-none focus:border-[#1CA2D1] focus:bg-white"
+                            className="w-full h-11 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 text-sm font-medium text-[#222222] outline-none focus:border-[#1CA2D1] focus:bg-white"
                           >
                             {SURFACE_FINISHES.map((f) => (
                               <option key={f} value={f}>{f}</option>
@@ -253,7 +253,7 @@ export default function PcbPage() {
                           <select
                             value={form.copperWeight}
                             onChange={(e) => set("copperWeight", e.target.value)}
-                            className="w-full h-11 rounded-xl border border-[#D8D8C4] bg-[#FAFAED] px-3 text-sm font-medium text-[#222222] outline-none focus:border-[#1CA2D1] focus:bg-white"
+                            className="w-full h-11 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 text-sm font-medium text-[#222222] outline-none focus:border-[#1CA2D1] focus:bg-white"
                           >
                             {COPPER_WEIGHTS.map((w) => (
                               <option key={w} value={w}>{w}</option>
@@ -274,7 +274,7 @@ export default function PcbPage() {
                         value={form.gerberFileUrl}
                         onChange={(e) => set("gerberFileUrl", e.target.value)}
                         placeholder="https://drive.google.com/... or any public link"
-                        className="w-full h-11 rounded-xl border border-[#D8D8C4] bg-[#FAFAED] px-3 text-sm font-medium text-[#222222] outline-none focus:border-[#1CA2D1] focus:bg-white placeholder:text-zinc-400 placeholder:font-normal"
+                        className="w-full h-11 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 text-sm font-medium text-[#222222] outline-none focus:border-[#1CA2D1] focus:bg-white placeholder:text-zinc-400 placeholder:font-normal"
                       />
                       <p className="text-[11px] text-zinc-400">
                         Upload your Gerber ZIP to Google Drive, Dropbox, or WeTransfer and paste the link.
@@ -288,7 +288,7 @@ export default function PcbPage() {
                         value={form.notes}
                         onChange={(e) => set("notes", e.target.value)}
                         placeholder="Special requirements, stackup, impedance control, silkscreen color..."
-                        className="w-full min-h-24 rounded-xl border border-[#D8D8C4] bg-[#FAFAED] px-3 py-3 text-sm font-medium text-[#222222] outline-none focus:border-[#1CA2D1] focus:bg-white placeholder:text-zinc-400 placeholder:font-normal resize-none"
+                        className="w-full min-h-24 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 py-3 text-sm font-medium text-[#222222] outline-none focus:border-[#1CA2D1] focus:bg-white placeholder:text-zinc-400 placeholder:font-normal resize-none"
                       />
                     </div>
 
@@ -322,7 +322,7 @@ export default function PcbPage() {
             <MagicCard
               className="rounded-2xl [--color-background:#ffffff]"
               gradientFrom="#1CA2D1"
-              gradientTo="#EAEADB"
+              gradientTo="#E8E8E6"
               gradientColor="#1CA2D1"
               gradientOpacity={0.06}
             >
@@ -349,7 +349,7 @@ export default function PcbPage() {
             <MagicCard
               className="rounded-2xl [--color-background:#ffffff]"
               gradientFrom="#1CA2D1"
-              gradientTo="#EAEADB"
+              gradientTo="#E8E8E6"
               gradientColor="#1CA2D1"
               gradientOpacity={0.04}
             >
@@ -373,7 +373,7 @@ export default function PcbPage() {
               </div>
             </MagicCard>
 
-            <div className="rounded-2xl border border-[#D8D8C4] bg-white p-5 space-y-2">
+            <div className="rounded-2xl border border-[#D2D2D0] bg-white p-5 space-y-2">
               <p className="text-sm font-bold text-[#222222]">Need help?</p>
               <p className="text-xs text-zinc-500">
                 Email us at{" "}

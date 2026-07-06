@@ -86,7 +86,7 @@ export default function CareersPage() {
 
           <div className="grid gap-6 sm:grid-cols-3">
             {CULTURE.map(({ icon: Icon, title, desc }) => (
-              <div key={title} className="bg-white border border-[#D8D8C4] rounded-2xl p-6 shadow-xs">
+              <div key={title} className="bg-white border border-[#D2D2D0] rounded-2xl p-6 shadow-xs">
                 <div className="p-3 bg-[#1CA2D1]/10 rounded-xl text-[#1CA2D1] w-fit mb-4">
                   <Icon className="w-6 h-6" />
                 </div>
@@ -98,7 +98,7 @@ export default function CareersPage() {
         </section>
 
         {/* Speculative Application Block */}
-        <section className="max-w-3xl mx-auto bg-white border border-[#D8D8C4] rounded-3xl p-8 shadow-xs text-center space-y-6">
+        <section className="max-w-3xl mx-auto bg-white border border-[#D2D2D0] rounded-3xl p-8 shadow-xs text-center space-y-6">
           <div className="w-14 h-14 bg-[#1CA2D1]/10 rounded-full flex items-center justify-center mx-auto text-[#1CA2D1]">
             <Briefcase className="w-6 h-6" />
           </div>
@@ -122,7 +122,7 @@ export default function CareersPage() {
       {/* Application Popup Modal */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-          <div className="bg-white border border-[#D8D8C4] rounded-3xl p-6 sm:p-8 max-w-xl w-full relative shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-150">
+          <div className="bg-white border border-[#D2D2D0] rounded-3xl p-6 sm:p-8 max-w-xl w-full relative shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-150">
             
             {/* Close Button */}
             <button

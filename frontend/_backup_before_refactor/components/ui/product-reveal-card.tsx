@@ -88,7 +88,7 @@ export function ProductRevealCard({
             </span>
           )}
           {component.isRobomaniacItem && (
-            <span className="rounded-md border border-[#D8D8C4] bg-white/95 px-2 py-0.5 text-[10px] font-bold text-zinc-600">
+            <span className="rounded-md border border-[#D2D2D0] bg-white/95 px-2 py-0.5 text-[10px] font-bold text-zinc-600">
               Robomaniac
             </span>
           )}
@@ -101,8 +101,8 @@ export function ProductRevealCard({
             isWishlisted
               ? "border-transparent bg-[#1CA2D1] text-white scale-100 opacity-100"
               : hovered
-              ? "border-[#D8D8C4] bg-white text-zinc-400 opacity-100 scale-100"
-              : "border-[#D8D8C4] bg-white text-zinc-400 opacity-0 scale-90"
+              ? "border-[#D2D2D0] bg-white text-zinc-400 opacity-100 scale-100"
+              : "border-[#D2D2D0] bg-white text-zinc-400 opacity-0 scale-90"
           )}
           onClick={(e) => {
             e.preventDefault();
@@ -206,7 +206,7 @@ export function ProductRevealCard({
               ? "cursor-not-allowed bg-zinc-100 text-zinc-400"
               : hovered
               ? "bg-[#1CA2D1] text-white shadow-md shadow-[#1CA2D1]/20"
-              : "bg-[#F3F3E4] text-[#222222] hover:bg-[#1CA2D1] hover:text-white"
+              : "bg-[#F2F2F0] text-[#222222] hover:bg-[#1CA2D1] hover:text-white"
           )}
         >
           {isOutOfStock ? (
@@ -230,14 +230,14 @@ export function ProductRevealCardSkeleton({ compact = false }: { compact?: boole
         className={cn("animate-pulse bg-[#F0F0E8]", compact ? "aspect-[4/3]" : "aspect-square")}
       />
       <div className="space-y-2.5 px-4 py-4">
-        <div className="h-2.5 w-14 animate-pulse rounded-full bg-[#EAEADB]" />
-        <div className="h-4 w-full animate-pulse rounded-md bg-[#EAEADB]" />
-        <div className="h-4 w-3/4 animate-pulse rounded-md bg-[#EAEADB]" />
+        <div className="h-2.5 w-14 animate-pulse rounded-full bg-[#E8E8E6]" />
+        <div className="h-4 w-full animate-pulse rounded-md bg-[#E8E8E6]" />
+        <div className="h-4 w-3/4 animate-pulse rounded-md bg-[#E8E8E6]" />
         <div className="flex items-center justify-between pt-2">
-          <div className="h-6 w-20 animate-pulse rounded-md bg-[#EAEADB]" />
-          <div className="h-2.5 w-16 animate-pulse rounded-full bg-[#EAEADB]" />
+          <div className="h-6 w-20 animate-pulse rounded-md bg-[#E8E8E6]" />
+          <div className="h-2.5 w-16 animate-pulse rounded-full bg-[#E8E8E6]" />
         </div>
-        <div className="h-9 w-full animate-pulse rounded-xl bg-[#EAEADB]" />
+        <div className="h-9 w-full animate-pulse rounded-xl bg-[#E8E8E6]" />
       </div>
     </div>
   );

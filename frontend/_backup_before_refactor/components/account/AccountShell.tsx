@@ -71,10 +71,10 @@ export function AccountShell({ children }: { children: React.ReactNode }) {
         {/* Account Sidebar */}
         <Sidebar
           collapsible="none"
-          className="border-r border-[#D8D8C4] bg-[#FAFAED] shrink-0"
+          className="border-r border-[#D2D2D0] bg-[#F2F2F0] shrink-0"
         >
           {/* User info header */}
-          <SidebarHeader className="border-b border-[#D8D8C4] p-4">
+          <SidebarHeader className="border-b border-[#D2D2D0] p-4">
             {isLoading ? (
               <div className="flex items-center gap-3">
                 <Skeleton className="h-10 w-10 rounded-full" />
@@ -123,7 +123,7 @@ export function AccountShell({ children }: { children: React.ReactNode }) {
                         className={
                           isActive
                             ? "bg-[#1CA2D1]/10 text-[#1CA2D1] font-semibold hover:bg-[#1CA2D1]/15 hover:text-[#1CA2D1]"
-                            : "text-zinc-600 hover:text-[#222222] hover:bg-[#EAEADB]"
+                            : "text-zinc-600 hover:text-[#222222] hover:bg-[#E8E8E6]"
                         }
                       >
                         <Link href={href} className="flex items-center gap-2.5">
@@ -147,7 +147,7 @@ export function AccountShell({ children }: { children: React.ReactNode }) {
 
           {/* Admin Console link */}
           {user && ADMIN_ROLES.includes(user.role) && (
-            <div className="border-t border-[#D8D8C4] p-2">
+            <div className="border-t border-[#D2D2D0] p-2">
               <a
                 href={ADMIN_URL}
                 target="_blank"
@@ -162,7 +162,7 @@ export function AccountShell({ children }: { children: React.ReactNode }) {
           )}
 
           {/* Logout */}
-          <SidebarFooter className="border-t border-[#D8D8C4] p-2">
+          <SidebarFooter className="border-t border-[#D2D2D0] p-2">
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton

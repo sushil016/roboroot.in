@@ -42,7 +42,7 @@ export default function WishlistPage() {
             <Button
               size="sm"
               variant="outline"
-              className="border-[#D8D8C4] text-zinc-500 hover:text-red-600 hover:border-red-200"
+              className="border-[#D2D2D0] text-zinc-500 hover:text-red-600 hover:border-red-200"
               onClick={clearWishlist}
             >
               Clear All
@@ -55,12 +55,12 @@ export default function WishlistPage() {
           <MagicCard
             className="rounded-2xl [--color-background:#ffffff]"
             gradientFrom="#1CA2D1"
-            gradientTo="#EAEADB"
+            gradientTo="#E8E8E6"
             gradientColor="#1CA2D1"
             gradientOpacity={0.05}
           >
             <div className="flex flex-col items-center gap-5 p-16 text-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#EAEADB]">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#E8E8E6]">
                 <Heart className="h-7 w-7 text-zinc-300" />
               </div>
               <div>
@@ -91,13 +91,13 @@ export default function WishlistPage() {
                   <MagicCard
                     className="rounded-2xl [--color-background:#ffffff] h-full"
                     gradientFrom="#1CA2D1"
-                    gradientTo="#EAEADB"
+                    gradientTo="#E8E8E6"
                     gradientColor="#1CA2D1"
                     gradientOpacity={0.06}
                   >
                     <div className="flex flex-col p-4 h-full">
                       <Link href={`/components/${component.id}`} className="group">
-                        <div className="aspect-square overflow-hidden rounded-xl bg-[#F3F3E4] mb-3">
+                        <div className="aspect-square overflow-hidden rounded-xl bg-[#F2F2F0] mb-3">
                           <ProductImage
                             src={component.imageUrl}
                             alt={component.name}
@@ -125,7 +125,7 @@ export default function WishlistPage() {
                         </button>
                         <button
                           onClick={() => handleRemove(component)}
-                          className="flex h-9 items-center justify-center gap-1.5 rounded-xl border border-[#D8D8C4] text-xs font-semibold text-zinc-500 hover:border-red-200 hover:text-red-500 transition-colors"
+                          className="flex h-9 items-center justify-center gap-1.5 rounded-xl border border-[#D2D2D0] text-xs font-semibold text-zinc-500 hover:border-red-200 hover:text-red-500 transition-colors"
                         >
                           <Trash2 className="h-3.5 w-3.5" />
                           Remove

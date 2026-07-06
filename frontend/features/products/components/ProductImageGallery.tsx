@@ -73,7 +73,7 @@ export function ProductImageGallery({
   // No media at all
   if (items.length === 0) {
     return (
-      <div className="flex aspect-square w-full items-center justify-center rounded-2xl border border-[#D8D8C4] bg-[#F3F3E4]">
+      <div className="flex aspect-square w-full items-center justify-center rounded-2xl border border-[#D2D2D0] bg-[#F2F2F0]">
         <Package className="h-20 w-20 text-zinc-200" />
       </div>
     );
@@ -82,7 +82,7 @@ export function ProductImageGallery({
   return (
     <div className="space-y-3">
       {/* ── Main viewer ── */}
-      <div className="group relative overflow-hidden rounded-2xl border border-[#D8D8C4] bg-white">
+      <div className="group relative overflow-hidden rounded-2xl border border-[#D2D2D0] bg-white">
         <AnimatePresence mode="popLayout" initial={false} custom={direction}>
           <motion.div
             key={activeIdx}
@@ -126,14 +126,14 @@ export function ProductImageGallery({
           <>
             <button
               onClick={() => go(-1)}
-              className="absolute left-3 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full border border-[#D8D8C4] bg-white/90 text-zinc-600 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity hover:bg-[#EAEADB] hover:text-[#222222]"
+              className="absolute left-3 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full border border-[#D2D2D0] bg-white/90 text-zinc-600 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity hover:bg-[#E8E8E6] hover:text-[#222222]"
               aria-label="Previous image"
             >
               <ChevronLeft className="h-4 w-4" />
             </button>
             <button
               onClick={() => go(1)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full border border-[#D8D8C4] bg-white/90 text-zinc-600 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity hover:bg-[#EAEADB] hover:text-[#222222]"
+              className="absolute right-3 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full border border-[#D2D2D0] bg-white/90 text-zinc-600 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity hover:bg-[#E8E8E6] hover:text-[#222222]"
               aria-label="Next image"
             >
               <ChevronRight className="h-4 w-4" />
@@ -145,7 +145,7 @@ export function ProductImageGallery({
         {active?.type === "IMAGE" && (
           <button
             onClick={() => setLightboxOpen(true)}
-            className="absolute bottom-3 right-3 flex h-8 w-8 items-center justify-center rounded-full border border-[#D8D8C4] bg-white/90 text-zinc-500 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity hover:bg-[#EAEADB] hover:text-[#222222]"
+            className="absolute bottom-3 right-3 flex h-8 w-8 items-center justify-center rounded-full border border-[#D2D2D0] bg-white/90 text-zinc-500 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity hover:bg-[#E8E8E6] hover:text-[#222222]"
             aria-label="Zoom image"
           >
             <ZoomIn className="h-3.5 w-3.5" />
@@ -171,10 +171,10 @@ export function ProductImageGallery({
                 setActiveIdx(i);
               }}
               className={cn(
-                "relative h-16 w-16 shrink-0 overflow-hidden rounded-xl border-2 bg-[#F3F3E4] transition-all duration-150",
+                "relative h-16 w-16 shrink-0 overflow-hidden rounded-xl border-2 bg-[#F2F2F0] transition-all duration-150",
                 i === activeIdx
                   ? "border-[#1CA2D1] shadow-sm"
-                  : "border-transparent hover:border-[#D8D8C4]"
+                  : "border-transparent hover:border-[#D2D2D0]"
               )}
               aria-label={`View ${item.type === "VIDEO" ? "video" : `image ${i + 1}`}`}
             >

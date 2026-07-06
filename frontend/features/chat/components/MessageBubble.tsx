@@ -235,7 +235,7 @@ export function MessageBubble({
               href={message.actionHref}
               className={cn(
                 "mt-3 inline-flex min-h-9 items-center justify-center gap-2 rounded-xl px-4 text-xs font-bold transition hover:scale-[1.02] cursor-pointer",
-                isUser ? "bg-white text-black hover:bg-white/90" : "bg-black text-white hover:bg-[#1CA2D1]",
+                isUser ? "bg-white text-black hover:bg-white/90" : "bg-black text-white hover:bg-zinc-800",
               )}
             >
               {message.actionLabel}

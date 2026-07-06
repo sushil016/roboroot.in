@@ -38,9 +38,9 @@ export default async function CheckoutSuccessPage({ searchParams }: SuccessPageP
 
       <div className="mx-auto max-w-lg px-6 py-10">
         {/* Info card */}
-        <div className="rounded-2xl border border-[#D8D8C4] bg-white p-6 mb-6">
+        <div className="rounded-2xl border border-[#D2D2D0] bg-white p-6 mb-6">
           <div className="flex items-start gap-4">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EAEADB]">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#E8E8E6]">
               <Package className="h-5 w-5 text-[#222222]" />
             </div>
             <div>
@@ -73,7 +73,7 @@ export default async function CheckoutSuccessPage({ searchParams }: SuccessPageP
           </Link>
           <Link
             href="/components"
-            className="flex h-12 flex-1 items-center justify-center gap-2 rounded-xl border border-[#D8D8C4] text-sm font-semibold text-[#222222] hover:border-[#222222] transition-colors"
+            className="flex h-12 flex-1 items-center justify-center gap-2 rounded-xl border border-[#D2D2D0] text-sm font-semibold text-[#222222] hover:border-[#222222] transition-colors"
           >
             <ShoppingBag className="h-4 w-4" />
             Continue Shopping
@@ -85,7 +85,7 @@ export default async function CheckoutSuccessPage({ searchParams }: SuccessPageP
             href={`${API_BASE_URL}/api/orders/${params.orderId}/invoice`}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-3 flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-[#D8D8C4] bg-white text-sm font-semibold text-zinc-600 hover:border-[#222222] hover:text-[#222222] transition-colors"
+            className="mt-3 flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-[#D2D2D0] bg-white text-sm font-semibold text-zinc-600 hover:border-[#222222] hover:text-[#222222] transition-colors"
           >
             <FileText className="h-4 w-4" />
             Download Invoice (PDF)

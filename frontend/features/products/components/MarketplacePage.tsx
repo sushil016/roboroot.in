@@ -242,7 +242,7 @@ export function MarketplacePage() {
                           className={
                             currentPage <= 1
                               ? "pointer-events-none opacity-40"
-                              : "cursor-pointer hover:bg-[#EAEADB]"
+                              : "cursor-pointer hover:bg-[#E8E8E6]"
                           }
                           aria-disabled={currentPage <= 1}
                         />
@@ -265,7 +265,7 @@ export function MarketplacePage() {
                               className={
                                 page === currentPage
                                   ? "border-[#222222] bg-[#222222] text-white hover:bg-[#1CA2D1] hover:border-[#1CA2D1]"
-                                  : "cursor-pointer hover:bg-[#EAEADB] border-transparent"
+                                  : "cursor-pointer hover:bg-[#E8E8E6] border-transparent"
                               }
                             >
                               {page}
@@ -284,7 +284,7 @@ export function MarketplacePage() {
                           className={
                             currentPage >= totalPages
                               ? "pointer-events-none opacity-40"
-                              : "cursor-pointer hover:bg-[#EAEADB]"
+                              : "cursor-pointer hover:bg-[#E8E8E6]"
                           }
                           aria-disabled={currentPage >= totalPages}
                         />
