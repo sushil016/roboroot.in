@@ -7,7 +7,7 @@ export const API_BASE_URL =
   configuredApiUrl && !(isProduction && isLocalhostUrl(configuredApiUrl))
     ? configuredApiUrl
     : isProduction
-      ? "/_/backend"
+      ? "https://roboroot.in/_/backend"
       : "http://localhost:4000";
 
 export const STOREFRONT_URL =
