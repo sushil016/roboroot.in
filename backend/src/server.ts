@@ -40,6 +40,14 @@ import { csrfProtection, csrfTokenHandler } from "./middlewares/csrf.middleware.
 
 const app = express();
 
+// Rewrite /_/backend prefix if requests come via Vercel proxy
+app.use((req: Request, res: Response, next) => {
+  if (req.url.startsWith("/_/backend")) {
+    req.url = req.url.substring("/_/backend".length);
+  }
+  next();
+});
+
 const PORT = process.env.PORT || 4000;
 const NODE_ENV = process.env.NODE_ENV || "development";
 
