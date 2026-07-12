@@ -38,7 +38,14 @@ export function sortPatchFromValue(value: SortOption): Pick<ComponentFilters, "s
 }
 
 export function productImageUrl(component?: Pick<Component, "imageUrl">) {
-  return component?.imageUrl || fallbackProductImage;
+  const url = component?.imageUrl;
+  if (!url) {
+    return fallbackProductImage;
+  }
+  if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("/")) {
+    return url;
+  }
+  return fallbackProductImage;
 }
 
 export function categoryHeroImage(category?: ComponentCategoryNode) {

@@ -165,6 +165,8 @@ export async function getComponents(
 
   if (isActive !== undefined) {
     where.isActive = isActive;
+  } else {
+    where.isActive = true;
   }
 
   if (category) {

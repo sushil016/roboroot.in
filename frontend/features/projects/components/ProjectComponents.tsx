@@ -189,7 +189,7 @@ export function ProjectComponents({ components, totalCost, projectTitle }: Proje
 
                 {component.description && (
                   <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
-                    {component.description}
+                    {component.description.replace(/<[^>]*>/g, "").replace(/&nbsp;/g, " ")}
                   </p>
                 )}
 

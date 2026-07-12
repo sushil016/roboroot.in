@@ -631,9 +631,10 @@ export function ProductDetailPage() {
                 {activeTab === "description" && (
                   <div className="space-y-4 animate-in fade-in duration-200">
                     {component.description ? (
-                      <p className="text-sm leading-relaxed text-zinc-600 whitespace-pre-line font-medium">
-                        {component.description}
-                      </p>
+                      <div 
+                        className="text-sm leading-relaxed text-zinc-650 font-normal prose prose-zinc max-w-none prose-headings:font-bold prose-h1:text-xl prose-h2:text-lg prose-h3:text-md prose-p:my-2 prose-ul:list-disc prose-ul:pl-5 prose-ol:list-decimal prose-ol:pl-5"
+                        dangerouslySetInnerHTML={{ __html: component.description }}
+                      />
                     ) : (
                       <p className="text-sm text-zinc-400 italic">No description available for this item.</p>
                     )}

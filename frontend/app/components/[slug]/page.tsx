@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const priceInRupees = (component.discountedPriceCents || component.unitPriceCents) / 100;
   const description = (
-    component.description ||
+    (component.description ? component.description.replace(/<[^>]*>/g, "").replace(/&nbsp;/g, " ") : "") ||
     `Buy ${component.name} online at RoboRoot. Best price ₹${priceInRupees} in India. Fast shipping.`
   ).substring(0, 160);
 
@@ -83,7 +83,7 @@ export default async function Page({ params }: Props) {
       "@type": "Product",
       "name": component.name,
       "image": component.imageUrl ? [component.imageUrl] : [],
-      "description": component.description || `Buy ${component.name} at RoboRoot`,
+      "description": (component.description ? component.description.replace(/<[^>]*>/g, "").replace(/&nbsp;/g, " ") : "") || `Buy ${component.name} at RoboRoot`,
       "sku": component.sku || component.id,
       "mpn": component.sku || component.id,
       "brand": {

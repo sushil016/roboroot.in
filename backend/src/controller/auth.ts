@@ -363,7 +363,7 @@ function getDynamicRedirectUri(req: Request, provider: "google" | "github"): str
     // Since the website uses Vercel / Nginx which proxies /_/backend to the backend,
     // we need to include /_/backend in the redirect URI if the request came via that proxy.
     let baseHost = host;
-    if (host.includes("roboroot.in") || host.includes("vercel.app") || host.includes("sushilsahani.dev")) {
+    if (host.includes("roboroot.in") || host.includes("vercel.app")) {
       baseHost = `${host}/_/backend`;
     }
     

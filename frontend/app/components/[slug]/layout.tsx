@@ -11,7 +11,8 @@ export async function generateMetadata({
     const { slug } = await params;
     const component = await componentApi.getComponentBySlug(slug);
     const name = component.name ?? "Component";
-    const description = component.description ?? `${name} available at RoboRoot`;
+    const rawDescription = component.description ? component.description.replace(/<[^>]*>/g, "").replace(/&nbsp;/g, " ") : "";
+    const description = rawDescription || `${name} available at RoboRoot`;
     const image = component.imageUrl;
 
     return {

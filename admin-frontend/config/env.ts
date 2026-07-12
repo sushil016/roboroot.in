@@ -14,5 +14,5 @@ export const STOREFRONT_URL =
   configuredAppUrl && !(isProduction && isLocalhostUrl(configuredAppUrl))
     ? configuredAppUrl
     : isProduction
-      ? "https://robo-gig.vercel.app"
+      ? "https://roboroot.in"
       : "http://localhost:3000";

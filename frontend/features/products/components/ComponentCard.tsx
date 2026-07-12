@@ -136,7 +136,7 @@ export function ComponentCard({ component }: ComponentCardProps) {
           {/* Description */}
           {component.description && (
             <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
-              {component.description}
+              {component.description.replace(/<[^>]*>/g, "").replace(/&nbsp;/g, " ")}
             </p>
           )}
 

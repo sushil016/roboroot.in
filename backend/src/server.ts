@@ -60,11 +60,9 @@ const vercelOrigin = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}
 const allowedOrigins = Array.from(new Set([
   process.env.FRONTEND_URL || "http://localhost:3000",
   process.env.ADMIN_FRONTEND_URL || "http://localhost:3002",
-  "https://robo-gig.vercel.app",
+  "https://asp-admin.roboroot.in",
   "https://roboroot.in",
   "https://www.roboroot.in",
-  "https://roboroot.sushilsahani.dev",
-  "https://www.roboroot.sushilsahani.dev",
   vercelOrigin,
   ...configuredOrigins,
   "http://localhost:3000",
