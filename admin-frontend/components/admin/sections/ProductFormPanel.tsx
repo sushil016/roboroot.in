@@ -9,6 +9,7 @@ import { compactType, productImage } from "@/utils";
 import { useAdmin } from "@/core/context/AdminContext";
 import { ProductMediaManager } from "./ProductMediaManager";
 import { API_BASE_URL } from "@/config/env";
+import { RichTextEditor } from "../RichTextEditor";
 
 export function ProductFormPanel({
   productForm,
@@ -98,7 +99,14 @@ export function ProductFormPanel({
             {productTypes.map((type) => <option key={type} value={type}>{compactType(type)}</option>)}
           </select>
           <input className="admin-input" placeholder="Brand" value={productForm.brand} onChange={(event) => onForm({ ...productForm, brand: event.target.value })} />
-          <textarea className="admin-textarea" placeholder="Description" value={productForm.description} onChange={(event) => onForm({ ...productForm, description: event.target.value })} />
+          <div className="grid gap-1">
+            <label className="text-xs font-semibold text-zinc-500">Description</label>
+            <RichTextEditor
+              value={productForm.description}
+              onChange={(value) => onForm({ ...productForm, description: value })}
+              placeholder="Description"
+            />
+          </div>
           <textarea className="admin-textarea" placeholder="Typical use case" value={productForm.typicalUseCase} onChange={(event) => onForm({ ...productForm, typicalUseCase: event.target.value })} />
 
           {/* Image upload */}

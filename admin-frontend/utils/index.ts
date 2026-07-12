@@ -37,7 +37,14 @@ export function productToForm(product: Product): ProductForm {
 }
 
 export function productImage(product?: Pick<Product, "imageUrl">) {
-  return product?.imageUrl || "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80";
+  const url = product?.imageUrl;
+  if (!url) {
+    return "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80";
+  }
+  if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("/")) {
+    return url;
+  }
+  return "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80";
 }
 
 export function compactType(value: string) {
