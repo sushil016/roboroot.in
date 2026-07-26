@@ -5,7 +5,6 @@ import { AppProvider } from "@/providers/AppProvider";
 import { Toaster } from "@/components/ui/sonner";
 import { LayoutWrapper } from "@/components/layout/LayoutWrapper";
 import { CookieConsent } from "@/components/ui/cookie-consent";
-import { SiteNotifications } from "@/components/ui/site-notifications";
 
 const syne = Syne({
   subsets: ["latin"],
@@ -150,7 +149,6 @@ export default function RootLayout({
         <AppProvider>
           <LayoutWrapper>{children}</LayoutWrapper>
           <Toaster />
-          <SiteNotifications />
           <CookieConsent />
         </AppProvider>
       </body>

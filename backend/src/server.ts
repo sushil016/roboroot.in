@@ -34,6 +34,7 @@ import reviewRoutes from "./features/reviews/routes/review.routes.js";
 import chatRoutes from "./features/ai-chat/routes/chat.routes.js";
 import reindexRoutes from "./features/embeddings/routes/reindex.routes.js";
 import bulkOrderRoutes from "./features/bulk-orders/routes/bulk-order.routes.js";
+import careerRoutes from "./features/careers/routes/career.routes.js";
 import bulkRoutes from "./routes/bulkRoutes.js";
 import { errorHandler, notFoundHandler } from "./middlewares/error.middleware.js";
 import { csrfProtection, csrfTokenHandler } from "./middlewares/csrf.middleware.js";
@@ -320,6 +321,7 @@ app.use("/api/pcb", pcbRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/bulk-orders", bulkOrderRoutes);
+app.use("/api/careers", careerRoutes);
 app.use("/api/webhooks", reindexRoutes);
 
 // 404 handler

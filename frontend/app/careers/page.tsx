@@ -9,9 +9,12 @@ import {
   Rocket,
   CheckCircle2,
   X,
-  Briefcase
+  Briefcase,
+  AlertCircle,
+  Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import apiClient from "@/lib/api-client";
 
 const CULTURE = [
   {
@@ -34,6 +37,8 @@ const CULTURE = [
 export default function CareersPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [applied, setApplied] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Form states
   const [name, setName] = useState("");
@@ -42,18 +47,35 @@ export default function CareersPage() {
   const [portfolio, setPortfolio] = useState("");
   const [letter, setLetter] = useState("");
 
-  function handleApplySubmit(e: React.FormEvent) {
+  async function handleApplySubmit(e: React.FormEvent) {
     e.preventDefault();
-    setApplied(true);
-    setTimeout(() => {
-      setApplied(false);
-      setModalOpen(false);
-      setName("");
-      setEmail("");
-      setPhone("");
-      setPortfolio("");
-      setLetter("");
-    }, 2500);
+    setError(null);
+    setIsSubmitting(true);
+
+    try {
+      const response = await apiClient.post("/api/careers/apply", {
+        name,
+        email,
+        phone,
+        portfolioUrl: portfolio,
+        coverLetter: letter,
+      });
+
+      if (response.data?.success) {
+        setApplied(true);
+      } else {
+        setError(response.data?.error || "Failed to submit application.");
+      }
+    } catch (err: any) {
+      console.error("Career application submit error:", err);
+      setError(
+        err.response?.data?.error ||
+        err.response?.data?.message ||
+        "An error occurred while submitting your application. Please try again."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -134,13 +156,28 @@ export default function CareersPage() {
 
             {applied ? (
               <div className="text-center py-10 space-y-4">
-                <div className="w-14 h-14 bg-emerald-50 rounded-full flex items-center justify-center mx-auto text-emerald-600 border border-emerald-100">
+                <div className="w-14 h-14 bg-emerald-50 rounded-full flex items-center justify-center mx-auto text-emerald-600 border border-emerald-100 animate-bounce">
                   <CheckCircle2 className="w-7 h-7" />
                 </div>
                 <h3 className="text-xl font-black text-[#222222]">Application Received!</h3>
                 <p className="text-xs text-zinc-400 max-w-xs mx-auto leading-relaxed">
-                  Thank you for applying to join the RoboRoot team. Our builders will reach out if your profile fits our current lab directions.
+                  Thank you for applying to join the RoboRoot team. A confirmation email has been sent to your inbox.
                 </p>
+                <button
+                  onClick={() => {
+                    setApplied(false);
+                    setModalOpen(false);
+                    setName("");
+                    setEmail("");
+                    setPhone("");
+                    setPortfolio("");
+                    setLetter("");
+                    setError(null);
+                  }}
+                  className="h-10 px-6 rounded-xl bg-[#222222] hover:bg-[#1CA2D1] text-xs font-bold text-white transition mt-2 cursor-pointer"
+                >
+                  Close Window
+                </button>
               </div>
             ) : (
               <div className="space-y-6">
@@ -150,6 +187,13 @@ export default function CareersPage() {
                     RoboRoot Engineering & Sourcing Labs
                   </p>
                 </div>
+
+                {error && (
+                  <div className="p-3.5 bg-red-50 border border-red-200 rounded-xl text-red-700 text-xs font-semibold flex items-start gap-2">
+                    <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                    <span>{error}</span>
+                  </div>
+                )}
 
                 <form onSubmit={handleApplySubmit} className="grid gap-4">
                   <div className="grid gap-4 sm:grid-cols-2">
@@ -216,10 +260,20 @@ export default function CareersPage() {
 
                   <button
                     type="submit"
-                    className="h-11 rounded-xl bg-[#222222] hover:bg-[#1CA2D1] text-xs font-bold text-white transition flex items-center justify-center gap-1.5 shadow-xs cursor-pointer mt-2"
+                    disabled={isSubmitting}
+                    className="h-11 rounded-xl bg-[#222222] hover:bg-[#1CA2D1] disabled:bg-zinc-400 text-xs font-bold text-white transition flex items-center justify-center gap-1.5 shadow-xs cursor-pointer mt-2"
                   >
-                    <Send className="w-3.5 h-3.5" />
-                    <span>Submit Application</span>
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>Submitting Application...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-3.5 h-3.5" />
+                        <span>Submit Application</span>
+                      </>
+                    )}
                   </button>
                 </form>
               </div>

@@ -292,6 +292,7 @@ model User {
   // Reviews
   reviews           Review[]
   bulkOrderRequests BulkOrderRequest[]
+  careerApplications CareerApplication[]
 }
 
 // OAuth / provider accounts (Google, GitHub, etc.)
@@ -1168,4 +1169,35 @@ model MediaLibrary {
   createdAt DateTime @default(now()) @db.Timestamptz(6)
 
   @@index([createdAt])
+}
+
+// ========================================
+// CAREER APPLICATIONS
+// ========================================
+
+enum CareerApplicationStatus {
+  APPLIED
+  UNDER_REVIEW
+  SHORTLISTED
+  REJECTED
+  HIRED
+}
+
+model CareerApplication {
+  id           String                  @id @default(cuid())
+  userId       String?
+  user         User?                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name         String
+  email        String
+  phone        String
+  portfolioUrl String
+  coverLetter  String                  @db.Text
+  status       CareerApplicationStatus @default(APPLIED)
+  adminNotes   String?                 @db.Text
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@index([userId])
+  @@index([status])
 }
