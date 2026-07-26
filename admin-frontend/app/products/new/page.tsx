@@ -31,12 +31,12 @@ export default function NewProductPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <div className="max-w-5xl mx-auto pb-16">
       <button 
         onClick={() => router.push("/products")} 
-        className="mb-6 admin-action"
+        className="mb-6 inline-flex items-center gap-2 text-xs font-extrabold text-zinc-600 hover:text-[#222222] transition cursor-pointer"
       >
-        &larr; Back to Products
+        <span>&larr; Back to Products Catalog</span>
       </button>
       <ProductFormPanel 
         productForm={productForm} 

@@ -83,12 +83,7 @@ export async function createCareerApplication(req: Request, res: Response): Prom
       Application ID: ${application.id}
     `;
 
-    // Asynchronously dispatch admin notification email
-    sendEmail(adminEmail, adminSubject, adminHtml, adminText).catch((err) => {
-      console.error("Failed to send career application admin email:", err);
-    });
-
-    // 4. Send Confirmation Email to Candidate
+    // 4. Candidate Email Templates
     const candidateSubject = `We've received your application to join RoboRoot`;
 
     const candidateHtml = `
@@ -128,10 +123,14 @@ export async function createCareerApplication(req: Request, res: Response): Prom
       roboroot.in
     `;
 
-    // Asynchronously dispatch candidate confirmation email
-    sendEmail(email, candidateSubject, candidateHtml, candidateText).catch((err) => {
-      console.error("Failed to send candidate confirmation email:", err);
-    });
+    // Dispatch emails to Admin and Candidate
+    sendEmail(adminEmail, adminSubject, adminHtml, adminText)
+      .then((res) => console.log(`📧 Admin notification email sent for application ${application.id}:`, res.messageId || res))
+      .catch((err) => console.error("Failed to send career application admin email:", err));
+
+    sendEmail(email, candidateSubject, candidateHtml, candidateText)
+      .then((res) => console.log(`📧 Candidate confirmation email sent to ${email}:`, res.messageId || res))
+      .catch((err) => console.error("Failed to send candidate confirmation email:", err));
 
     res.status(201).json({
       success: true,

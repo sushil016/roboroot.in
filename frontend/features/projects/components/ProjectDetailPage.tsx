@@ -419,9 +419,14 @@ export function ProjectDetailPage() {
             {/* Description */}
             <div className="bg-white rounded-2xl p-6 border border-[#D2D2D0] shadow-xs space-y-4">
               <h3 className="text-lg font-bold text-[#222222]">About This Project</h3>
-              <p className="text-sm leading-7 text-zinc-600 whitespace-pre-wrap">
-                {project.description}
-              </p>
+              {project.description ? (
+                <div 
+                  className="text-sm leading-relaxed text-zinc-700 font-normal prose prose-zinc max-w-none prose-headings:font-bold prose-h1:text-xl prose-h2:text-lg prose-h3:text-base prose-p:my-2 prose-ul:list-disc prose-ul:pl-5 prose-ol:list-decimal prose-ol:pl-5"
+                  dangerouslySetInnerHTML={{ __html: project.description }}
+                />
+              ) : (
+                <p className="text-sm text-zinc-400 italic">No description available for this project.</p>
+              )}
             </div>
 
             {/* Learning Outcomes */}

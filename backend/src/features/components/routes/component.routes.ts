@@ -49,10 +49,10 @@ router.get("/:id/reviews", getComponentReviewsHandler);
 // Product media — public read, admin write
 router.post("/upload/image", authenticate, authorize("ADMIN", "SUPER_ADMIN"), uploadSingleImage, handleSingleImageUpload);
 router.get("/:id/media", getProductMediaHandler);
-router.post("/:id/media", authenticate, authorize("ADMIN"), uploadProductMedia, addProductMediaHandler);
-router.post("/:id/media/url", authenticate, authorize("ADMIN"), addProductMediaByUrlHandler);
-router.delete("/:id/media/:mediaId", authenticate, authorize("ADMIN"), deleteProductMediaHandler);
-router.put("/:id/media/reorder", authenticate, authorize("ADMIN"), reorderProductMediaHandler);
+router.post("/:id/media", authenticate, authorize("ADMIN", "SUPER_ADMIN"), uploadProductMedia, addProductMediaHandler);
+router.post("/:id/media/url", authenticate, authorize("ADMIN", "SUPER_ADMIN"), addProductMediaByUrlHandler);
+router.delete("/:id/media/:mediaId", authenticate, authorize("ADMIN", "SUPER_ADMIN"), deleteProductMediaHandler);
+router.put("/:id/media/reorder", authenticate, authorize("ADMIN", "SUPER_ADMIN"), reorderProductMediaHandler);
 
 // Admin routes (authentication + admin role required)
 

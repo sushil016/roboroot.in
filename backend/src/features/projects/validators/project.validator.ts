@@ -54,8 +54,6 @@ export function validateCreateProject(data: any): ValidationResult<CreateProject
   // Description validation
   if (!data.description || typeof data.description !== 'string' || data.description.trim().length === 0) {
     errors.push('Description is required');
-  } else if (data.description.trim().length < 10) {
-    errors.push('Description must be at least 10 characters');
   }
 
   // Category validation
@@ -264,8 +262,6 @@ export function validateUpdateProject(data: any): ValidationResult<UpdateProject
   if (data.description !== undefined) {
     if (!data.description || typeof data.description !== 'string' || data.description.trim().length === 0) {
       errors.push('Description cannot be empty');
-    } else if (data.description.trim().length < 10) {
-      errors.push('Description must be at least 10 characters');
     }
   }
 

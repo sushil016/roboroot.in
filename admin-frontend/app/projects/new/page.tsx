@@ -31,9 +31,12 @@ export default function NewProjectPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto">
-      <button onClick={() => router.push("/projects")} className="mb-6 admin-action">
-        &larr; Back to Projects
+    <div className="max-w-5xl mx-auto pb-16">
+      <button
+        onClick={() => router.push("/projects")}
+        className="mb-6 inline-flex items-center gap-2 text-xs font-extrabold text-zinc-600 hover:text-[#222222] transition cursor-pointer"
+      >
+        <span>&larr; Back to Projects Catalog</span>
       </button>
       <ProjectFormPanel 
         projectForm={projectForm} 

@@ -37,6 +37,10 @@ export default function EditProjectPage() {
           preBuiltAvailable: project.preBuiltAvailable || false,
           preBuiltPrice: project.preBuiltPriceCents ? String(project.preBuiltPriceCents / 100) : "",
           preBuiltStock: project.preBuiltStock ? String(project.preBuiltStock) : "",
+          imageUrls: project.imageUrls ? project.imageUrls.join(", ") : "",
+          pdfUrls: project.pdfUrls ? project.pdfUrls.join(", ") : "",
+          learningOutcomes: project.learningOutcomes ? project.learningOutcomes.join("\n") : "",
+          prerequisites: project.prerequisites ? project.prerequisites.join("\n") : "",
           isFeatured: project.isFeatured,
           isPublic: project.isPublic,
         });
@@ -70,9 +74,12 @@ export default function EditProjectPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto">
-      <button onClick={() => router.push("/projects")} className="mb-6 admin-action">
-        &larr; Back to Projects
+    <div className="max-w-5xl mx-auto pb-16">
+      <button
+        onClick={() => router.push("/projects")}
+        className="mb-6 inline-flex items-center gap-2 text-xs font-extrabold text-zinc-600 hover:text-[#222222] transition cursor-pointer"
+      >
+        <span>&larr; Back to Projects Catalog</span>
       </button>
       <ProjectFormPanel 
         projectForm={projectForm} 

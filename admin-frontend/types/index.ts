@@ -71,6 +71,10 @@ export type Project = {
   preBuiltAvailable?: boolean;
   preBuiltPriceCents?: number;
   preBuiltStock?: number;
+  imageUrls?: string[];
+  pdfUrls?: string[];
+  learningOutcomes?: string[];
+  prerequisites?: string[];
   isFeatured: boolean;
   isPublic: boolean;
 };
@@ -228,6 +232,7 @@ export type AdminSection =
   | "projects"
   | "orders"
   | "coupons"
+  | "careers"
   | "media"
   | "settings";
 

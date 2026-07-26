@@ -124,8 +124,6 @@ export function validateCreateComponent(data: any): ValidationResult<CreateCompo
   if (data.description !== undefined && data.description !== null) {
     if (typeof data.description !== "string") {
       errors.push("Description must be a string");
-    } else if (data.description.length > 5000) {
-      errors.push("Description must be less than 5000 characters");
     }
   }
 
@@ -254,8 +252,6 @@ export function validateUpdateComponent(data: any): ValidationResult<UpdateCompo
   if (data.description !== undefined && data.description !== null) {
     if (typeof data.description !== "string") {
       errors.push("Description must be a string");
-    } else if (data.description.length > 5000) {
-      errors.push("Description must be less than 5000 characters");
     }
   }
 

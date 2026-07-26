@@ -9,6 +9,7 @@ export type AdminIconName =
   | "projects"
   | "orders"
   | "coupons"
+  | "careers"
   | "media"
   | "settings"
   | "menu"
@@ -42,6 +43,7 @@ export const sectionItems: SidebarItem[] = [
   { id: "projects", label: "Projects", icon: "projects" },
   { id: "orders", label: "Orders", icon: "orders" },
   { id: "coupons", label: "Coupons", icon: "coupons" },
+  { id: "careers", label: "Careers", icon: "careers" },
   { id: "media", label: "Images & Media", icon: "media" },
   { id: "settings", label: "Settings", icon: "settings" },
 ];

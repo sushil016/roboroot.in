@@ -90,6 +90,12 @@ const iconPaths: Record<AdminIconName, React.ReactNode> = {
       <path d="M20 8v.01" />
     </>
   ),
+  careers: (
+    <>
+      <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+      <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+    </>
+  ),
   media: (
     <>
       <rect x="3" y="5" width="18" height="14" rx="2" />
