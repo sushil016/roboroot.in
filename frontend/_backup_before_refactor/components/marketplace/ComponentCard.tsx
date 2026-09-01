@@ -58,7 +58,7 @@ export function ComponentCard({ component }: ComponentCardProps) {
                 toast.success(isWishlisted ? 'Removed from wishlist' : 'Saved to wishlist');
               }}
               className={`absolute bottom-2 right-2 z-10 flex h-9 w-9 items-center justify-center rounded-full shadow ${
-                isWishlisted ? 'bg-[#1CA2D1] text-white' : 'bg-[#F2F2F0] text-zinc-700'
+                isWishlisted ? 'bg-[var(--brand-primary)] text-white' : 'bg-[#F2F2F0] text-zinc-700'
               }`}
               aria-label="Toggle wishlist"
             >
@@ -127,7 +127,7 @@ export function ComponentCard({ component }: ComponentCardProps) {
 
           {/* Price */}
           <div className="flex items-baseline gap-2 mb-4">
-            <span className="text-2xl font-bold text-[#1CA2D1]">
+            <span className="text-2xl font-bold text-[var(--brand-primary)]">
               {formatPrice(component.unitPriceCents)}
             </span>
             <span className="text-sm text-muted-foreground">per unit</span>
@@ -144,7 +144,7 @@ export function ComponentCard({ component }: ComponentCardProps) {
           <Button
             onClick={handleAddToCart}
             disabled={isOutOfStock}
-            className="w-full btn-underline-white bg-[#1CA2D1] text-white hover:opacity-90"
+            className="w-full btn-underline-white bg-[var(--brand-primary)] text-white hover:opacity-90"
           >
             <ShoppingCart className="mr-2 h-4 w-4" />
             {itemQuantity > 0 ? `In Cart (${itemQuantity})` : 'Add to Cart'}

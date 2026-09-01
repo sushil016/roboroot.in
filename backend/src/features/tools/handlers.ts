@@ -5,7 +5,8 @@ import { prisma } from "../../lib/prisma.js";
 import { redis } from "../../lib/redis.js";
 import { logAction } from "./services/audit.service.js";
 import { cancelUserOrder, createOrder, getUserOrderById, getUserOrders } from "../orders/services/order.service.js";
-import { initiatePayment } from "../payments/services/razorpay.service.js";
+import { initiatePayment as initiateRazorpayPayment } from "../payments/services/razorpay.service.js";
+import { initiatePayment as initiateZohoPayment } from "../payments/services/zoho.service.js";
 import { hybridRetrieve } from "../rag/services/retriever.service.js";
 import { getCart } from "../cart/services/cart.service.js";
 import { canUseTool } from "./permissions.js";
@@ -55,7 +56,7 @@ async function executeValidatedTool(tool: ToolName, params: unknown, ctx: ToolCo
         // Chat commerce defaults to a real Razorpay payment so the order is left
         // PENDING_PAYMENT and can be paid via the in-chat popup. TEST is only used
         // when explicitly requested (e.g. internal/QA flows).
-        paymentGateway: parsed.paymentGateway === "TEST" ? PaymentGateway.TEST : PaymentGateway.RAZORPAY,
+        paymentGateway: resolvePaymentGateway(parsed.paymentGateway),
       };
 
       if (parsed.shippingAddress) {
@@ -72,7 +73,7 @@ async function executeValidatedTool(tool: ToolName, params: unknown, ctx: ToolCo
     case "initiate_payment": {
       const userId = requireUserId(ctx);
       const parsed = toolSchemas.initiate_payment.parse(params);
-      return { data: await initiatePayment(parsed.orderId, userId, parsed.idempotencyKey) };
+      return { data: await initiateGatewayPayment(parsed.orderId, userId, parsed.idempotencyKey) };
     }
 
     case "get_invoice": {
@@ -247,7 +248,7 @@ async function executeValidatedTool(tool: ToolName, params: unknown, ctx: ToolCo
             include: { payments: true },
           });
           if (order) {
-            const payment = order.payments[0] || (await initiatePayment(order.id, userId));
+            const payment = order.payments[0] || (await initiateGatewayPayment(order.id, userId));
             await logAction(userId, "checkout", "success", { orderId: order.id, reuse: true });
             return {
               data: {
@@ -265,7 +266,7 @@ async function executeValidatedTool(tool: ToolName, params: unknown, ctx: ToolCo
         userId,
         items: itemsInput,
         shippingAddressId: defaultAddress.id,
-        paymentGateway: parsed.paymentGateway === "TEST" ? PaymentGateway.TEST : PaymentGateway.RAZORPAY,
+        paymentGateway: resolvePaymentGateway(parsed.paymentGateway),
       };
 
       if (parsed.couponCode !== undefined) orderInput.couponCode = parsed.couponCode;
@@ -284,7 +285,7 @@ async function executeValidatedTool(tool: ToolName, params: unknown, ctx: ToolCo
       });
 
       // 5. Initiate payment
-      const payment = await initiatePayment(orderResult.order.id, userId);
+      const payment = await initiateGatewayPayment(orderResult.order.id, userId);
 
       await logAction(userId, "checkout", "success", { orderId: orderResult.order.id });
 
@@ -721,6 +722,24 @@ function requireUserId(ctx: ToolContext): string {
   }
 
   return ctx.userId;
+}
+
+function resolvePaymentGateway(value: "TEST" | "RAZORPAY" | "ZOHO" | undefined): PaymentGateway {
+  if (value === "TEST") return PaymentGateway.TEST;
+  if (value === "RAZORPAY") return PaymentGateway.RAZORPAY;
+  return "ZOHO" as PaymentGateway;
+}
+
+async function initiateGatewayPayment(orderId: string, userId: string, idempotencyKey?: string) {
+  const payment = await prisma.payment.findFirst({
+    where: { orderId },
+    orderBy: { createdAt: "desc" },
+    select: { gateway: true },
+  });
+
+  return String(payment?.gateway) === "ZOHO"
+    ? initiateZohoPayment(orderId, userId, idempotencyKey)
+    : initiateRazorpayPayment(orderId, userId, idempotencyKey);
 }
 
 function normalizeShippingAddress(

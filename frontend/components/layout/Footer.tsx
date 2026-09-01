@@ -107,19 +107,19 @@ export function Footer() {
             <h4 className="mb-3 font-semibold text-[#F2F2F0]">Connect With Us</h4>
             <div className="flex space-x-3">
               <a href="https://twitter.com/roboroot" target="_blank" rel="noopener noreferrer"
-                className="rounded-md border border-zinc-800 p-2 text-zinc-400 hover:border-[#1CA2D1] hover:text-[#1CA2D1] transition-colors" aria-label="Twitter">
+                className="rounded-md border border-zinc-800 p-2 text-zinc-400 hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] transition-colors" aria-label="Twitter">
                 <Twitter className="h-4 w-4" />
               </a>
               <a href="https://github.com/roboroot" target="_blank" rel="noopener noreferrer"
-                className="rounded-md border border-zinc-800 p-2 text-zinc-400 hover:border-[#1CA2D1] hover:text-[#1CA2D1] transition-colors" aria-label="GitHub">
+                className="rounded-md border border-zinc-800 p-2 text-zinc-400 hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] transition-colors" aria-label="GitHub">
                 <Github className="h-4 w-4" />
               </a>
               <a href="https://linkedin.com/company/roboroot" target="_blank" rel="noopener noreferrer"
-                className="rounded-md border border-zinc-800 p-2 text-zinc-400 hover:border-[#1CA2D1] hover:text-[#1CA2D1] transition-colors" aria-label="LinkedIn">
+                className="rounded-md border border-zinc-800 p-2 text-zinc-400 hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] transition-colors" aria-label="LinkedIn">
                 <Linkedin className="h-4 w-4" />
               </a>
               <a href="mailto:support@roboroot.in"
-                className="rounded-md border border-zinc-800 p-2 text-zinc-400 hover:border-[#1CA2D1] hover:text-[#1CA2D1] transition-colors" aria-label="Email">
+                className="rounded-md border border-zinc-800 p-2 text-zinc-400 hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] transition-colors" aria-label="Email">
                 <Mail className="h-4 w-4" />
               </a>
             </div>

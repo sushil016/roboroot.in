@@ -180,7 +180,7 @@ export default function BulkOrderPage() {
       {/* Hero Header */}
       <section className="bg-[#222222] rounded-b-[2.5rem] py-16 px-6 text-center text-white">
         <div className="max-w-4xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-800 text-xs font-bold text-[#1CA2D1] tracking-wider uppercase">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-800 text-xs font-bold text-[var(--brand-primary)] tracking-wider uppercase">
             <Building2 className="w-3.5 h-3.5" />
             <span>B2B & Institutional Portal</span>
           </div>
@@ -208,7 +208,7 @@ export default function BulkOrderPage() {
             <div className="grid gap-6 sm:grid-cols-1">
               {OFFERS.map(({ icon: Icon, title, desc }) => (
                 <div key={title} className="bg-white border border-[#D2D2D0] rounded-2xl p-5 shadow-2xs flex gap-4 items-start">
-                  <div className="p-2.5 bg-[#1CA2D1]/10 rounded-xl text-[#1CA2D1] shrink-0">
+                  <div className="p-2.5 bg-[var(--brand-primary)]/10 rounded-xl text-[var(--brand-primary)] shrink-0">
                     <Icon className="w-6 h-6" />
                   </div>
                   <div>
@@ -252,7 +252,7 @@ export default function BulkOrderPage() {
                       <div className="grid grid-cols-3 text-xs">
                         <span className="text-zinc-500">BOM File:</span>
                         <span className="col-span-2 font-bold text-zinc-800 flex items-center gap-1.5 truncate">
-                          <FileText className="w-3.5 h-3.5 text-[#1CA2D1] shrink-0" />
+                          <FileText className="w-3.5 h-3.5 text-[var(--brand-primary)] shrink-0" />
                           <span className="truncate">{csvFile.name}</span>
                         </span>
                       </div>
@@ -279,7 +279,7 @@ export default function BulkOrderPage() {
                       setManualList("");
                       setError(null);
                     }}
-                    className="h-11 px-8 rounded-xl bg-[#222222] hover:bg-[#1CA2D1] text-xs font-bold text-white transition-all shadow-md cursor-pointer"
+                    className="h-11 px-8 rounded-xl bg-[#222222] hover:bg-[var(--brand-primary)] text-xs font-bold text-white transition-all shadow-md cursor-pointer"
                   >
                     Submit Another Request
                   </button>
@@ -311,7 +311,7 @@ export default function BulkOrderPage() {
                           placeholder="Sushil Sahani"
                           value={name}
                           onChange={(e) => setName(e.target.value)}
-                          className="h-11 px-3.5 text-sm font-semibold rounded-xl border border-zinc-300 focus:outline-none focus:border-[#1CA2D1] bg-zinc-50 focus:bg-white focus:ring-2 focus:ring-[#1CA2D1]/20 transition-all"
+                          className="h-11 px-3.5 text-sm font-semibold rounded-xl border border-zinc-300 focus:outline-none focus:border-[var(--brand-primary)] bg-zinc-50 focus:bg-white focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
                         />
                       </div>
                       <div className="flex flex-col gap-1.5">
@@ -321,7 +321,7 @@ export default function BulkOrderPage() {
                           placeholder="e.g. RoboRoot Labs"
                           value={companyName}
                           onChange={(e) => setCompanyName(e.target.value)}
-                          className="h-11 px-3.5 text-sm font-semibold rounded-xl border border-zinc-300 focus:outline-none focus:border-[#1CA2D1] bg-zinc-50 focus:bg-white focus:ring-2 focus:ring-[#1CA2D1]/20 transition-all"
+                          className="h-11 px-3.5 text-sm font-semibold rounded-xl border border-zinc-300 focus:outline-none focus:border-[var(--brand-primary)] bg-zinc-50 focus:bg-white focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
                         />
                       </div>
                     </div>
@@ -336,7 +336,7 @@ export default function BulkOrderPage() {
                           placeholder="support@roboroot.in"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
-                          className="h-11 px-3.5 text-sm font-semibold rounded-xl border border-zinc-300 focus:outline-none focus:border-[#1CA2D1] bg-zinc-50 focus:bg-white focus:ring-2 focus:ring-[#1CA2D1]/20 transition-all"
+                          className="h-11 px-3.5 text-sm font-semibold rounded-xl border border-zinc-300 focus:outline-none focus:border-[var(--brand-primary)] bg-zinc-50 focus:bg-white focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
                         />
                       </div>
                       <div className="flex flex-col gap-1.5 relative">
@@ -355,7 +355,7 @@ export default function BulkOrderPage() {
                             placeholder="98765 43210"
                             value={phone}
                             onChange={(e) => setPhone(e.target.value)}
-                            className="w-full h-11 pl-14 pr-3.5 text-sm font-semibold rounded-xl border border-zinc-300 focus:outline-none focus:border-[#1CA2D1] bg-zinc-50 focus:bg-white focus:ring-2 focus:ring-[#1CA2D1]/20 transition-all"
+                            className="w-full h-11 pl-14 pr-3.5 text-sm font-semibold rounded-xl border border-zinc-300 focus:outline-none focus:border-[var(--brand-primary)] bg-zinc-50 focus:bg-white focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
                           />
                         </div>
                         <p className="text-[10px] text-zinc-400 leading-normal">
@@ -372,7 +372,7 @@ export default function BulkOrderPage() {
                           onClick={() => { setActiveTab("csv"); setError(null); }}
                           className={`flex-1 pb-3 text-xs sm:text-sm font-extrabold border-b-2 transition-all ${
                             activeTab === "csv" 
-                              ? "border-[#1CA2D1] text-[#1CA2D1]" 
+                              ? "border-[var(--brand-primary)] text-[var(--brand-primary)]" 
                               : "border-transparent text-zinc-400 hover:text-zinc-600"
                           }`}
                         >
@@ -383,7 +383,7 @@ export default function BulkOrderPage() {
                           onClick={() => { setActiveTab("manual"); setError(null); }}
                           className={`flex-1 pb-3 text-xs sm:text-sm font-extrabold border-b-2 transition-all ${
                             activeTab === "manual" 
-                              ? "border-[#1CA2D1] text-[#1CA2D1]" 
+                              ? "border-[var(--brand-primary)] text-[var(--brand-primary)]" 
                               : "border-transparent text-zinc-400 hover:text-zinc-600"
                           }`}
                         >
@@ -399,7 +399,7 @@ export default function BulkOrderPage() {
                             <a 
                               href="/sample-bulk-template.csv" 
                               download="sample-bulk-template.csv"
-                              className="inline-flex items-center gap-1 text-[11px] font-bold text-[#1CA2D1] hover:underline"
+                              className="inline-flex items-center gap-1 text-[11px] font-bold text-[var(--brand-primary)] hover:underline"
                             >
                               <Download className="w-3.5 h-3.5" />
                               Download Template
@@ -414,7 +414,7 @@ export default function BulkOrderPage() {
                             onClick={() => fileInputRef.current?.click()}
                             className={`border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-all flex flex-col items-center justify-center min-h-[160px] ${
                               dragActive 
-                                ? "border-[#1CA2D1] bg-[#1CA2D1]/5 scale-[0.99]" 
+                                ? "border-[var(--brand-primary)] bg-[var(--brand-primary)]/5 scale-[0.99]" 
                                 : "border-zinc-300 bg-zinc-50 hover:bg-zinc-100/50 hover:border-zinc-400"
                             }`}
                           >
@@ -430,7 +430,7 @@ export default function BulkOrderPage() {
                               <div className="space-y-3 w-full max-w-xs" onClick={(e) => e.stopPropagation()}>
                                 <div className="p-3 bg-zinc-100 rounded-xl flex items-center justify-between border border-zinc-200">
                                   <div className="flex items-center gap-2 text-left truncate">
-                                    <FileText className="w-8 h-8 text-[#1CA2D1] shrink-0" />
+                                    <FileText className="w-8 h-8 text-[var(--brand-primary)] shrink-0" />
                                     <div className="truncate">
                                       <p className="text-xs font-bold text-zinc-700 truncate">{csvFile.name}</p>
                                       <p className="text-[10px] text-zinc-400 font-medium">
@@ -449,7 +449,7 @@ export default function BulkOrderPage() {
                               </div>
                             ) : (
                               <>
-                                <div className="p-3 bg-white rounded-xl shadow-xs border border-zinc-200 text-[#1CA2D1] mb-2.5">
+                                <div className="p-3 bg-white rounded-xl shadow-xs border border-zinc-200 text-[var(--brand-primary)] mb-2.5">
                                   <UploadCloud className="w-6 h-6" />
                                 </div>
                                 <p className="text-xs font-bold text-zinc-700">Drag & drop your CSV file here</p>
@@ -470,7 +470,7 @@ export default function BulkOrderPage() {
                             placeholder="e.g.&#10;10 x Arduino Uno R3&#10;50 x SG90 Servo Motors&#10;20 x HC-SR04 Ultrasonic Sensors"
                             value={manualList}
                             onChange={(e) => setManualList(e.target.value)}
-                            className="p-3.5 text-sm font-semibold rounded-xl border border-zinc-300 focus:outline-none focus:border-[#1CA2D1] bg-zinc-50 focus:bg-white focus:ring-2 focus:ring-[#1CA2D1]/20 transition-all placeholder:text-zinc-400"
+                            className="p-3.5 text-sm font-semibold rounded-xl border border-zinc-300 focus:outline-none focus:border-[var(--brand-primary)] bg-zinc-50 focus:bg-white focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all placeholder:text-zinc-400"
                           />
                           <p className="text-[10px] text-zinc-400 leading-normal">
                             List item names and quantities clearly. One item per line is preferred.
@@ -487,14 +487,14 @@ export default function BulkOrderPage() {
                         placeholder="Expected delivery dates, specific brand preferences, target pricing, or other special requirements."
                         value={notes}
                         onChange={(e) => setNotes(e.target.value)}
-                        className="p-3.5 text-sm font-semibold rounded-xl border border-zinc-300 focus:outline-none focus:border-[#1CA2D1] bg-zinc-50 focus:bg-white focus:ring-2 focus:ring-[#1CA2D1]/20 transition-all"
+                        className="p-3.5 text-sm font-semibold rounded-xl border border-zinc-300 focus:outline-none focus:border-[var(--brand-primary)] bg-zinc-50 focus:bg-white focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
                       />
                     </div>
 
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="h-11 rounded-xl bg-[#222222] hover:bg-[#1CA2D1] disabled:bg-zinc-400 text-xs font-bold text-white transition-all flex items-center justify-center gap-2 shadow-sm cursor-pointer mt-2 w-full active:scale-[0.98]"
+                      className="h-11 rounded-xl bg-[#222222] hover:bg-[var(--brand-primary)] disabled:bg-zinc-400 text-xs font-bold text-white transition-all flex items-center justify-center gap-2 shadow-sm cursor-pointer mt-2 w-full active:scale-[0.98]"
                     >
                       {isSubmitting ? (
                         <>

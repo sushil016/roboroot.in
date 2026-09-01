@@ -8,9 +8,9 @@ export type AdminActionType =
   | "CREATE_COUPON" | "UPDATE_COUPON" | "DELETE_COUPON"
   | "UPDATE_STOCK" | "UPDATE_CATEGORY"
   | "UPDATE_USER_ROLE" | "DEACTIVATE_USER"
-  | "PROCESS_PCB_REQUEST";
+  | "PROCESS_PCB_REQUEST" | "UPDATE_STORE_SETTINGS";
 
-export type AdminTargetType = "PRODUCT" | "PROJECT" | "ORDER" | "COUPON" | "USER" | "CATEGORY" | "PCB_REQUEST";
+export type AdminTargetType = "PRODUCT" | "PROJECT" | "ORDER" | "COUPON" | "USER" | "CATEGORY" | "PCB_REQUEST" | "STORE_SETTING";
 
 export async function logAdminAction(
   adminId: string,

@@ -121,7 +121,7 @@ export function MessageBubble({
             "relative rounded-[18px] px-4 py-3 text-sm leading-6 transition-all duration-300 shadow-xs",
             isUser
               ? "rounded-tr-sm bg-black text-white"
-              : "rounded-tl-sm bg-[#1CA2D1]/5 border border-[#1CA2D1]/10 hover:border-[#1CA2D1]/25 text-black",
+              : "rounded-tl-sm bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10 hover:border-[var(--brand-primary)]/25 text-black",
             isErrorState && !isUser && "border border-red-200 bg-red-50/80 text-red-700",
           )}
         >
@@ -156,7 +156,7 @@ export function MessageBubble({
             <div
               className={cn(
                 "relative",
-                isLast && isStreaming && "after:content-['▋'] after:animate-[cursor-blink_1s_infinite] after:ml-0.5 after:text-[#1CA2D1] after:text-xs after:align-middle"
+                isLast && isStreaming && "after:content-['▋'] after:animate-[cursor-blink_1s_infinite] after:ml-0.5 after:text-[var(--brand-primary)] after:text-xs after:align-middle"
               )}
             >
               <MessageContent content={message.content} />
@@ -201,13 +201,13 @@ export function MessageBubble({
 
           {/* Citations / Links */}
           {message.citations.length > 0 && (
-            <div className="mt-4 space-y-1.5 border-t border-[#1CA2D1]/10 pt-2.5">
+            <div className="mt-4 space-y-1.5 border-t border-[var(--brand-primary)]/10 pt-2.5">
               {message.citations.map((citation) => (
                 <p
                   key={`${citation.sourceType}-${citation.title}-${citation.pageLabel ?? ""}`}
                   className="flex items-center gap-2 text-[10px] text-zinc-500 font-semibold"
                 >
-                  <span className="rounded bg-[#1CA2D1]/5 border border-[#1CA2D1]/15 px-1.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wider text-[#1CA2D1]">
+                  <span className="rounded bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/15 px-1.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wider text-[var(--brand-primary)]">
                     {citation.sourceType === "product" ? "Product" : citation.sourceType === "document" ? "Manual" : "Project"}
                   </span>
                   {citation.href ? (
@@ -215,7 +215,7 @@ export function MessageBubble({
                       href={citation.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="hover:text-[#1CA2D1] hover:underline flex items-center gap-1 transition-colors"
+                      className="hover:text-[var(--brand-primary)] hover:underline flex items-center gap-1 transition-colors"
                     >
                       {citation.title}
                       {citation.pageLabel ? ` · ${citation.pageLabel}` : ""}
@@ -408,7 +408,7 @@ export function MessageBubble({
                   "grid size-6 place-items-center rounded-lg transition-all",
                   feedback === "up"
                     ? "bg-emerald-500/10 text-emerald-600 border border-emerald-500/25"
-                    : "text-zinc-400 hover:bg-[#1CA2D1]/5 hover:text-[#1CA2D1]",
+                    : "text-zinc-400 hover:bg-[var(--brand-primary)]/5 hover:text-[var(--brand-primary)]",
                 )}
                 aria-label="Thumbs up"
                 title="Helpful"
@@ -437,7 +437,7 @@ export function MessageBubble({
                 <button
                   type="button"
                   onClick={onRegenerate}
-                  className="grid size-6 place-items-center rounded-lg text-zinc-400 hover:bg-[#1CA2D1]/10 hover:text-[#1CA2D1] transition-all"
+                  className="grid size-6 place-items-center rounded-lg text-zinc-400 hover:bg-[var(--brand-primary)]/10 hover:text-[var(--brand-primary)] transition-all"
                   aria-label="Regenerate last response"
                   title="Regenerate"
                 >
@@ -450,7 +450,7 @@ export function MessageBubble({
                 href="/support"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="ml-1 flex items-center gap-1 rounded-lg px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-zinc-500 border border-zinc-200 bg-white hover:bg-[#1CA2D1]/10 hover:text-[#1CA2D1] hover:border-[#1CA2D1]/20 transition-all"
+                className="ml-1 flex items-center gap-1 rounded-lg px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-zinc-500 border border-zinc-200 bg-white hover:bg-[var(--brand-primary)]/10 hover:text-[var(--brand-primary)] hover:border-[var(--brand-primary)]/20 transition-all"
                 title="Talk to a support specialist"
               >
                 <HelpCircle className="size-2.5" />

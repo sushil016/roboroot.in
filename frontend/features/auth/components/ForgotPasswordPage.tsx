@@ -64,12 +64,12 @@ export function ForgotPasswordPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="border-[#D2D2D0] focus-visible:ring-[#1CA2D1]"
+            className="border-[#D2D2D0] focus-visible:ring-[var(--brand-primary)]"
           />
           {error && <p className="text-sm text-red-500">{error}</p>}
           <Button
             disabled={isSending}
-            className="w-full bg-[#222222] hover:bg-[#1CA2D1]"
+            className="w-full bg-[#222222] hover:bg-[var(--brand-primary)]"
           >
             {isSending ? "Sending..." : "Send Reset Link"}
           </Button>
@@ -77,7 +77,7 @@ export function ForgotPasswordPage() {
       )}
 
       <p className="text-center text-sm text-zinc-500">
-        <Link href="/login" className="inline-flex items-center gap-1 hover:text-[#1CA2D1]">
+        <Link href="/login" className="inline-flex items-center gap-1 hover:text-[var(--brand-primary)]">
           <ArrowLeft className="h-3 w-3" /> Back to login
         </Link>
       </p>

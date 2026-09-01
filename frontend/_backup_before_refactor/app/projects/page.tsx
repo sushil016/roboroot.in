@@ -130,7 +130,7 @@ export default function ProjectsPage() {
         <div className="max-w-3xl mx-auto flex flex-col items-center text-center gap-6">
           {/* Label */}
           <div className="flex items-center gap-2">
-            <Cpu className="h-4 w-4 text-[#1CA2D1]" />
+            <Cpu className="h-4 w-4 text-[var(--brand-primary)]" />
             <span className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">
               Robotics & Electronics
             </span>
@@ -141,7 +141,7 @@ export default function ProjectsPage() {
             as="h1"
             className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight justify-center"
             textClassName="text-white"
-            flipTextClassName="text-[#1CA2D1]"
+            flipTextClassName="text-[var(--brand-primary)]"
             staggerDuration={0.025}
             rotateDirection="bottom"
           >
@@ -166,11 +166,11 @@ export default function ProjectsPage() {
                 placeholder="Search projects..."
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
-                className="w-full pl-11 pr-4 h-12 rounded-full bg-white/10 border border-white/20 text-white placeholder:text-zinc-400 focus:bg-white/15 focus:border-[#1CA2D1]/60 transition-all text-sm"
+                className="w-full pl-11 pr-4 h-12 rounded-full bg-white/10 border border-white/20 text-white placeholder:text-zinc-400 focus:bg-white/15 focus:border-[var(--brand-primary)]/60 transition-all text-sm"
               />
               <button
                 type="submit"
-                className="absolute right-2 h-8 px-4 rounded-full bg-[#1CA2D1] text-white text-xs font-semibold hover:bg-[#1590bb] transition-colors"
+                className="absolute right-2 h-8 px-4 rounded-full bg-[var(--brand-primary)] text-white text-xs font-semibold hover:bg-[#1590bb] transition-colors"
               >
                 Search
               </button>
@@ -232,7 +232,7 @@ export default function ProjectsPage() {
                   >
                     <ChevronRight
                       className={`w-3.5 h-3.5 mr-2 shrink-0 transition-transform ${
-                        activeCategory === cat ? 'rotate-90 text-[#1CA2D1]' : 'text-gray-400'
+                        activeCategory === cat ? 'rotate-90 text-[var(--brand-primary)]' : 'text-gray-400'
                       }`}
                     />
                     {getCategoryLabel(cat)}
@@ -259,7 +259,7 @@ export default function ProjectsPage() {
                   >
                     <Circle
                       className={`w-2 h-2 mr-2.5 shrink-0 fill-current ${
-                        isDifficultyChecked(d) ? 'text-[#1CA2D1]' : 'text-gray-300'
+                        isDifficultyChecked(d) ? 'text-[var(--brand-primary)]' : 'text-gray-300'
                       }`}
                     />
                     {getDifficultyLabel(d)}
@@ -284,7 +284,7 @@ export default function ProjectsPage() {
                 >
                   <Circle
                     className={`w-2 h-2 mr-2.5 shrink-0 fill-current ${
-                      filters.isFeatured ? 'text-[#1CA2D1]' : 'text-gray-300'
+                      filters.isFeatured ? 'text-[var(--brand-primary)]' : 'text-gray-300'
                     }`}
                   />
                   Featured Only
@@ -299,7 +299,7 @@ export default function ProjectsPage() {
                 >
                   <Circle
                     className={`w-2 h-2 mr-2.5 shrink-0 fill-current ${
-                      filters.preBuiltAvailable ? 'text-[#1CA2D1]' : 'text-gray-300'
+                      filters.preBuiltAvailable ? 'text-[var(--brand-primary)]' : 'text-gray-300'
                     }`}
                   />
                   Pre-Built Available
@@ -423,7 +423,7 @@ export default function ProjectsPage() {
           {/* Loading */}
           {isLoading && (
             <div className="flex items-center justify-center py-20">
-              <Loader2 className="h-8 w-8 animate-spin text-[#1CA2D1]" />
+              <Loader2 className="h-8 w-8 animate-spin text-[var(--brand-primary)]" />
             </div>
           )}
 

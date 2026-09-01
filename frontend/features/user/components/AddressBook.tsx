@@ -56,7 +56,7 @@ function FieldGroup({ label, children }: { label: string; children: React.ReactN
 }
 
 const inputCls =
-  "h-10 w-full rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 text-sm font-medium text-[#222222] outline-none transition-colors placeholder:text-zinc-400 focus:border-[#1CA2D1] focus:bg-white";
+  "h-10 w-full rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 text-sm font-medium text-[#222222] outline-none transition-colors placeholder:text-zinc-400 focus:border-[var(--brand-primary)] focus:bg-white";
 
 export function AddressBook() {
   const queryClient = useQueryClient();
@@ -171,7 +171,7 @@ export function AddressBook() {
       <div className="space-y-3">
         {addressesQuery.isLoading && (
           <div className="flex items-center gap-3 rounded-2xl border border-[#D2D2D0] bg-white px-4 py-4">
-            <div className="h-4 w-4 animate-spin rounded-full border-2 border-[#1CA2D1] border-t-transparent" />
+            <div className="h-4 w-4 animate-spin rounded-full border-2 border-[var(--brand-primary)] border-t-transparent" />
             <p className="text-sm text-zinc-400">Loading addresses...</p>
           </div>
         )}
@@ -188,7 +188,7 @@ export function AddressBook() {
             <button
               type="button"
               onClick={openNewForm}
-              className="mt-1 inline-flex h-9 items-center gap-1.5 rounded-lg bg-[#222222] px-4 text-xs font-bold text-white hover:bg-[#1CA2D1] transition-colors"
+              className="mt-1 inline-flex h-9 items-center gap-1.5 rounded-lg bg-[#222222] px-4 text-xs font-bold text-white hover:bg-[var(--brand-primary)] transition-colors"
             >
               <Plus className="h-3.5 w-3.5" />
               Add Your First Address
@@ -205,9 +205,9 @@ export function AddressBook() {
           >
             <MagicCard
               className="rounded-2xl [--color-background:#ffffff]"
-              gradientFrom="#1CA2D1"
+              gradientFrom="var(--brand-primary)"
               gradientTo="#E8E8E6"
-              gradientColor="#1CA2D1"
+              gradientColor="var(--brand-primary)"
               gradientOpacity={0.04}
             >
               <div className="p-4">
@@ -216,7 +216,7 @@ export function AddressBook() {
                     <div className="flex flex-wrap items-center gap-2 mb-1">
                       <p className="text-sm font-bold text-[#222222]">{address.name}</p>
                       {address.isDefault && (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-[#1CA2D1]/10 px-2 py-0.5 text-[10px] font-bold text-[#1CA2D1]">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-[var(--brand-primary)]/10 px-2 py-0.5 text-[10px] font-bold text-[var(--brand-primary)]">
                           <Star className="h-2.5 w-2.5 fill-current" />
                           Default
                         </span>
@@ -240,7 +240,7 @@ export function AddressBook() {
                         type="button"
                         onClick={() => defaultMutation.mutate(address.id)}
                         disabled={defaultMutation.isPending}
-                        className="inline-flex h-8 items-center gap-1 rounded-lg border border-[#D2D2D0] px-2.5 text-xs font-semibold text-zinc-500 transition-colors hover:border-[#1CA2D1] hover:text-[#1CA2D1] disabled:opacity-50"
+                        className="inline-flex h-8 items-center gap-1 rounded-lg border border-[#D2D2D0] px-2.5 text-xs font-semibold text-zinc-500 transition-colors hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] disabled:opacity-50"
                       >
                         <Star className="h-3 w-3" />
                         Set Default
@@ -282,9 +282,9 @@ export function AddressBook() {
           >
             <MagicCard
               className="rounded-2xl [--color-background:#ffffff]"
-              gradientFrom="#1CA2D1"
+              gradientFrom="var(--brand-primary)"
               gradientTo="#E8E8E6"
-              gradientColor="#1CA2D1"
+              gradientColor="var(--brand-primary)"
               gradientOpacity={0.06}
             >
               <form onSubmit={handleSubmit} className="p-5 space-y-4">
@@ -347,7 +347,7 @@ export function AddressBook() {
                   </FieldGroup>
                 </div>
 
-                <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-4 py-3 transition-colors hover:border-[#1CA2D1]">
+                <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-4 py-3 transition-colors hover:border-[var(--brand-primary)]">
                   <div className="relative flex shrink-0 items-center justify-center">
                     <input
                       type="checkbox"
@@ -357,7 +357,7 @@ export function AddressBook() {
                     />
                     <div
                       className={`h-4 w-4 rounded border-2 transition-colors ${
-                        form.isDefault ? "border-[#1CA2D1] bg-[#1CA2D1]" : "border-[#D2D2D0] bg-white"
+                        form.isDefault ? "border-[var(--brand-primary)] bg-[var(--brand-primary)]" : "border-[#D2D2D0] bg-white"
                       }`}
                     >
                       {form.isDefault && (
@@ -377,7 +377,7 @@ export function AddressBook() {
                   <button
                     type="submit"
                     disabled={saveMutation.isPending}
-                    className="flex h-10 flex-1 items-center justify-center rounded-xl bg-[#222222] text-sm font-bold text-white transition-colors hover:bg-[#1CA2D1] disabled:opacity-50"
+                    className="flex h-10 flex-1 items-center justify-center rounded-xl bg-[#222222] text-sm font-bold text-white transition-colors hover:bg-[var(--brand-primary)] disabled:opacity-50"
                   >
                     {saveMutation.isPending
                       ? "Saving..."

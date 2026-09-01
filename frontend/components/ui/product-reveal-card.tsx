@@ -23,7 +23,7 @@ interface ProductRevealCardProps {
 const CATEGORY_ACCENT: Record<string, string> = {
   Semiconductors: "#6366f1",
   Sensors: "#06b6d4",
-  "Development Boards": "#1CA2D1",
+  "Development Boards": "var(--brand-primary)",
   "Motors & Actuators": "#f97316",
   "Power & Batteries": "#10b981",
   "Drones & Aerospace": "#8b5cf6",
@@ -47,7 +47,7 @@ export function ProductRevealCard({
 
   const isOutOfStock = component.stockQuantity === 0;
   const isLowStock = !isOutOfStock && component.stockQuantity <= 10;
-  const accent = CATEGORY_ACCENT[component.category] ?? "#1CA2D1";
+  const accent = CATEGORY_ACCENT[component.category] ?? "var(--brand-primary)";
 
   return (
     <div
@@ -100,7 +100,7 @@ export function ProductRevealCard({
             </span>
           )}
           {component.discountedPriceCents && component.discountedPriceCents < component.unitPriceCents && (
-            <span className="rounded-md bg-red-500 px-1.5 py-0.5 text-[8px] sm:text-[10px] font-black text-white">
+            <span className="rounded-md bg-red-500 px-2 py-0.75 text-[9px] sm:text-[10px] font-medium text-white">
               {Math.round((1 - component.discountedPriceCents / component.unitPriceCents) * 100)}% OFF
             </span>
           )}
@@ -111,7 +111,7 @@ export function ProductRevealCard({
           className={cn(
             "absolute right-2 top-2 sm:right-3 sm:top-3 z-10 flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full border shadow-sm transition-all duration-200",
             isWishlisted
-              ? "border-transparent bg-[#1CA2D1] text-white scale-100 opacity-100"
+              ? "border-transparent bg-[var(--brand-primary)] text-white scale-100 opacity-100"
               : hovered
               ? "border-[#D2D2D0] bg-white text-zinc-400 opacity-100 scale-100"
               : "border-[#D2D2D0] bg-white text-zinc-400 opacity-0 scale-90"
@@ -160,8 +160,8 @@ export function ProductRevealCard({
       <div className="flex flex-1 flex-col px-2.5 sm:px-4 pt-2.5 sm:pt-3.5 pb-3 sm:pb-4">
         {/* Category label */}
         <p
-          className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.16em] leading-none truncate"
-          style={{ color: accent }}
+          className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.10em] leading-none truncate text-[#414141] border-b border-[#f1f1e3]  pb-0.5 sm:pb-1"
+          // style={{ color: accent }}
         >
           {component.subcategory || component.category}
         </p>
@@ -171,7 +171,7 @@ export function ProductRevealCard({
           href={`/components/${component.slug}`}
           className="mt-1 block sm:mt-1.5"
         >
-          <h3 className="line-clamp-2 text-xs sm:text-[14px] font-bold leading-[1.4] text-[#222222] hover:text-[#1CA2D1] transition-colors">
+          <h3 className="line-clamp-2 text-xs sm:text-[14px]  leading-[1.4] text-[#242424] hover:text-[var(--brand-primary)] transition-colors">
             {component.name}
           </h3>
         </Link>
@@ -183,25 +183,30 @@ export function ProductRevealCard({
 
         {/* Price row */}
         <div className="mt-auto flex items-end justify-between pt-2 sm:pt-3">
-          <div className="flex flex-col">
+          <div className="flex flex-row items-center gap-2 sm:gap-1.5">
             {component.discountedPriceCents && component.discountedPriceCents < component.unitPriceCents ? (
               <>
-                <span className="text-sm sm:text-[18px] font-black leading-none text-[#1CA2D1]">
+                <span className="text-sm sm:text-[18px] font-semibold leading-none text-[var(--brand-primary)]">
                   {formatPrice(component.discountedPriceCents)}
                 </span>
                 <div className="mt-0.5 flex flex-wrap items-center gap-1">
-                  <span className="text-[10px] sm:text-[11px] font-semibold text-zinc-400 line-through">
+                  <span className="text-[11px] sm:text-[12px] font-medium text-zinc-400 line-through">
                     {formatPrice(component.unitPriceCents)}
                   </span>
-                  <span className="text-[9px] sm:text-[10px] font-semibold text-emerald-600">Inc. GST</span>
+                  {/* <span className="text-[9px] sm:text-[10px] font-semibold text-emerald-600">Inc. GST</span> */}
+                  {component.discountedPriceCents && component.discountedPriceCents < component.unitPriceCents && (
+            <span className="rounded-md px-2 py-0.75 text-[11px] sm:text-[12px] font-medium text-green-700 bg-green-100">
+              {Math.round((1 - component.discountedPriceCents / component.unitPriceCents) * 100)}% OFF
+            </span>
+          )}
                 </div>
               </>
             ) : (
               <>
-                <span className="text-sm sm:text-[18px] font-black leading-none text-[#1CA2D1]">
+                <span className="text-sm sm:text-[18px] font-semibold leading-none text-[var(--brand-primary)]">
                   {formatPrice(component.unitPriceCents)}
                 </span>
-                <span className="mt-0.5 text-[9px] sm:text-[10px] font-semibold text-emerald-600">Inc. GST</span>
+                {/* <span className="mt-0.5 text-[9px] sm:text-[10px] font-semibold text-emerald-600">Inc. GST</span> */}
               </>
             )}
           </div>
@@ -245,19 +250,19 @@ export function ProductRevealCard({
             }, 750);
           }}
           className={cn(
-            "mt-3 flex w-full items-center justify-center gap-1.5 rounded-xl py-2 sm:py-2.5 text-[10px] sm:text-[12px] font-bold transition-all duration-200 relative overflow-hidden",
+            "mt-3 flex w-full items-center justify-center gap-1.5 rounded-xl py-2 sm:py-2.5 text-[10px] sm:text-[12px] font-medium transition-all duration-200 relative overflow-hidden",
             isOutOfStock
               ? "cursor-not-allowed bg-zinc-100 text-zinc-400"
               : isAdding
-              ? "bg-zinc-200 text-zinc-500 cursor-wait"
+              ? "bg-zinc-200 text-brand-primary-2 cursor-wait"
               : itemQuantity > 0
               ? "bg-emerald-600 text-white shadow-md shadow-emerald-600/20"
               : hovered
-              ? "bg-zinc-900 text-[#F2F2F0] shadow-md shadow-zinc-900/20"
-              : "bg-zinc-100 text-[#222222] hover:bg-zinc-900 hover:text-[#F2F2F0]"
+              ? "bg-gradient-to-r from-[var(--color-brand-secondary)] to-[var(--color-brand-secondary-2)] text-brand-secondary-3 shadow-md shadow-zinc-900/20"
+              : "bg-gradient-to-r from-[var(--color-brand-primary)] to-[var(--color-brand-primary-2)] text-brand-secondary-3 shadow-md shadow-zinc-200/5"
           )}
         >
-          {isOutOfStock ? (
+          {isOutOfStock ? ( 
             "Out of Stock"
           ) : isAdding ? (
             <>

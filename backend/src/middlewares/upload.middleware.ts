@@ -14,6 +14,7 @@ interface UploadMiddlewares {
   uploadSingleImage: RequestHandler;
   uploadMultipleImages: (maxCount?: number) => RequestHandler;
   uploadPDFs: (maxCount?: number) => RequestHandler;
+  uploadThreeDModel: RequestHandler;
 }
 
 // Configure multer to use memory storage
@@ -48,6 +49,28 @@ const combinedFileFilter = (req: Request, file: Express.Multer.File, cb: FileFil
     cb(new Error('Invalid file type. Only images (JPEG, PNG, WebP) and PDF files are allowed'));
   }
 };
+
+const threeDModelFileFilter = (
+  _req: Request,
+  file: Express.Multer.File,
+  cb: FileFilterCallback,
+) => {
+  const extension = file.originalname.toLowerCase().slice(file.originalname.lastIndexOf("."));
+  if (extension === ".stl" || extension === ".obj") {
+    cb(null, true);
+    return;
+  }
+  cb(new Error("Invalid model type. Only STL and OBJ files are supported"));
+};
+
+export const uploadThreeDModel: RequestHandler = multer({
+  storage,
+  fileFilter: threeDModelFileFilter,
+  limits: {
+    fileSize: Math.max(1, Number(process.env.MAX_3D_MODEL_FILE_SIZE_MB) || 50) * 1024 * 1024,
+    files: 1,
+  },
+}).single("model");
 
 /**
  * Upload middleware for project creation
@@ -145,6 +168,7 @@ const uploadMiddlewares: UploadMiddlewares = {
   uploadSingleImage,
   uploadMultipleImages,
   uploadPDFs,
+  uploadThreeDModel,
 };
 
 export default uploadMiddlewares;

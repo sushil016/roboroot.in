@@ -116,7 +116,7 @@ export function Header() {
               type="button"
               onClick={openCommandPalette}
               aria-label="Open search"
-              className="flex w-full max-w-xl items-center gap-2 overflow-hidden rounded-full border border-[#D2D2D0] bg-[#F2F2F0] pl-5 pr-2 shadow-sm transition hover:border-[#1CA2D1]/40 hover:shadow-md h-12 text-left"
+              className="flex w-full max-w-xl items-center gap-2 overflow-hidden rounded-full border border-[#D2D2D0] bg-[#F2F2F0] pl-5 pr-2 shadow-sm transition hover:border-[var(--brand-primary)]/40 hover:shadow-md h-12 text-left"
             >
               <Search className="h-4 w-4 shrink-0 text-zinc-400" />
               <span className="flex-1 text-sm font-medium text-zinc-400">
@@ -148,7 +148,7 @@ export function Header() {
               <Button variant="ghost" size="icon" className="relative border border-transparent hover:border-zinc-950 hover:shadow-sm transition-all" aria-label="Cart">
                 <ShoppingCart className="h-5 w-5" />
                 {mounted && cartItemCount > 0 && (
-                  <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#1CA2D1] text-xs font-bold text-white">
+                  <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-[var(--brand-primary)] text-xs font-bold text-white">
                     {cartItemCount > 99 ? '99+' : cartItemCount}
                   </span>
                 )}
@@ -195,7 +195,7 @@ export function Header() {
                 <CatalogMegaMenu categories={categoryTree} onClose={() => setOpenMenu(null)} />
               )}
             </div>
-            <Link href="/" className="flex h-full items-center px-5 text-[#1CA2D1] link-underline-left transition hover:text-zinc-950">
+            <Link href="/" className="flex h-full items-center px-5 text-[var(--brand-primary)] link-underline-left transition hover:text-zinc-950">
               Home
             </Link>
             <Link href="/projects" className="flex h-full items-center px-5 link-underline-left transition hover:text-zinc-950">
@@ -227,7 +227,7 @@ export function Header() {
               Robotics Kits
             </Link>
           </nav>
-          <Link href="/components" className="btn-underline-white flex h-14 items-center gap-2 border-x border-[#D2D2D0] bg-[#1CA2D1] px-5 text-sm font-bold text-white transition hover:opacity-90">
+          <Link href="/components" className="btn-underline-white flex h-14 items-center gap-2 border-x border-[#D2D2D0] bg-[var(--brand-primary)] px-5 text-sm font-bold text-white transition hover:opacity-90">
             <ShoppingBag className="h-5 w-5" />
             Browse Store
           </Link>
@@ -244,7 +244,7 @@ export function Header() {
                 placeholder="Search parts"
                 className="h-11 min-w-0 flex-1 bg-[#F2F2F0] px-3 text-sm outline-none"
               />
-              <button className="bg-[#1CA2D1] px-4 text-sm font-bold text-white">
+              <button className="bg-[var(--brand-primary)] px-4 text-sm font-bold text-white">
                 <Search className="h-4 w-4" />
               </button>
             </form>
@@ -266,7 +266,7 @@ export function Header() {
             </Link>
             {categoryTree.length > 0 && (
               <div className="rounded-md border border-[#D2D2D0] bg-[#F2F2F0] p-3">
-                <p className="mb-2 text-xs font-black uppercase tracking-wide text-[#1CA2D1]">
+                <p className="mb-2 text-xs font-black uppercase tracking-wide text-[var(--brand-primary)]">
                   Category tree
                 </p>
                 <div className="grid gap-2">
@@ -324,7 +324,7 @@ export function Header() {
                   </Button>
                 </Link>
                 <Link href="/register" className="block">
-                  <Button className="w-full bg-[#1CA2D1] text-white">Sign Up</Button>
+                  <Button className="w-full bg-[var(--brand-primary)] text-white">Sign Up</Button>
                 </Link>
               </div>
             )}
@@ -352,7 +352,7 @@ function CatalogMegaMenu({
 
         <div className="flex items-center justify-between border-b border-[#D2D2D0] bg-[#F2F2F0] px-6 py-4">
           <div>
-            <p className="text-[10px] font-black uppercase tracking-[0.20em] text-[#1CA2D1]">
+            <p className="text-[10px] font-black uppercase tracking-[0.20em] text-[var(--brand-primary)]">
               Browse Catalog
             </p>
             <p className="mt-0.5 text-sm font-semibold text-zinc-600">
@@ -362,7 +362,7 @@ function CatalogMegaMenu({
           <Link
             href="/categories"
             onClick={onClose}
-            className="btn-underline-white rounded-xl bg-[#1CA2D1] px-5 py-2.5 text-xs font-black text-white transition hover:opacity-90"
+            className="btn-underline-white rounded-xl bg-[var(--brand-primary)] px-5 py-2.5 text-xs font-black text-white transition hover:opacity-90"
           >
             View All
           </Link>
@@ -376,10 +376,10 @@ function CatalogMegaMenu({
                 onClick={onClose}
                 className="group/cat flex items-center gap-2 pb-0.5"
               >
-                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#1CA2D1]/15 text-[9px] font-black text-[#1CA2D1]">
+                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--brand-primary)]/15 text-[9px] font-black text-[var(--brand-primary)]">
                   {idx + 1}
                 </span>
-                <span className="text-sm font-black text-zinc-950 transition-colors group-hover/cat:text-[#1CA2D1]">
+                <span className="text-sm font-black text-zinc-950 transition-colors group-hover/cat:text-[var(--brand-primary)]">
                   {cat.category}
                 </span>
               </Link>
@@ -392,7 +392,7 @@ function CatalogMegaMenu({
                     key={sub.name}
                     href={`/components?category=${encodeURIComponent(cat.category)}&subcategory=${encodeURIComponent(sub.name)}`}
                     onClick={onClose}
-                    className="block rounded-lg px-3 py-1.5 text-[11.5px] font-semibold text-zinc-600 transition-all hover:bg-[#1CA2D1]/10 hover:text-[#1CA2D1]"
+                    className="block rounded-lg px-3 py-1.5 text-[11.5px] font-semibold text-zinc-600 transition-all hover:bg-[var(--brand-primary)]/10 hover:text-[var(--brand-primary)]"
                   >
                     {sub.name}
                   </Link>
@@ -404,10 +404,10 @@ function CatalogMegaMenu({
 
         <div className="flex items-center justify-between border-t border-[#D2D2D0] bg-[#F2F2F0]/80 px-6 py-3">
           <div className="flex items-center gap-5 text-[11px] font-bold text-zinc-500">
-            <Link href="/components?isBestSeller=true" onClick={onClose} className="transition-colors hover:text-[#1CA2D1]">↗ Best Sellers</Link>
-            <Link href="/projects" onClick={onClose} className="transition-colors hover:text-[#1CA2D1]">↗ Projects</Link>
-            <Link href="/robomaniac-store" onClick={onClose} className="transition-colors hover:text-[#1CA2D1]">↗ Robomaniac Store</Link>
-            <Link href="/projects?difficulty=BEGINNER" onClick={onClose} className="transition-colors hover:text-[#1CA2D1]">↗ Starter Builds</Link>
+            <Link href="/components?isBestSeller=true" onClick={onClose} className="transition-colors hover:text-[var(--brand-primary)]">↗ Best Sellers</Link>
+            <Link href="/projects" onClick={onClose} className="transition-colors hover:text-[var(--brand-primary)]">↗ Projects</Link>
+            <Link href="/robomaniac-store" onClick={onClose} className="transition-colors hover:text-[var(--brand-primary)]">↗ Robomaniac Store</Link>
+            <Link href="/projects?difficulty=BEGINNER" onClick={onClose} className="transition-colors hover:text-[var(--brand-primary)]">↗ Starter Builds</Link>
           </div>
           <span className="text-[10px] font-semibold text-zinc-400">
             {categories.length} categories · {totalSubcategories}+ subcategories

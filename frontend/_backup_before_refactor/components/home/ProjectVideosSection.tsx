@@ -17,14 +17,14 @@ export function ProjectVideosSection() {
           className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
         >
           <div>
-            <p className="text-sm font-black uppercase tracking-[0.18em] text-[#1CA2D1]">
+            <p className="text-sm font-black uppercase tracking-[0.18em] text-[var(--brand-primary)]">
               Project Videos
             </p>
             <h2 className="mt-2 text-3xl font-black text-zinc-950">Watch real build work in motion</h2>
           </div>
           <Link
             href="/projects"
-            className="btn-underline-white inline-flex h-11 w-fit items-center rounded-xl bg-[#1CA2D1] px-6 text-sm font-black text-white transition hover:opacity-90"
+            className="btn-underline-white inline-flex h-11 w-fit items-center rounded-xl bg-[var(--brand-primary)] px-6 text-sm font-black text-white transition hover:opacity-90"
           >
             Open Projects
           </Link>
@@ -47,7 +47,7 @@ export function ProjectVideosSection() {
               className="card-hover-bar rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] p-4 shadow-sm"
             >
               <div className="flex aspect-video items-center justify-center rounded-xl bg-zinc-950 text-white">
-                <Film className="h-10 w-10 text-[#1CA2D1]" />
+                <Film className="h-10 w-10 text-[var(--brand-primary)]" />
               </div>
               <h3 className="mt-4 font-black text-zinc-950">{slot}</h3>
               <p className="mt-2 text-sm font-medium leading-6 text-zinc-600">

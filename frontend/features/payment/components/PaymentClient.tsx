@@ -55,9 +55,16 @@ export function PaymentClient({ orderId }: PaymentClientProps) {
 
   const initiatePaymentMutation = useMutation({
     mutationFn: async () => {
+      const initiatedPayment = await initiatePayment(orderId);
+
+      if (initiatedPayment.gateway === "ZOHO") {
+        window.location.assign(initiatedPayment.checkoutUrl);
+        return new Promise<void>(() => undefined);
+      }
+
       await loadRazorpayScript();
 
-      const { gatewayOrderId, keyId, amount, currency } = await initiatePayment(orderId);
+      const { gatewayOrderId, keyId, amount, currency } = initiatedPayment;
 
       return new Promise<void>((resolve, reject) => {
         const options = {
@@ -82,7 +89,7 @@ export function PaymentClient({ orderId }: PaymentClientProps) {
           modal: {
             ondismiss: () => reject(new Error("Payment cancelled")),
           },
-          theme: { color: "#1CA2D1" },
+          theme: { color: "var(--brand-primary)" },
         };
 
         const rzp = new Razorpay(options);
@@ -122,7 +129,7 @@ export function PaymentClient({ orderId }: PaymentClientProps) {
       <div className="min-h-screen bg-[#f2f2f0]">
         <div className="bg-[#222222] rounded-b-[2.5rem] px-6 py-12">
           <div className="mx-auto max-w-3xl text-center">
-            <Lock className="h-8 w-8 text-[#1CA2D1] mx-auto mb-4" />
+            <Lock className="h-8 w-8 text-[var(--brand-primary)] mx-auto mb-4" />
             <h1 className="text-4xl font-bold text-white">Login to continue</h1>
             <p className="mt-2 text-zinc-400 text-sm">This payment belongs to your RoboRoot account.</p>
           </div>
@@ -130,7 +137,7 @@ export function PaymentClient({ orderId }: PaymentClientProps) {
         <div className="flex justify-center mt-8">
           <Link
             href={`/login?redirect=/checkout/payment/${orderId}`}
-            className="inline-flex h-11 items-center gap-2 rounded-xl bg-[#1CA2D1] px-6 text-sm font-bold text-white hover:bg-[#1590bb] transition-colors"
+            className="inline-flex h-11 items-center gap-2 rounded-xl bg-[var(--brand-primary)] px-6 text-sm font-bold text-white hover:bg-[#1590bb] transition-colors"
           >
             Login to continue
           </Link>
@@ -173,7 +180,7 @@ export function PaymentClient({ orderId }: PaymentClientProps) {
           <p className="text-sm text-zinc-500">Check your order history or start checkout again.</p>
           <Link
             href="/orders"
-            className="inline-flex h-11 items-center gap-2 rounded-xl bg-[#222222] px-6 text-sm font-bold text-white hover:bg-[#1CA2D1] transition-colors"
+            className="inline-flex h-11 items-center gap-2 rounded-xl bg-[#222222] px-6 text-sm font-bold text-white hover:bg-[var(--brand-primary)] transition-colors"
           >
             My Orders
           </Link>
@@ -184,6 +191,14 @@ export function PaymentClient({ orderId }: PaymentClientProps) {
 
   const order = orderQuery.data;
   const payment = order.payments[0];
+  const gateway = payment?.gateway || "TEST";
+  const gatewayLabel =
+    gateway === "ZOHO" ? "Zoho Payments" : gateway === "RAZORPAY" ? "Razorpay" : "Test Payment";
+  const paymentInstructions =
+    gateway === "ZOHO"
+      ? "Payments are processed securely via Zoho Payments. You will be redirected to Zoho hosted checkout to complete payment."
+      : "Payments are processed securely via Razorpay. UPI, cards, and net banking are supported. You will be redirected to the Razorpay modal to complete payment.";
+  const payButtonLabel = gateway === "ZOHO" ? "Pay with Zoho Payments" : "Pay with Razorpay";
   const isPending = order.status === OrderStatus.PENDING_PAYMENT;
   const isPaid = [
     OrderStatus.PAID,
@@ -214,7 +229,7 @@ export function PaymentClient({ orderId }: PaymentClientProps) {
             Back to order
           </Link>
           <div className="flex items-center gap-2 mb-3">
-            <ShieldCheck className="h-4 w-4 text-[#1CA2D1]" />
+            <ShieldCheck className="h-4 w-4 text-[var(--brand-primary)]" />
             <span className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">
               Secure Payment
             </span>
@@ -243,9 +258,9 @@ export function PaymentClient({ orderId }: PaymentClientProps) {
           >
             <MagicCard
               className="rounded-2xl [--color-background:#ffffff]"
-              gradientFrom="#1CA2D1"
+              gradientFrom="var(--brand-primary)"
               gradientTo="#E8E8E6"
-              gradientColor="#1CA2D1"
+              gradientColor="var(--brand-primary)"
               gradientOpacity={0.05}
             >
               <div className="p-6 space-y-4">
@@ -255,13 +270,12 @@ export function PaymentClient({ orderId }: PaymentClientProps) {
                   </div>
                   <div>
                     <h2 className="text-base font-bold text-[#222222]">Payment Method</h2>
-                    <p className="text-xs text-zinc-400">{payment?.gateway || "TEST"}</p>
+                    <p className="text-xs text-zinc-400">{gatewayLabel}</p>
                   </div>
                 </div>
                 <div className="rounded-xl bg-[#F2F2F0] border border-[#D2D2D0] p-4">
                   <p className="text-xs font-medium leading-5 text-zinc-600">
-                    Payments are processed securely via Razorpay. UPI, cards, and net banking are supported.
-                    You will be redirected to the Razorpay modal to complete payment.
+                    {paymentInstructions}
                   </p>
                 </div>
               </div>
@@ -276,9 +290,9 @@ export function PaymentClient({ orderId }: PaymentClientProps) {
           >
             <MagicCard
               className="rounded-2xl [--color-background:#ffffff]"
-              gradientFrom="#1CA2D1"
+              gradientFrom="var(--brand-primary)"
               gradientTo="#E8E8E6"
-              gradientColor="#1CA2D1"
+              gradientColor="var(--brand-primary)"
               gradientOpacity={0.05}
             >
               <div className="p-6 space-y-4">
@@ -303,7 +317,7 @@ export function PaymentClient({ orderId }: PaymentClientProps) {
                         </p>
                         <p className="text-xs text-zinc-400 mt-0.5">Qty {item.quantity}</p>
                       </div>
-                      <p className="text-sm font-bold text-[#1CA2D1] shrink-0">
+                      <p className="text-sm font-bold text-[var(--brand-primary)] shrink-0">
                         {formatPrice(item.subtotalCents)}
                       </p>
                     </div>
@@ -318,9 +332,9 @@ export function PaymentClient({ orderId }: PaymentClientProps) {
         <aside className="h-fit lg:sticky lg:top-24">
           <MagicCard
             className="rounded-2xl [--color-background:#ffffff]"
-            gradientFrom="#1CA2D1"
+            gradientFrom="var(--brand-primary)"
             gradientTo="#E8E8E6"
-            gradientColor="#1CA2D1"
+            gradientColor="var(--brand-primary)"
             gradientOpacity={0.07}
           >
             <div className="p-6 space-y-5">
@@ -345,7 +359,7 @@ export function PaymentClient({ orderId }: PaymentClientProps) {
                 <div className="border-t border-[#D2D2D0] pt-2.5">
                   <div className="flex justify-between">
                     <span className="text-base font-bold text-[#222222]">Total</span>
-                    <span className="text-xl font-bold text-[#1CA2D1]">
+                    <span className="text-xl font-bold text-[var(--brand-primary)]">
                       {formatPrice(order.totalAmountCents)}
                     </span>
                   </div>
@@ -357,14 +371,14 @@ export function PaymentClient({ orderId }: PaymentClientProps) {
                   type="button"
                   onClick={() => initiatePaymentMutation.mutate()}
                   disabled={initiatePaymentMutation.isPending}
-                  className="w-full h-12 rounded-xl bg-[#222222] text-sm font-bold text-white hover:bg-[#1CA2D1] disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
+                  className="w-full h-12 rounded-xl bg-[#222222] text-sm font-bold text-white hover:bg-[var(--brand-primary)] disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
                 >
                   {initiatePaymentMutation.isPending ? (
                     "Opening payment..."
                   ) : (
                     <>
                       <CreditCard className="h-4 w-4" />
-                      Pay with Razorpay
+                      {payButtonLabel}
                     </>
                   )}
                 </button>

@@ -101,7 +101,7 @@ export function ProjectDetailPage() {
         </div>
         <Link
           href="/projects"
-          className="inline-flex items-center gap-2 rounded-xl bg-[#222222] px-6 py-3 text-sm font-bold text-white transition hover:bg-[#1CA2D1]"
+          className="inline-flex items-center gap-2 rounded-xl bg-[#222222] px-6 py-3 text-sm font-bold text-white transition hover:bg-[var(--brand-primary)]"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Projects
@@ -204,7 +204,7 @@ export function ProjectDetailPage() {
                 {/* Overlay Difficulty & Badges */}
                 <div className="absolute top-3 left-3 flex flex-wrap gap-1.5 z-10">
                   {project.isFeatured && (
-                    <span className="inline-flex items-center rounded bg-[#1CA2D1] px-2 py-0.5 text-[9px] font-bold text-white uppercase tracking-wider">
+                    <span className="inline-flex items-center rounded bg-[var(--brand-primary)] px-2 py-0.5 text-[9px] font-bold text-white uppercase tracking-wider">
                       <Sparkles className="w-2.5 h-2.5 mr-0.5" />
                       Featured
                     </span>
@@ -230,7 +230,7 @@ export function ProjectDetailPage() {
                       className={cn(
                         "relative flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 bg-zinc-50 transition cursor-pointer",
                         selectedImageIndex === idx
-                          ? "border-[#1CA2D1]"
+                          ? "border-[var(--brand-primary)]"
                           : "border-transparent hover:border-zinc-350"
                       )}
                     >
@@ -254,7 +254,7 @@ export function ProjectDetailPage() {
               <div className="grid grid-cols-2 gap-4">
                 {project.estimatedBuildTimeMinutes && (
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-[#1CA2D1]/10 rounded-lg text-[#1CA2D1] shrink-0">
+                    <div className="p-2 bg-[var(--brand-primary)]/10 rounded-lg text-[var(--brand-primary)] shrink-0">
                       <Clock className="w-4.5 h-4.5" />
                     </div>
                     <div>
@@ -265,7 +265,7 @@ export function ProjectDetailPage() {
                 )}
                 
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-[#1CA2D1]/10 rounded-lg text-[#1CA2D1] shrink-0">
+                  <div className="p-2 bg-[var(--brand-primary)]/10 rounded-lg text-[var(--brand-primary)] shrink-0">
                     <Eye className="w-4.5 h-4.5" />
                   </div>
                   <div>
@@ -275,7 +275,7 @@ export function ProjectDetailPage() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-[#1CA2D1]/10 rounded-lg text-[#1CA2D1] shrink-0">
+                  <div className="p-2 bg-[var(--brand-primary)]/10 rounded-lg text-[var(--brand-primary)] shrink-0">
                     <Users className="w-4.5 h-4.5" />
                   </div>
                   <div>
@@ -285,8 +285,8 @@ export function ProjectDetailPage() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-[#1CA2D1]/10 rounded-lg text-[#1CA2D1] shrink-0">
-                    <Star className="w-4.5 h-4.5 fill-[#1CA2D1]" />
+                  <div className="p-2 bg-[var(--brand-primary)]/10 rounded-lg text-[var(--brand-primary)] shrink-0">
+                    <Star className="w-4.5 h-4.5 fill-[var(--brand-primary)]" />
                   </div>
                   <div>
                     <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-wide">Rating</p>
@@ -331,7 +331,7 @@ export function ProjectDetailPage() {
               className="bg-white rounded-2xl p-6 border border-[#D2D2D0] shadow-xs space-y-4"
             >
               <div className="space-y-2">
-                <div className="flex items-center gap-1.5 text-xs font-bold text-[#1CA2D1]">
+                <div className="flex items-center gap-1.5 text-xs font-bold text-[var(--brand-primary)]">
                   <span>{getCategoryIcon(project.category)}</span>
                   <span>{getCategoryLabel(project.category)}</span>
                 </div>
@@ -353,7 +353,7 @@ export function ProjectDetailPage() {
                       <p className="text-xs font-bold text-[#222222]">DIY Kit Parts Cost</p>
                       <p className="text-[10px] text-zinc-400">Add parts below to assemble yourself</p>
                     </div>
-                    <span className="text-xl font-black text-[#1CA2D1]">
+                    <span className="text-xl font-black text-[var(--brand-primary)]">
                       {formatProjectPrice(project.estimatedCostCents)}
                     </span>
                   </div>
@@ -382,7 +382,7 @@ export function ProjectDetailPage() {
                 {project.components && project.components.length > 0 && (
                   <a
                     href="#components"
-                    className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[#222222] hover:bg-[#1CA2D1] text-xs font-bold text-white transition active:scale-95 cursor-pointer shadow-xs"
+                    className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[#222222] hover:bg-[var(--brand-primary)] text-xs font-bold text-white transition active:scale-95 cursor-pointer shadow-xs"
                   >
                     <Layers className="w-4 h-4 shrink-0" />
                     <span>View Parts List ({project.componentsCount})</span>
@@ -394,7 +394,7 @@ export function ProjectDetailPage() {
                     onClick={handlePreBuiltClick}
                     className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-white border border-[#D2D2D0] hover:bg-zinc-50 text-xs font-bold text-zinc-700 transition active:scale-95 cursor-pointer"
                   >
-                    <Package className="w-4 h-4 shrink-0 text-[#1CA2D1]" />
+                    <Package className="w-4 h-4 shrink-0 text-[var(--brand-primary)]" />
                     <span>Order Pre-Built Kit</span>
                   </button>
                 )}
@@ -433,7 +433,7 @@ export function ProjectDetailPage() {
             {project.learningOutcomes && project.learningOutcomes.length > 0 && (
               <div className="bg-white rounded-2xl p-6 border border-[#D2D2D0] shadow-xs space-y-4">
                 <h3 className="text-lg font-bold text-[#222222] flex items-center gap-2">
-                  <GraduationCap className="w-5 h-5 text-[#1CA2D1]" />
+                  <GraduationCap className="w-5 h-5 text-[var(--brand-primary)]" />
                   What You&apos;ll Learn
                 </h3>
                 
@@ -471,7 +471,7 @@ export function ProjectDetailPage() {
             {project.pdfUrls && project.pdfUrls.length > 0 && (
               <div className="bg-white rounded-2xl p-6 border border-[#D2D2D0] shadow-xs space-y-4">
                 <h3 className="text-lg font-bold text-[#222222] flex items-center gap-2">
-                  <FileText className="w-4.5 h-4.5 text-[#1CA2D1]" />
+                  <FileText className="w-4.5 h-4.5 text-[var(--brand-primary)]" />
                   Documentation & Handbooks
                 </h3>
                 
@@ -490,18 +490,18 @@ export function ProjectDetailPage() {
                         href={pdfUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-3 p-3.5 border rounded-xl hover:border-[#1CA2D1]/40 hover:shadow-xs transition group"
+                        className="flex items-center gap-3 p-3.5 border rounded-xl hover:border-[var(--brand-primary)]/40 hover:shadow-xs transition group"
                       >
                         <div className="p-2.5 bg-red-50 text-red-600 rounded-lg shrink-0">
                           <FileText className="w-5 h-5" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="font-bold text-xs text-[#222222] truncate group-hover:text-[#1CA2D1] transition-colors leading-snug">
+                          <p className="font-bold text-xs text-[#222222] truncate group-hover:text-[var(--brand-primary)] transition-colors leading-snug">
                             {displayName}
                           </p>
                           <p className="text-[10px] text-zinc-400 mt-0.5">PDF Handbook</p>
                         </div>
-                        <Download className="w-4 h-4 text-zinc-300 group-hover:text-[#1CA2D1] transition-colors shrink-0" />
+                        <Download className="w-4 h-4 text-zinc-300 group-hover:text-[var(--brand-primary)] transition-colors shrink-0" />
                       </a>
                     );
                   })}
@@ -513,7 +513,7 @@ export function ProjectDetailPage() {
             {project.externalLinks && project.externalLinks.length > 0 && (
               <div className="bg-white rounded-2xl p-6 border border-[#D2D2D0] shadow-xs space-y-4">
                 <h3 className="text-lg font-bold text-[#222222] flex items-center gap-2">
-                  <ExternalLink className="w-4.5 h-4.5 text-[#1CA2D1]" />
+                  <ExternalLink className="w-4.5 h-4.5 text-[var(--brand-primary)]" />
                   Additional Links
                 </h3>
                 
@@ -524,18 +524,18 @@ export function ProjectDetailPage() {
                       href={link.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-3 p-3.5 border rounded-xl hover:border-[#1CA2D1]/40 hover:shadow-xs transition group"
+                      className="flex items-center gap-3 p-3.5 border rounded-xl hover:border-[var(--brand-primary)]/40 hover:shadow-xs transition group"
                     >
                       <div className="p-2.5 bg-blue-50 text-blue-600 rounded-lg shrink-0">
                         <ExternalLink className="w-5 h-5" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-bold text-xs text-[#222222] truncate group-hover:text-[#1CA2D1] transition-colors leading-snug">
+                        <p className="font-bold text-xs text-[#222222] truncate group-hover:text-[var(--brand-primary)] transition-colors leading-snug">
                           {link.title}
                         </p>
                         <p className="text-[10px] text-zinc-400 mt-0.5 truncate">{link.url}</p>
                       </div>
-                      <ExternalLink className="w-4 h-4 text-zinc-300 group-hover:text-[#1CA2D1] transition-colors shrink-0" />
+                      <ExternalLink className="w-4 h-4 text-zinc-300 group-hover:text-[var(--brand-primary)] transition-colors shrink-0" />
                     </a>
                   ))}
                 </div>
@@ -561,7 +561,7 @@ export function ProjectDetailPage() {
       <div className="fixed inset-x-0 bottom-0 z-40 bg-white border-t border-zinc-200 px-4 py-3 shadow-2xl flex items-center justify-between lg:hidden">
         <div className="flex flex-col">
           <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wide">DIY Kit Cost</span>
-          <span className="text-base font-black text-[#1CA2D1]">
+          <span className="text-base font-black text-[var(--brand-primary)]">
             {project.estimatedCostCents ? formatProjectPrice(project.estimatedCostCents) : "Calculated below"}
           </span>
         </div>
@@ -570,7 +570,7 @@ export function ProjectDetailPage() {
           {project.components && project.components.length > 0 && (
             <a
               href="#components"
-              className="h-10 px-4 rounded-xl bg-[#222222] hover:bg-[#1CA2D1] text-xs font-bold text-white transition active:scale-95 flex items-center gap-1.5 shadow-xs"
+              className="h-10 px-4 rounded-xl bg-[#222222] hover:bg-[var(--brand-primary)] text-xs font-bold text-white transition active:scale-95 flex items-center gap-1.5 shadow-xs"
             >
               <Layers className="w-3.5 h-3.5" />
               <span>Parts List</span>

@@ -39,7 +39,7 @@ export function AboutContent() {
       {/* Hero Section */}
       <section className="bg-[#222222] rounded-b-[2.5rem] py-16 px-6 text-center text-white">
         <div className="max-w-4xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-800 text-xs font-bold text-[#1CA2D1] tracking-wider uppercase">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-800 text-xs font-bold text-[var(--brand-primary)] tracking-wider uppercase">
             <Sparkles className="w-3.5 h-3.5" />
             <span>Our Vision</span>
           </div>
@@ -74,7 +74,7 @@ export function AboutContent() {
                   transition={{ delay: idx * 0.05, duration: 0.4 }}
                   className="bg-white border border-[#D2D2D0] rounded-2xl p-6 shadow-xs hover:shadow-md transition duration-200"
                 >
-                  <div className="p-3 bg-[#1CA2D1]/10 rounded-xl text-[#1CA2D1] w-fit mb-4">
+                  <div className="p-3 bg-[var(--brand-primary)]/10 rounded-xl text-[var(--brand-primary)] w-fit mb-4">
                     <Icon className="w-6 h-6" />
                   </div>
                   <h3 className="font-extrabold text-lg text-[#222222]">{val.title}</h3>
@@ -89,7 +89,7 @@ export function AboutContent() {
         <section className="space-y-8 bg-white border border-[#D2D2D0] rounded-3xl p-8 shadow-xs">
           <div className="text-center">
             <h2 className="text-3xl font-extrabold text-[#222222] flex items-center justify-center gap-2">
-              <Milestone className="w-6 h-6 text-[#1CA2D1]" />
+              <Milestone className="w-6 h-6 text-[var(--brand-primary)]" />
               Our Timeline
             </h2>
             <p className="text-xs text-zinc-400 font-bold uppercase tracking-widest mt-1">Founding to Future</p>
@@ -99,16 +99,16 @@ export function AboutContent() {
             {TIMELINE.map((item) => (
               <div key={item.year} className="relative pl-8 md:pl-12 group">
                 {/* Year tag for larger screens */}
-                <div className="hidden md:block absolute -left-28 top-0.5 text-right w-20 font-black text-xl text-[#1CA2D1]">
+                <div className="hidden md:block absolute -left-28 top-0.5 text-right w-20 font-black text-xl text-[var(--brand-primary)]">
                   {item.year}
                 </div>
 
                 {/* Bullet dot */}
-                <span className="absolute -left-2 top-2 w-4 h-4 rounded-full border-4 border-[#F2F2F0] bg-[#1CA2D1] ring-4 ring-[#1CA2D1]/20 transition group-hover:scale-110" />
+                <span className="absolute -left-2 top-2 w-4 h-4 rounded-full border-4 border-[#F2F2F0] bg-[var(--brand-primary)] ring-4 ring-[var(--brand-primary)]/20 transition group-hover:scale-110" />
 
                 {/* Content */}
                 <div>
-                  <span className="block md:hidden font-black text-lg text-[#1CA2D1] mb-0.5">{item.year}</span>
+                  <span className="block md:hidden font-black text-lg text-[var(--brand-primary)] mb-0.5">{item.year}</span>
                   <h4 className="font-extrabold text-lg text-[#222222]">{item.title}</h4>
                   <p className="text-xs leading-relaxed text-zinc-500 mt-1 font-medium max-w-2xl">{item.desc}</p>
                 </div>

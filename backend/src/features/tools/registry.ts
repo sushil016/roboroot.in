@@ -48,7 +48,7 @@ export const toolRegistry: ClaudeToolDefinition[] = [
         shippingAddress: { type: "object" },
         couponCode: { type: "string" },
         notes: { type: "string" },
-        paymentGateway: { type: "string", enum: ["TEST", "RAZORPAY"] },
+        paymentGateway: { type: "string", enum: ["TEST", "RAZORPAY", "ZOHO"] },
       },
       required: ["items"],
       additionalProperties: false,
@@ -56,7 +56,7 @@ export const toolRegistry: ClaudeToolDefinition[] = [
   },
   {
     name: "initiate_payment",
-    description: "Create or reuse a Razorpay order for an authenticated user's pending order.",
+    description: "Create or reuse a payment session for an authenticated user's pending order.",
     input_schema: {
       type: "object",
       properties: {
@@ -153,7 +153,7 @@ export const toolRegistry: ClaudeToolDefinition[] = [
       properties: {
         couponCode: { type: "string" },
         notes: { type: "string" },
-        paymentGateway: { type: "string", enum: ["TEST", "RAZORPAY"] },
+        paymentGateway: { type: "string", enum: ["TEST", "RAZORPAY", "ZOHO"] },
       },
       additionalProperties: false,
     },

@@ -214,7 +214,7 @@ export function ProductDetailPage() {
         </div>
         <Link
           href="/components"
-          className="inline-flex items-center gap-2 rounded-full bg-[#222222] px-6 py-3 text-sm font-bold text-white transition hover:bg-[#1CA2D1]"
+          className="inline-flex items-center gap-2 rounded-full bg-[#222222] px-6 py-3 text-sm font-bold text-white transition hover:bg-[var(--brand-primary)]"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to STEM Catalog
@@ -321,7 +321,7 @@ export function ProductDetailPage() {
             {/* Delivery Pincode Checker */}
             <div className="space-y-3 pt-6 border-t border-zinc-200">
               <div className="flex items-center gap-2 text-xs font-bold text-zinc-500 uppercase tracking-wider">
-                <MapPin className="h-4 w-4 text-[#1CA2D1]" />
+                <MapPin className="h-4 w-4 text-[var(--brand-primary)]" />
                 <span>Delivery Estimator</span>
               </div>
               <form onSubmit={handleCheckPincode} className="flex gap-2 max-w-md">
@@ -336,7 +336,7 @@ export function ProductDetailPage() {
                 <button
                   type="submit"
                   disabled={isCheckingPincode || pincode.length !== 6}
-                  className="h-11 px-6 rounded-full bg-[#222222] text-xs font-bold text-white transition hover:bg-[#1CA2D1] disabled:opacity-50 flex items-center justify-center cursor-pointer"
+                  className="h-11 px-6 rounded-full bg-[#222222] text-xs font-bold text-white transition hover:bg-[var(--brand-primary)] disabled:opacity-50 flex items-center justify-center cursor-pointer"
                 >
                   {isCheckingPincode ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -377,7 +377,7 @@ export function ProductDetailPage() {
             <div className="space-y-6">
               {/* Product Badges & Metadata */}
               <div className="space-y-3">
-                <span className="inline-block text-[11px] font-extrabold uppercase tracking-widest text-[#1CA2D1]">
+                <span className="inline-block text-[11px] font-extrabold uppercase tracking-widest text-[var(--brand-primary)]">
                   {compactProductType(component.productType)}
                 </span>
 
@@ -725,7 +725,7 @@ export function ProductDetailPage() {
                       <Download className="h-5 w-5" />
                     </div>
                     <div>
-                      <p className="text-sm font-bold text-[#222222] group-hover:text-[#1CA2D1] transition-colors">
+                      <p className="text-sm font-bold text-[#222222] group-hover:text-[var(--brand-primary)] transition-colors">
                         Technical Datasheet & Specifications
                       </p>
                       <p className="text-[11px] text-zinc-400 truncate max-w-[250px] sm:max-w-xs font-semibold mt-0.5">
@@ -753,7 +753,7 @@ export function ProductDetailPage() {
           <section className="mt-16 border-t border-zinc-200 pt-16 bg-transparent">
             <div className="mb-8 flex items-end justify-between">
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#1CA2D1]">
+                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--brand-primary)]">
                   From Category {component.category}
                 </p>
                 <h2 className="mt-1 text-2xl font-extrabold text-[#222222] tracking-tight">Related Components</h2>
@@ -839,7 +839,7 @@ export function ProductDetailPage() {
                 isAdding
                   ? "bg-zinc-100 text-zinc-400 border-zinc-200 cursor-not-allowed"
                   : itemQty > 0
-                  ? "bg-[#1CA2D1] text-white border-transparent shadow-sm"
+                  ? "bg-[var(--brand-primary)] text-white border-transparent shadow-sm"
                   : "bg-zinc-50 text-zinc-650 border-zinc-200 hover:bg-zinc-100"
               )}
               aria-label={itemQty > 0 ? "Go to cart" : "Add to cart"}
@@ -856,7 +856,7 @@ export function ProductDetailPage() {
             {/* Buy Now button */}
             <button
               onClick={handleBuyNow}
-              className="h-11 px-6 rounded-full bg-[#1CA2D1] hover:bg-[#1CA2D1]/90 text-xs font-bold text-white transition active:scale-95 cursor-pointer shadow-xs flex items-center gap-1.5"
+              className="h-11 px-6 rounded-full bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 text-xs font-bold text-white transition active:scale-95 cursor-pointer shadow-xs flex items-center gap-1.5"
             >
               <Zap className="h-3.5 w-3.5 fill-current" />
               <span>Buy Now</span>

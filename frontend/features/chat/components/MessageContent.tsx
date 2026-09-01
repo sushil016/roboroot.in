@@ -56,7 +56,7 @@ export function MessageContent({ content }: MessageContentProps) {
               <ol className="space-y-3.5">
                 {block.items.map((item, stepIndex) => (
                   <li key={`step-${stepIndex}`} className="flex items-start gap-3">
-                    <span className="flex size-5.5 shrink-0 items-center justify-center rounded-full bg-[#1CA2D1] text-[10px] font-bold text-white mt-0.5 font-mono shadow-[0_0_8px_rgba(28,162,209,0.4)]">
+                    <span className="flex size-5.5 shrink-0 items-center justify-center rounded-full bg-[var(--brand-primary)] text-[10px] font-bold text-white mt-0.5 font-mono shadow-[0_0_8px_rgba(28,162,209,0.4)]">
                       {stepIndex + 1}
                     </span>
                     <span className="flex-1 leading-6 text-foreground/90">{renderInline(item)}</span>
@@ -114,7 +114,7 @@ function CollapsibleBlock({ children, lineCount }: { children: React.ReactNode; 
       <button
         type="button"
         onClick={() => setExpanded((prev) => !prev)}
-        className="mt-1.5 flex items-center gap-1 text-[11px] font-bold text-[#1CA2D1] hover:text-[#1CA2D1]/85 uppercase tracking-wider cursor-pointer"
+        className="mt-1.5 flex items-center gap-1 text-[11px] font-bold text-[var(--brand-primary)] hover:text-[var(--brand-primary)]/85 uppercase tracking-wider cursor-pointer"
       >
         {expanded ? (
           <>
@@ -323,7 +323,7 @@ function renderInline(text: string): React.ReactNode {
     }
     if (piece.startsWith("`") && piece.endsWith("`") && piece.length > 1) {
       return (
-        <code key={`c-${index}`} className="rounded bg-muted border border-border px-1.5 py-0.5 text-[0.9em] font-mono text-[#1CA2D1] font-semibold">
+        <code key={`c-${index}`} className="rounded bg-muted border border-border px-1.5 py-0.5 text-[0.9em] font-mono text-[var(--brand-primary)] font-semibold">
           {piece.slice(1, -1)}
         </code>
       );

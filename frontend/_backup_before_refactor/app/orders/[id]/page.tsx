@@ -86,7 +86,7 @@ export default function OrderDetailPage() {
           </div>
         </div>
         <div className="flex justify-center mt-8">
-          <Button asChild className="bg-[#1CA2D1] hover:bg-[#1590bb]">
+          <Button asChild className="bg-[var(--brand-primary)] hover:bg-[#1590bb]">
             <Link href={`/login?redirect=/orders/${orderId}`}>Login</Link>
           </Button>
         </div>
@@ -101,7 +101,7 @@ export default function OrderDetailPage() {
       <div className="min-h-screen bg-[#f2f2f0] flex flex-col items-center justify-center gap-4 py-20">
         <Package className="h-12 w-12 text-zinc-300" />
         <h1 className="text-2xl font-bold text-[#222222]">Order not found</h1>
-        <Link href="/orders" className="text-sm text-[#1CA2D1] font-semibold hover:underline">
+        <Link href="/orders" className="text-sm text-[var(--brand-primary)] font-semibold hover:underline">
           Back to orders
         </Link>
       </div>
@@ -133,7 +133,7 @@ export default function OrderDetailPage() {
             Back to orders
           </Link>
           <div className="flex items-center gap-2 mb-3">
-            <Package className="h-4 w-4 text-[#1CA2D1]" />
+            <Package className="h-4 w-4 text-[var(--brand-primary)]" />
             <span className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">
               Order Details
             </span>
@@ -166,9 +166,9 @@ export default function OrderDetailPage() {
             >
               <MagicCard
                 className="rounded-2xl [--color-background:#ffffff]"
-                gradientFrom="#1CA2D1"
+                gradientFrom="var(--brand-primary)"
                 gradientTo="#E8E8E6"
-                gradientColor="#1CA2D1"
+                gradientColor="var(--brand-primary)"
                 gradientOpacity={0.05}
               >
                 <div className="p-5 grid gap-4 sm:grid-cols-[100px_minmax(0,1fr)_120px]">
@@ -188,14 +188,14 @@ export default function OrderDetailPage() {
                     {item.componentId && (
                       <Link
                         href={`/components/${item.componentId}`}
-                        className="mt-3 inline-flex text-xs font-semibold text-[#1CA2D1] hover:underline"
+                        className="mt-3 inline-flex text-xs font-semibold text-[var(--brand-primary)] hover:underline"
                       >
                         View product →
                       </Link>
                     )}
                   </div>
                   <div className="flex items-start justify-end">
-                    <p className="text-lg font-bold text-[#1CA2D1]">
+                    <p className="text-lg font-bold text-[var(--brand-primary)]">
                       {formatPrice(item.subtotalCents)}
                     </p>
                   </div>
@@ -210,9 +210,9 @@ export default function OrderDetailPage() {
           {/* Summary */}
           <MagicCard
             className="rounded-2xl [--color-background:#ffffff]"
-            gradientFrom="#1CA2D1"
+            gradientFrom="var(--brand-primary)"
             gradientTo="#E8E8E6"
-            gradientColor="#1CA2D1"
+            gradientColor="var(--brand-primary)"
             gradientOpacity={0.07}
           >
             <div className="p-6 space-y-4">
@@ -234,7 +234,7 @@ export default function OrderDetailPage() {
                 </div>
                 <div className="flex justify-between border-t border-[#D2D2D0] pt-2.5">
                   <span className="text-base font-bold text-[#222222]">Total</span>
-                  <span className="text-xl font-bold text-[#1CA2D1]">
+                  <span className="text-xl font-bold text-[var(--brand-primary)]">
                     {formatPrice(order.totalAmountCents)}
                   </span>
                 </div>
@@ -244,7 +244,7 @@ export default function OrderDetailPage() {
                 {canPay && (
                   <Link
                     href={`/checkout/payment/${order.id}`}
-                    className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#222222] text-sm font-bold text-white hover:bg-[#1CA2D1] transition-colors"
+                    className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#222222] text-sm font-bold text-white hover:bg-[var(--brand-primary)] transition-colors"
                   >
                     <CreditCard className="h-4 w-4" />
                     Complete Payment
@@ -275,9 +275,9 @@ export default function OrderDetailPage() {
           {order.address && (
             <MagicCard
               className="rounded-2xl [--color-background:#ffffff]"
-              gradientFrom="#1CA2D1"
+              gradientFrom="var(--brand-primary)"
               gradientTo="#E8E8E6"
-              gradientColor="#1CA2D1"
+              gradientColor="var(--brand-primary)"
               gradientOpacity={0.04}
             >
               <div className="p-5 space-y-3">
@@ -306,9 +306,9 @@ export default function OrderDetailPage() {
           {order.trackingAwb ? (
             <MagicCard
               className="rounded-2xl [--color-background:#ffffff]"
-              gradientFrom="#1CA2D1"
+              gradientFrom="var(--brand-primary)"
               gradientTo="#E8E8E6"
-              gradientColor="#1CA2D1"
+              gradientColor="var(--brand-primary)"
               gradientOpacity={0.04}
             >
               <div className="p-5 space-y-3">
@@ -335,7 +335,7 @@ export default function OrderDetailPage() {
                     href={order.trackingUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 rounded-lg bg-[#222222] px-3 py-2 text-xs font-bold text-white hover:bg-[#1CA2D1] transition-colors"
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-[#222222] px-3 py-2 text-xs font-bold text-white hover:bg-[var(--brand-primary)] transition-colors"
                   >
                     <ExternalLink className="h-3 w-3" />
                     Track Shipment

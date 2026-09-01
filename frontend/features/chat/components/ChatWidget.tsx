@@ -371,7 +371,7 @@ export function ChatWidget() {
         <MagicCard
           className="rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-all duration-300 hover:scale-105 hover:shadow-[0_12px_40px_rgba(0,0,0,0.6)] cursor-pointer"
           gradientColor="rgba(28, 162, 209, 0.2)"
-          gradientFrom="#1CA2D1"
+          gradientFrom="var(--brand-primary)"
           gradientTo="#3b6bff"
           gradientSize={150}
         >

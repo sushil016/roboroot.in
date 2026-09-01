@@ -116,8 +116,8 @@ export function HeroSection() {
             >
               {/* Service badge */}
               <div className="mb-5 inline-flex w-fit items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 ring-1 ring-white/20">
-                <Icon className="h-4 w-4 text-[#1CA2D1]" />
-                <span className="text-[10px] font-black uppercase tracking-[0.22em] text-[#1CA2D1]">
+                <Icon className="h-4 w-4 text-[var(--brand-primary)]" />
+                <span className="text-[10px] font-black uppercase tracking-[0.22em] text-[var(--brand-primary)]">
                   Service {String(current + 1).padStart(2, "0")} of {String(TOTAL).padStart(2, "0")}
                 </span>
               </div>
@@ -135,9 +135,9 @@ export function HeroSection() {
                 <div
                   style={
                     {
-                      "--background": "#1CA2D1",
+                      "--background": "var(--brand-primary)",
                       "--primary": "#ffffff",
-                      "--primary-foreground": "#1CA2D1",
+                      "--primary-foreground": "var(--brand-primary)",
                     } as React.CSSProperties
                   }
                 >
@@ -168,7 +168,7 @@ export function HeroSection() {
               aria-label={`Go to slide ${i + 1}`}
               className={`rounded-full transition-all duration-300 ${
                 i === current
-                  ? "h-[7px] w-9 bg-[#1CA2D1]"
+                  ? "h-[7px] w-9 bg-[var(--brand-primary)]"
                   : "h-[7px] w-[7px] bg-white/30 hover:bg-white/55"
               }`}
             />
@@ -180,14 +180,14 @@ export function HeroSection() {
           <button
             onClick={prev}
             aria-label="Previous slide"
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-black/30 text-white transition hover:bg-[#1CA2D1]"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-black/30 text-white transition hover:bg-[var(--brand-primary)]"
           >
             <ChevronLeft className="h-5 w-5" />
           </button>
           <button
             onClick={next}
             aria-label="Next slide"
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-black/30 text-white transition hover:bg-[#1CA2D1]"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-black/30 text-white transition hover:bg-[var(--brand-primary)]"
           >
             <ChevronRight className="h-5 w-5" />
           </button>
@@ -230,7 +230,7 @@ export function HeroSection() {
                         {item.copy}
                       </span>
                     </span>
-                    <TileIcon className="h-16 w-16 shrink-0 text-[#1CA2D1]" />
+                    <TileIcon className="h-16 w-16 shrink-0 text-[var(--brand-primary)]" />
                   </Link>
                 </motion.div>
               );

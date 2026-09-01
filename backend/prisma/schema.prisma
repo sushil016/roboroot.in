@@ -108,6 +108,7 @@ enum OrderType {
   COMPONENTS_ONLY
   BUILT_PROJECT
   PRE_BUILT_PROJECT
+  THREE_D_PRINT
 }
 
 enum OrderItemType {
@@ -120,6 +121,7 @@ enum PaymentGateway {
   PHONEPE
   STRIPE
   RAZORPAY
+  ZOHO
   TEST
 }
 
@@ -127,6 +129,46 @@ enum PaymentStatus {
   CREATED
   SUCCESS
   FAILED
+  REFUNDED
+}
+
+enum PrintModelFormat {
+  STL
+  OBJ
+}
+
+enum PrintStorageProvider {
+  AZURE
+  LOCAL
+}
+
+enum PrintQuality {
+  DRAFT
+  STANDARD
+  FINE
+}
+
+enum PrintFinish {
+  RAW
+  SUPPORT_REMOVAL
+  SANDED
+  PRIMED
+  PAINTED
+}
+
+enum PrintOrderStatus {
+  PAYMENT_PENDING
+  PAID
+  UNDER_REVIEW
+  APPROVED
+  PRINTING
+  POST_PROCESSING
+  QUALITY_CHECK
+  PACKED
+  SHIPPED
+  DELIVERED
+  ON_HOLD
+  CANCELLED
   REFUNDED
 }
 
@@ -289,9 +331,13 @@ model User {
   // PCB Quote Requests
   pcbQuoteRequests PcbQuoteRequest[]
 
+  // 3D printing
+  threeDPrintFiles  ThreeDPrintFile[]
+  threeDPrintOrders ThreeDPrintOrder[]
+
   // Reviews
-  reviews           Review[]
-  bulkOrderRequests BulkOrderRequest[]
+  reviews            Review[]
+  bulkOrderRequests  BulkOrderRequest[]
   careerApplications CareerApplication[]
 }
 
@@ -842,8 +888,9 @@ model Order {
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   address Address @relation(fields: [addressId], references: [id], onDelete: Restrict)
 
-  items    OrderItem[]
-  payments Payment[]
+  items            OrderItem[]
+  payments         Payment[]
+  threeDPrintOrder ThreeDPrintOrder?
 
   @@index([userId])
   @@index([status])
@@ -1012,6 +1059,144 @@ model MentorSession {
 // ADMIN & FILE MANAGEMENT
 // ========================================
 
+model StoreSetting {
+  id                         Int               @id @default(1)
+  deliveryFeeEnabled         Boolean           @default(true)
+  deliveryFeeCents           Int               @default(5000)
+  freeDeliveryThresholdCents Int               @default(50000)
+  deliveryFeeRules           DeliveryFeeRule[]
+  updatedAt                  DateTime          @updatedAt @db.Timestamptz(6)
+}
+
+model DeliveryFeeRule {
+  id             String       @id @default(cuid())
+  storeSettingId Int          @default(1)
+  minOrderCents  Int
+  maxOrderCents  Int
+  feeCents       Int
+  sortOrder      Int          @default(0)
+  storeSetting   StoreSetting @relation(fields: [storeSettingId], references: [id], onDelete: Cascade)
+
+  @@index([storeSettingId, sortOrder])
+}
+
+model PrintPricingSetting {
+  id                        Int             @id @default(1)
+  isEnabled                 Boolean         @default(true)
+  baseFeeCents              Int             @default(9900)
+  minimumOrderCents         Int             @default(24900)
+  shellMaterialPercent      Int             @default(20)
+  draftMultiplierPercent    Int             @default(90)
+  standardMultiplierPercent Int             @default(100)
+  fineMultiplierPercent     Int             @default(135)
+  rawFinishFeeCents         Int             @default(0)
+  supportRemovalFeeCents    Int             @default(0)
+  sandingFeeCents           Int             @default(9900)
+  primerFeeCents            Int             @default(14900)
+  paintingFeeCents          Int             @default(24900)
+  draftLeadDays             Int             @default(3)
+  standardLeadDays          Int             @default(5)
+  fineLeadDays              Int             @default(7)
+  maxFileSizeMb             Int             @default(50)
+  materials                 PrintMaterial[]
+  updatedAt                 DateTime        @updatedAt @db.Timestamptz(6)
+}
+
+model PrintMaterial {
+  id                 String              @id @default(cuid())
+  pricingSettingId   Int                 @default(1)
+  code               String              @unique
+  name               String
+  densityGramsPerCm3 Float
+  pricePerGramCents  Int
+  colors             String[]
+  isActive           Boolean             @default(true)
+  sortOrder          Int                 @default(0)
+  pricingSetting     PrintPricingSetting @relation(fields: [pricingSettingId], references: [id], onDelete: Cascade)
+  orders             ThreeDPrintOrder[]
+
+  @@index([pricingSettingId, sortOrder])
+  @@index([isActive])
+}
+
+model ThreeDPrintFile {
+  id              String               @id @default(cuid())
+  userId          String
+  originalName    String
+  storageProvider PrintStorageProvider
+  storageKey      String               @unique
+  mimeType        String
+  format          PrintModelFormat
+  sizeBytes       Int
+  checksumSha256  String
+  volumeMm3       Float
+  widthMm         Float
+  heightMm        Float
+  depthMm         Float
+  triangleCount   Int
+  createdAt       DateTime             @default(now()) @db.Timestamptz(6)
+
+  user  User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  order ThreeDPrintOrder?
+
+  @@index([userId, createdAt])
+  @@index([checksumSha256])
+}
+
+model ThreeDPrintOrder {
+  id                 String           @id @default(cuid())
+  reference          String           @unique
+  userId             String
+  modelFileId        String           @unique
+  materialId         String
+  commerceOrderId    String           @unique
+  status             PrintOrderStatus @default(PAYMENT_PENDING)
+  color              String
+  quality            PrintQuality
+  finish             PrintFinish
+  infillPercent      Int
+  quantity           Int
+  unitWeightGrams    Float
+  totalWeightGrams   Float
+  baseFeeCents       Int
+  materialCostCents  Int
+  qualityMarkupCents Int
+  finishFeeCents     Int
+  subtotalCents      Int
+  shippingCents      Int
+  totalAmountCents   Int
+  estimatedDays      Int
+  pricingSnapshot    Json
+  customerNotes      String?          @db.Text
+  adminNotes         String?          @db.Text
+  quotedAt           DateTime         @default(now()) @db.Timestamptz(6)
+  createdAt          DateTime         @default(now()) @db.Timestamptz(6)
+  updatedAt          DateTime         @updatedAt @db.Timestamptz(6)
+
+  user          User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  modelFile     ThreeDPrintFile          @relation(fields: [modelFileId], references: [id], onDelete: Restrict)
+  material      PrintMaterial            @relation(fields: [materialId], references: [id], onDelete: Restrict)
+  commerceOrder Order                    @relation(fields: [commerceOrderId], references: [id], onDelete: Restrict)
+  statusHistory ThreeDPrintStatusEvent[]
+
+  @@index([userId, createdAt])
+  @@index([status])
+  @@index([materialId])
+}
+
+model ThreeDPrintStatusEvent {
+  id           String           @id @default(cuid())
+  printOrderId String
+  status       PrintOrderStatus
+  note         String?
+  actorLabel   String?
+  createdAt    DateTime         @default(now()) @db.Timestamptz(6)
+
+  printOrder ThreeDPrintOrder @relation(fields: [printOrderId], references: [id], onDelete: Cascade)
+
+  @@index([printOrderId, createdAt])
+}
+
 model AdminActionLog {
   id         String  @id @default(cuid())
   adminId    String
@@ -1133,7 +1318,6 @@ model Review {
   isVerified  Boolean    @default(false)
   isApproved  Boolean    @default(true)
   imageUrl    String?
-
 
   createdAt DateTime @default(now()) @db.Timestamptz(6)
   updatedAt DateTime @updatedAt @db.Timestamptz(6)

@@ -66,7 +66,7 @@ function OAuthCallbackContent() {
 
   return (
     <div className="text-center space-y-4">
-      <Loader2 className="h-8 w-8 animate-spin mx-auto text-[#1CA2D1]" />
+      <Loader2 className="h-8 w-8 animate-spin mx-auto text-[var(--brand-primary)]" />
       <p className="text-base font-bold text-[#222222]">Completing sign-in…</p>
       <p className="text-sm text-zinc-500">Please wait</p>
     </div>

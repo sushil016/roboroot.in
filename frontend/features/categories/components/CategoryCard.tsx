@@ -10,7 +10,7 @@ import { MagicCard } from "@/components/ui/magic-card";
 const gradientPairs: Record<string, [string, string]> = {
   "Semiconductors":     ["#6366f1", "#818cf8"],
   "Sensors":            ["#06b6d4", "#22d3ee"],
-  "Development Boards": ["#1CA2D1", "#38bdf8"],
+  "Development Boards": ["var(--brand-primary)", "#38bdf8"],
   "Motors & Actuators": ["#f97316", "#fb923c"],
   "Power & Batteries":  ["#10b981", "#34d399"],
   "Drones & Aerospace": ["#8b5cf6", "#a78bfa"],
@@ -59,7 +59,7 @@ export function CategoryCard({
   productImages = [],
   imageUrl,
 }: CategoryCardProps) {
-  const [gradFrom, gradTo] = gradientPairs[name] ?? ["#1CA2D1", "#38bdf8"];
+  const [gradFrom, gradTo] = gradientPairs[name] ?? ["var(--brand-primary)", "#38bdf8"];
   const bgColor = imageBgColors[name] ?? "#eff6ff";
 
   const displayDescription =
@@ -103,7 +103,7 @@ export function CategoryCard({
           >
             {/* ── Image area ── */}
             <div
-              className="relative flex items-center justify-center overflow-hidden shrink-0 h-24 xs:h-28 sm:h-[200px]"
+              className="relative flex items-center justify-center overflow-hidden shrink-0 h-40 xs:h-45 sm:h-[230px]"
               style={{ backgroundColor: bgColor }}
             >
               {imageUrl ? (
@@ -162,27 +162,27 @@ export function CategoryCard({
             </div>
 
             {/* ── Content ── */}
-            <div className="flex flex-col flex-1 p-3 xs:p-4 sm:p-5 gap-1.5 sm:gap-3">
+            <div className="flex flex-col flex-1 p-2 xs:p-2 sm:p-3 gap-0.5 sm:gap-2 bg-transparent text-white">
               {/* Title + count */}
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1">
-                <h3 className="text-xs sm:text-base font-bold text-[#222222] leading-tight text-center sm:text-left line-clamp-2 sm:line-clamp-1 flex-1">
+                <h3 className="text-base sm:text-base font-medium text-[#242424] leading-tight text-center sm:text-left line-clamp-2 sm:line-clamp-1 flex-1">
                   {name}
                 </h3>
-                {totalCount !== undefined && (
+                {/* {totalCount !== undefined && (
                   <span className="hidden sm:inline shrink-0 text-[11px] font-semibold text-gray-400 tabular-nums mt-0.5">
                     {totalCount.toLocaleString()} items
                   </span>
-                )}
+                )} */}
               </div>
 
               {/* Description — hidden on mobile */}
-              <p className="hidden sm:block text-sm text-gray-500 leading-relaxed line-clamp-2 flex-1">
+              <p className="hidden sm:block text-xs text-gray-500 leading-relaxed line-clamp-2 flex-1 font-light">
                 {displayDescription}
               </p>
 
               {/* CTA — hidden on mobile */}
               <div className="hidden sm:block">
-                <span className="inline-flex items-center gap-1.5 rounded-xl bg-[#E8E8E6] px-4 py-2 text-sm font-semibold text-gray-700 group-hover:bg-[#222222] group-hover:text-white transition-colors duration-200">
+                <span className="inline-flex items-center gap-1.5 rounded-xl bg-white px-4 py-2 text-sm font-medium text-gray-700 group-hover:bg-brand-primary border border-brand-primary/30 group-hover:text-white transition-colors duration-200">
                   View Products
                   <ArrowRight className="h-3.5 w-3.5" />
                 </span>

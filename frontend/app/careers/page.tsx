@@ -84,7 +84,7 @@ export default function CareersPage() {
       {/* Hero Header */}
       <section className="bg-[#222222] rounded-b-[2.5rem] py-16 px-6 text-center text-white">
         <div className="max-w-4xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-800 text-xs font-bold text-[#1CA2D1] tracking-wider uppercase">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-800 text-xs font-bold text-[var(--brand-primary)] tracking-wider uppercase">
             <Users className="w-3.5 h-3.5" />
             <span>Join Our Team</span>
           </div>
@@ -109,7 +109,7 @@ export default function CareersPage() {
           <div className="grid gap-6 sm:grid-cols-3">
             {CULTURE.map(({ icon: Icon, title, desc }) => (
               <div key={title} className="bg-white border border-[#D2D2D0] rounded-2xl p-6 shadow-xs">
-                <div className="p-3 bg-[#1CA2D1]/10 rounded-xl text-[#1CA2D1] w-fit mb-4">
+                <div className="p-3 bg-[var(--brand-primary)]/10 rounded-xl text-[var(--brand-primary)] w-fit mb-4">
                   <Icon className="w-6 h-6" />
                 </div>
                 <h3 className="font-extrabold text-base text-[#222222]">{title}</h3>
@@ -121,7 +121,7 @@ export default function CareersPage() {
 
         {/* Speculative Application Block */}
         <section className="max-w-3xl mx-auto bg-white border border-[#D2D2D0] rounded-3xl p-8 shadow-xs text-center space-y-6">
-          <div className="w-14 h-14 bg-[#1CA2D1]/10 rounded-full flex items-center justify-center mx-auto text-[#1CA2D1]">
+          <div className="w-14 h-14 bg-[var(--brand-primary)]/10 rounded-full flex items-center justify-center mx-auto text-[var(--brand-primary)]">
             <Briefcase className="w-6 h-6" />
           </div>
           <div className="space-y-2">
@@ -133,7 +133,7 @@ export default function CareersPage() {
 
           <button
             onClick={() => setModalOpen(true)}
-            className="inline-flex h-11 items-center justify-center px-6 rounded-xl bg-[#222222] hover:bg-[#1CA2D1] text-xs font-bold text-white transition active:scale-95 cursor-pointer shadow-xs"
+            className="inline-flex h-11 items-center justify-center px-6 rounded-xl bg-[#222222] hover:bg-[var(--brand-primary)] text-xs font-bold text-white transition active:scale-95 cursor-pointer shadow-xs"
           >
             Submit Application
           </button>
@@ -174,7 +174,7 @@ export default function CareersPage() {
                     setLetter("");
                     setError(null);
                   }}
-                  className="h-10 px-6 rounded-xl bg-[#222222] hover:bg-[#1CA2D1] text-xs font-bold text-white transition mt-2 cursor-pointer"
+                  className="h-10 px-6 rounded-xl bg-[#222222] hover:bg-[var(--brand-primary)] text-xs font-bold text-white transition mt-2 cursor-pointer"
                 >
                   Close Window
                 </button>
@@ -183,7 +183,7 @@ export default function CareersPage() {
               <div className="space-y-6">
                 <div>
                   <h3 className="text-lg font-black text-[#222222]">Speculative Application</h3>
-                  <p className="text-xs text-[#1CA2D1] font-bold mt-1 uppercase tracking-wide">
+                  <p className="text-xs text-[var(--brand-primary)] font-bold mt-1 uppercase tracking-wide">
                     RoboRoot Engineering & Sourcing Labs
                   </p>
                 </div>
@@ -205,7 +205,7 @@ export default function CareersPage() {
                         placeholder="Sushil Sahani"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        className="h-10 px-3 text-sm font-semibold rounded-xl border border-zinc-300 focus:outline-none focus:border-[#1CA2D1] bg-zinc-50 focus:bg-white"
+                        className="h-10 px-3 text-sm font-semibold rounded-xl border border-zinc-300 focus:outline-none focus:border-[var(--brand-primary)] bg-zinc-50 focus:bg-white"
                       />
                     </div>
                     <div className="flex flex-col gap-1.5">
@@ -216,7 +216,7 @@ export default function CareersPage() {
                         placeholder="hiring@roboroot.in"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="h-10 px-3 text-sm font-semibold rounded-xl border border-zinc-300 focus:outline-none focus:border-[#1CA2D1] bg-zinc-50 focus:bg-white"
+                        className="h-10 px-3 text-sm font-semibold rounded-xl border border-zinc-300 focus:outline-none focus:border-[var(--brand-primary)] bg-zinc-50 focus:bg-white"
                       />
                     </div>
                   </div>
@@ -230,7 +230,7 @@ export default function CareersPage() {
                         placeholder="+91 XXXXX XXXXX"
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
-                        className="h-10 px-3 text-sm font-semibold rounded-xl border border-zinc-300 focus:outline-none focus:border-[#1CA2D1] bg-zinc-50 focus:bg-white"
+                        className="h-10 px-3 text-sm font-semibold rounded-xl border border-zinc-300 focus:outline-none focus:border-[var(--brand-primary)] bg-zinc-50 focus:bg-white"
                       />
                     </div>
                     <div className="flex flex-col gap-1.5">
@@ -241,7 +241,7 @@ export default function CareersPage() {
                         placeholder="https://linkedin.com/in/username"
                         value={portfolio}
                         onChange={(e) => setPortfolio(e.target.value)}
-                        className="h-10 px-3 text-sm font-semibold rounded-xl border border-zinc-300 focus:outline-none focus:border-[#1CA2D1] bg-zinc-50 focus:bg-white"
+                        className="h-10 px-3 text-sm font-semibold rounded-xl border border-zinc-300 focus:outline-none focus:border-[var(--brand-primary)] bg-zinc-50 focus:bg-white"
                       />
                     </div>
                   </div>
@@ -254,14 +254,14 @@ export default function CareersPage() {
                       placeholder="Tell us about yourself and the projects you've built."
                       value={letter}
                       onChange={(e) => setLetter(e.target.value)}
-                      className="p-3 text-sm font-semibold rounded-xl border border-zinc-300 focus:outline-none focus:border-[#1CA2D1] bg-zinc-50 focus:bg-white"
+                      className="p-3 text-sm font-semibold rounded-xl border border-zinc-300 focus:outline-none focus:border-[var(--brand-primary)] bg-zinc-50 focus:bg-white"
                     />
                   </div>
 
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="h-11 rounded-xl bg-[#222222] hover:bg-[#1CA2D1] disabled:bg-zinc-400 text-xs font-bold text-white transition flex items-center justify-center gap-1.5 shadow-xs cursor-pointer mt-2"
+                    className="h-11 rounded-xl bg-[#222222] hover:bg-[var(--brand-primary)] disabled:bg-zinc-400 text-xs font-bold text-white transition flex items-center justify-center gap-1.5 shadow-xs cursor-pointer mt-2"
                   >
                     {isSubmitting ? (
                       <>

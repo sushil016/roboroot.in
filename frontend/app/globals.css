@@ -1,10 +1,52 @@
 @import "tailwindcss";
+
+:root {
+  --brand-primary: #003934; /* Primary */
+  --brand-primary-2: #034f46; /* Primary shade 2 */
+
+  /* Secondary palette (from design) */
+  --brand-secondary: #e35336; /* Secondary */
+  --brand-secondary-2: #f4a460; /* Secondary shade 2 */
+  --brand-secondary-3: #f5f5dc; /* Secondary light */
+
+  /* RGB helpers for use in rgba(...) and shadows */
+  --brand-primary-rgb: 0, 57, 52; /* rgb for #003934 */
+  --brand-primary-2-rgb: 3, 79, 70; /* rgb for #034f46 */
+  --brand-secondary-rgb: 227, 83, 54; /* rgb for #e35336 */
+  --brand-secondary-2-rgb: 244, 164, 96; /* rgb for #f4a460 */
+  --brand-secondary-3-rgb: 245, 245, 220; /* rgb for #f5f5dc */
+
+  /* Opacity helpers */
+  --brand-primary-10: rgba(var(--brand-primary-rgb), 0.1);
+  --brand-primary-5: rgba(var(--brand-primary-rgb), 0.05);
+
+  /* Common gradients using primary shades */
+  --gradient-primary-linear: linear-gradient(90deg, var(--brand-primary) 0%, var(--brand-primary-2) 100%);
+  --gradient-primary-angled: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-primary-2) 60%);
+  --gradient-primary-radial: radial-gradient(1200px circle at 10% 20%, rgba(var(--brand-primary-2-rgb), 0.95) 0%, rgba(var(--brand-primary-rgb), 0.9) 40%, rgba(0,0,0,0) 80%);
+}
+
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-primary-2: var(--brand-primary-2);
+  --color-brand-secondary: var(--brand-secondary);
+  --color-brand-secondary-2: var(--brand-secondary-2);
+  --color-brand-secondary-3: var(--brand-secondary-3);
+  --color-brand-primary-rgb: var(--brand-primary-rgb); 
+  --color-brand-primary-2-rgb: var(--brand-primary-2-rgb);
+  --color-brand-secondary-rgb: var(--brand-secondary-rgb);
+  --color-brand-secondary-2-rgb: var(--brand-secondary-2-rgb);
+  --color-brand-secondary-3-rgb: var(--brand-secondary-3-rgb);
+  --color-brand-primary-10: var(--brand-primary-10);
+  --color-brand-primary-5: var(--brand-primary-5);
+  --color-gradient-primary-linear: var(--gradient-primary-linear);
+  --color-gradient-primary-angled: var(--gradient-primary-angled);
+  --color-gradient-primary-radial: var(--gradient-primary-radial);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter), Inter, ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-mono);
@@ -64,10 +106,10 @@
   }
   @keyframes glow-pulse {
     0%, 100% {
-      box-shadow: 0 0 8px rgba(28, 162, 209, 0.4), 0 0 20px rgba(28, 162, 209, 0.2);
+      box-shadow: 0 0 8px rgba(var(--brand-primary-rgb), 0.4), 0 0 20px rgba(var(--brand-primary-rgb), 0.2);
     }
     50% {
-      box-shadow: 0 0 20px rgba(28, 162, 209, 0.8), 0 0 35px rgba(28, 162, 209, 0.5);
+      box-shadow: 0 0 20px rgba(var(--brand-primary-rgb), 0.8), 0 0 35px rgba(var(--brand-primary-rgb), 0.5);
     }
   }
   @keyframes float {
@@ -90,24 +132,25 @@
 
 :root {
   --radius: 0.625rem;
-  --background: #f2f2f0;
+  --background: #ffffff;
   --foreground: #222222;
+  --brand-primary: #003934; /* Primary */
   --card: #f2f2f0;
   --card-foreground: #09090b;
   --popover: #f2f2f0;
   --popover-foreground: #09090b;
-  --primary: #1CA2D1;
+  --primary: var(--brand-primary);
   --primary-foreground: #ffffff;
   --secondary: #e8e8e6;
   --secondary-foreground: #09090b;
   --muted: #e8e8e6;
   --muted-foreground: #52525b;
-  --accent: #1CA2D1;
+  --accent: var(--brand-primary);
   --accent-foreground: #ffffff;
   --destructive: oklch(0.577 0.245 27.325);
   --border: #d2d2d0;
   --input: #d2d2d0;
-  --ring: #1CA2D1;
+  --ring: var(--brand-primary);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -115,14 +158,14 @@
   --chart-5: oklch(0.769 0.188 70.08);
   --sidebar: #f2f2f0;
   --sidebar-foreground: #09090b;
-  --sidebar-primary: #1CA2D1;
+  --sidebar-primary: var(--brand-primary);
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #e8e8e6;
   --sidebar-accent-foreground: #09090b;
   --sidebar-border: #d2d2d0;
-  --sidebar-ring: #1CA2D1;
+  --sidebar-ring: var(--brand-primary);
   /* Alert neobrutalist tokens */
-  --main: #1CA2D1;
+  --main: var(--brand-primary);
   --mtext: #ffffff;
   --shadow: 4px 4px 0px 0px #09090b;
 }
@@ -134,18 +177,18 @@
   --card-foreground: #F5F5DC;
   --popover: #18181b;
   --popover-foreground: #F5F5DC;
-  --primary: #1CA2D1;
+  --primary: var(--brand-primary);
   --primary-foreground: #09090b;
   --secondary: #27272a;
   --secondary-foreground: #F5F5DC;
   --muted: #27272a;
   --muted-foreground: #a1a1aa;
-  --accent: #1CA2D1;
+  --accent: var(--brand-primary);
   --accent-foreground: #09090b;
   --destructive: oklch(0.704 0.191 22.216);
   --border: #27272a;
   --input: #27272a;
-  --ring: #1CA2D1;
+  --ring: var(--brand-primary);
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
@@ -153,12 +196,12 @@
   --chart-5: oklch(0.645 0.246 16.439);
   --sidebar: #18181b;
   --sidebar-foreground: #F5F5DC;
-  --sidebar-primary: #1CA2D1;
+  --sidebar-primary: var(--brand-primary);
   --sidebar-primary-foreground: #09090b;
   --sidebar-accent: #27272a;
   --sidebar-accent-foreground: #F5F5DC;
   --sidebar-border: #27272a;
-  --sidebar-ring: #1CA2D1;
+  --sidebar-ring: var(--brand-primary);
 }
 
 @layer base {

@@ -68,18 +68,18 @@
   --card-foreground: #09090b;
   --popover: #F2F2F0;
   --popover-foreground: #09090b;
-  --primary: #1CA2D1;
+  --primary: var(--brand-primary);
   --primary-foreground: #ffffff;
   --secondary: #E8E8E6;
   --secondary-foreground: #09090b;
   --muted: #E8E8E6;
   --muted-foreground: #52525b;
-  --accent: #1CA2D1;
+  --accent: var(--brand-primary);
   --accent-foreground: #ffffff;
   --destructive: oklch(0.577 0.245 27.325);
   --border: #D2D2D0;
   --input: #D2D2D0;
-  --ring: #1CA2D1;
+  --ring: var(--brand-primary);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -87,14 +87,14 @@
   --chart-5: oklch(0.769 0.188 70.08);
   --sidebar: #F2F2F0;
   --sidebar-foreground: #09090b;
-  --sidebar-primary: #1CA2D1;
+  --sidebar-primary: var(--brand-primary);
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #E8E8E6;
   --sidebar-accent-foreground: #09090b;
   --sidebar-border: #D2D2D0;
-  --sidebar-ring: #1CA2D1;
+  --sidebar-ring: var(--brand-primary);
   /* Alert neobrutalist tokens */
-  --main: #1CA2D1;
+  --main: var(--brand-primary);
   --mtext: #ffffff;
   --shadow: 4px 4px 0px 0px #09090b;
 }
@@ -106,18 +106,18 @@
   --card-foreground: #F5F5DC;
   --popover: #18181b;
   --popover-foreground: #F5F5DC;
-  --primary: #1CA2D1;
+  --primary: var(--brand-primary);
   --primary-foreground: #09090b;
   --secondary: #27272a;
   --secondary-foreground: #F5F5DC;
   --muted: #27272a;
   --muted-foreground: #a1a1aa;
-  --accent: #1CA2D1;
+  --accent: var(--brand-primary);
   --accent-foreground: #09090b;
   --destructive: oklch(0.704 0.191 22.216);
   --border: #27272a;
   --input: #27272a;
-  --ring: #1CA2D1;
+  --ring: var(--brand-primary);
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
@@ -125,12 +125,12 @@
   --chart-5: oklch(0.645 0.246 16.439);
   --sidebar: #18181b;
   --sidebar-foreground: #F5F5DC;
-  --sidebar-primary: #1CA2D1;
+  --sidebar-primary: var(--brand-primary);
   --sidebar-primary-foreground: #09090b;
   --sidebar-accent: #27272a;
   --sidebar-accent-foreground: #F5F5DC;
   --sidebar-border: #27272a;
-  --sidebar-ring: #1CA2D1;
+  --sidebar-ring: var(--brand-primary);
 }
 
 @layer base {

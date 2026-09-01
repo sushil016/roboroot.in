@@ -37,7 +37,7 @@ export function BestSellersSection() {
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         >
-          <p className="text-sm font-black uppercase tracking-[0.18em] text-[#1CA2D1]">
+          <p className="text-sm font-black uppercase tracking-[0.18em] text-[var(--brand-primary)]">
             Best Selling Products
           </p>
           <h2 className="mt-2 text-3xl font-black text-zinc-950">Fast-moving catalog picks</h2>
@@ -47,7 +47,7 @@ export function BestSellersSection() {
           </p>
           <Link
             href="/components?isBestSeller=true"
-            className="mt-6 inline-flex h-11 items-center rounded-xl bg-[#1CA2D1] px-6 text-sm font-black text-white transition hover:opacity-90"
+            className="mt-6 inline-flex h-11 items-center rounded-xl bg-[var(--brand-primary)] px-6 text-sm font-black text-white transition hover:opacity-90"
           >
             View Best Sellers
           </Link>

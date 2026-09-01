@@ -31,7 +31,7 @@ interface RazorpayInstance {
 type RazorpayConstructor = new (options: RazorpayOptions) => RazorpayInstance;
 
 const RAZORPAY_SCRIPT_SRC = "https://checkout.razorpay.com/v1/checkout.js";
-const BRAND_COLOR = "#1CA2D1";
+const BRAND_COLOR = "var(--brand-primary)";
 
 /** Broadcast so any mounted profile/orders view can refresh its data. */
 export const ORDER_PAID_EVENT = "roboroot:order-paid";
@@ -84,6 +84,13 @@ export async function startRazorpayCheckout(
   orderId: string,
   handlers: RazorpayCheckoutHandlers = {},
 ): Promise<void> {
+  const initiatedPayment = await initiatePayment(orderId);
+
+  if (initiatedPayment.gateway === "ZOHO") {
+    window.location.assign(initiatedPayment.checkoutUrl);
+    return new Promise<void>(() => undefined);
+  }
+
   await loadRazorpayScript();
 
   const Razorpay = getRazorpay();
@@ -92,7 +99,7 @@ export async function startRazorpayCheckout(
     return;
   }
 
-  const { gatewayOrderId, keyId, amount, currency } = await initiatePayment(orderId);
+  const { gatewayOrderId, keyId, amount, currency } = initiatedPayment;
 
   const options: RazorpayOptions = {
     key: keyId,

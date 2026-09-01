@@ -33,7 +33,7 @@ export function LayoutWrapper({ children }: LayoutWrapperProps) {
         <div className="absolute top-0 left-0 w-full h-[650px] pointer-events-none z-0 overflow-hidden opacity-35">
           <SideRays
             origin="top-right"
-            rayColor1="#1CA2D1"
+            rayColor1="var(--brand-primary)"
             rayColor2="#EAB308"
             intensity={2.2}
             speed={1.2}

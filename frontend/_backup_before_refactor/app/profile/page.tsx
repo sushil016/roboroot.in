@@ -53,7 +53,7 @@ export default function ProfilePage() {
           <h1 className="text-2xl font-bold text-[#222222]">Login to view your profile</h1>
           <p className="mt-1 text-sm text-zinc-500">Your account, orders, wishlist, and settings live here.</p>
         </div>
-        <Button asChild className="bg-[#1CA2D1] hover:bg-[#1CA2D1]/90">
+        <Button asChild className="bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90">
           <Link href="/login?redirect=/profile">Login</Link>
         </Button>
       </div>
@@ -115,33 +115,33 @@ export default function ProfilePage() {
               href={ADMIN_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 rounded-2xl border border-[#1CA2D1]/30 bg-[#1CA2D1]/5 px-5 py-4 transition-colors hover:bg-[#1CA2D1]/10"
+              className="flex items-center gap-3 rounded-2xl border border-[var(--brand-primary)]/30 bg-[var(--brand-primary)]/5 px-5 py-4 transition-colors hover:bg-[var(--brand-primary)]/10"
             >
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#1CA2D1]">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[var(--brand-primary)]">
                 <Shield className="h-4 w-4 text-white" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-[#1CA2D1]">Admin Console</p>
+                <p className="text-sm font-bold text-[var(--brand-primary)]">Admin Console</p>
                 <p className="text-xs text-zinc-500 mt-0.5">
                   Manage products, orders, categories and more
                 </p>
               </div>
-              <ExternalLink className="h-4 w-4 text-[#1CA2D1] shrink-0" />
+              <ExternalLink className="h-4 w-4 text-[var(--brand-primary)] shrink-0" />
             </a>
           )}
 
           {/* Avatar card */}
           <MagicCard
             className="rounded-2xl [--color-background:#ffffff]"
-            gradientFrom="#1CA2D1"
+            gradientFrom="var(--brand-primary)"
             gradientTo="#E8E8E6"
-            gradientColor="#1CA2D1"
+            gradientColor="var(--brand-primary)"
             gradientOpacity={0.06}
           >
             <div className="flex items-center gap-5 p-6">
-              <Avatar className="h-16 w-16 border-2 border-[#1CA2D1]/20 shrink-0">
+              <Avatar className="h-16 w-16 border-2 border-[var(--brand-primary)]/20 shrink-0">
                 <AvatarImage src={user.avatarUrl || undefined} alt={user.name || user.email} />
-                <AvatarFallback className="bg-[#1CA2D1]/10 text-[#1CA2D1] text-xl font-bold">
+                <AvatarFallback className="bg-[var(--brand-primary)]/10 text-[var(--brand-primary)] text-xl font-bold">
                   {getInitials(user.name, user.email)}
                 </AvatarFallback>
               </Avatar>
@@ -149,7 +149,7 @@ export default function ProfilePage() {
                 <h2 className="text-lg font-bold text-[#222222] truncate">{user.name || "User"}</h2>
                 <p className="text-sm text-zinc-500">{user.email}</p>
                 <div className="mt-2 flex items-center gap-2">
-                  <span className="inline-flex rounded-full bg-[#1CA2D1]/10 px-2.5 py-0.5 text-[11px] font-semibold text-[#1CA2D1]">
+                  <span className="inline-flex rounded-full bg-[var(--brand-primary)]/10 px-2.5 py-0.5 text-[11px] font-semibold text-[var(--brand-primary)]">
                     {user.role}
                   </span>
                   <span className="text-[11px] text-zinc-400">
@@ -179,9 +179,9 @@ export default function ProfilePage() {
             >
               <MagicCard
                 className="rounded-2xl [--color-background:#ffffff]"
-                gradientFrom="#1CA2D1"
+                gradientFrom="var(--brand-primary)"
                 gradientTo="#E8E8E6"
-                gradientColor="#1CA2D1"
+                gradientColor="var(--brand-primary)"
                 gradientOpacity={0.06}
               >
                 <form onSubmit={handleProfileSubmit} className="p-6 space-y-4">
@@ -200,13 +200,13 @@ export default function ProfilePage() {
                           value={profileForm[key as keyof typeof profileForm]}
                           onChange={(e) => setProfileForm((p) => ({ ...p, [key]: e.target.value }))}
                           placeholder={placeholder}
-                          className="mt-1.5 border-[#D2D2D0] focus-visible:ring-[#1CA2D1]"
+                          className="mt-1.5 border-[#D2D2D0] focus-visible:ring-[var(--brand-primary)]"
                         />
                       </div>
                     ))}
                   </div>
                   <div className="flex gap-3 pt-2">
-                    <Button disabled={isSaving} className="bg-[#222222] hover:bg-[#1CA2D1]">
+                    <Button disabled={isSaving} className="bg-[#222222] hover:bg-[var(--brand-primary)]">
                       {isSaving ? "Saving..." : "Save Profile"}
                     </Button>
                     <Button
@@ -233,9 +233,9 @@ export default function ProfilePage() {
                 >
                   <MagicCard
                     className="rounded-xl [--color-background:#ffffff]"
-                    gradientFrom="#1CA2D1"
+                    gradientFrom="var(--brand-primary)"
                     gradientTo="#E8E8E6"
-                    gradientColor="#1CA2D1"
+                    gradientColor="var(--brand-primary)"
                     gradientOpacity={0.05}
                   >
                     <div className="flex items-center gap-4 p-4">

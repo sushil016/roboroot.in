@@ -36,6 +36,8 @@ import reindexRoutes from "./features/embeddings/routes/reindex.routes.js";
 import bulkOrderRoutes from "./features/bulk-orders/routes/bulk-order.routes.js";
 import careerRoutes from "./features/careers/routes/career.routes.js";
 import bulkRoutes from "./routes/bulkRoutes.js";
+import storeSettingsRoutes from "./features/settings/routes/store-settings.routes.js";
+import threeDPrintingRoutes from "./features/three-d-printing/routes/three-d-printing.routes.js";
 import { errorHandler, notFoundHandler } from "./middlewares/error.middleware.js";
 import { csrfProtection, csrfTokenHandler } from "./middlewares/csrf.middleware.js";
 
@@ -148,6 +150,10 @@ app.use(cors(corsOptions));
 
 // Cookie parsing middleware
 app.use(cookieParser());
+
+// Payment webhooks need raw bytes for gateway signature verification.
+app.use("/api/payments/webhook/razorpay", express.raw({ type: "application/json" }));
+app.use("/api/payments/webhook/zoho", express.raw({ type: "application/json" }));
 
 // Body parsing middleware
 app.use(express.json({ limit: "10mb" }));
@@ -303,6 +309,8 @@ app.use("/api/auth/forgot-password", authLimiter);
 
 // API routes
 app.use("/api/auth", authRoutes);
+app.use("/api/store-settings", storeSettingsRoutes);
+app.use("/api/3d-printing", orderLimiter, threeDPrintingRoutes);
 app.use("/api/emails", emailRoutes);
 app.use("/api/admin", adminWriteLimiter, adminRoutes);
 app.use("/api/components", catalogLimiter, componentRoutes);
@@ -365,6 +373,24 @@ cron.schedule("*/5 * * * *", async () => {
           where: { id: order.id },
           data: { status: "CANCELLED", notes: "Auto-cancelled: payment not completed within 30 minutes" },
         });
+        const printOrder = await tx.threeDPrintOrder.findUnique({
+          where: { commerceOrderId: order.id },
+          select: { id: true },
+        });
+        if (printOrder) {
+          await tx.threeDPrintOrder.update({
+            where: { id: printOrder.id },
+            data: { status: "CANCELLED" },
+          });
+          await tx.threeDPrintStatusEvent.create({
+            data: {
+              printOrderId: printOrder.id,
+              status: "CANCELLED",
+              note: "Payment was not completed within 30 minutes",
+              actorLabel: "System",
+            },
+          });
+        }
       });
       logger.info("stale order auto-cancelled", { orderId: order.id });
     }

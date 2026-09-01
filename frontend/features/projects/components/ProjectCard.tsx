@@ -20,7 +20,7 @@ export function ProjectCard({ project, index = 0 }: ProjectCardProps) {
       transition={{ duration: 0.4, delay: index * 0.06, ease: [0.22, 1, 0.36, 1] }}
     >
       <Link href={`/projects/${project.slug}`} className="block group">
-        <div className="flex flex-col md:flex-row bg-white rounded-2xl border-2 border-[#1CA2D1] overflow-hidden shadow-[3px_3px_0px_0px_#1CA2D1] hover:shadow-[5px_5px_0px_0px_#1CA2D1] transition-all duration-300">
+        <div className="flex flex-col md:flex-row bg-white rounded-2xl border-2 border-[var(--brand-primary)] overflow-hidden shadow-[3px_3px_0px_0px_var(--brand-primary)] hover:shadow-[5px_5px_0px_0px_var(--brand-primary)] transition-all duration-300">
 
           {/* ── Thumbnail ── */}
           <div className="relative md:w-64 lg:w-72 shrink-0 bg-gray-100">
@@ -57,10 +57,10 @@ export function ProjectCard({ project, index = 0 }: ProjectCardProps) {
 
             {/* Category + Title */}
             <div>
-              <span className="text-[11px] font-semibold uppercase tracking-widest text-[#1CA2D1]">
+              <span className="text-[11px] font-semibold uppercase tracking-widest text-[var(--brand-primary)]">
                 {getCategoryLabel(project.category)}
               </span>
-              <h2 className="mt-1 text-lg lg:text-xl font-semibold text-[#222222] leading-snug group-hover:text-[#1CA2D1] transition-colors">
+              <h2 className="mt-1 text-lg lg:text-xl font-semibold text-[#222222] leading-snug group-hover:text-[var(--brand-primary)] transition-colors">
                 {project.title}
               </h2>
               {project.summary ? (
@@ -146,7 +146,7 @@ export function ProjectCard({ project, index = 0 }: ProjectCardProps) {
               {/* CTA */}
               <button
                 onClick={(e) => { e.preventDefault(); window.location.href = `/projects/${project.slug}`; }}
-                className="sm:ml-auto flex-shrink-0 inline-flex items-center gap-1.5 h-9 px-5 rounded-lg bg-[#222222] text-white text-sm font-medium hover:bg-[#1CA2D1] transition-colors"
+                className="sm:ml-auto flex-shrink-0 inline-flex items-center gap-1.5 h-9 px-5 rounded-lg bg-[#222222] text-white text-sm font-medium hover:bg-[var(--brand-primary)] transition-colors"
               >
                 View Project
               </button>

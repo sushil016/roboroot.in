@@ -25,7 +25,7 @@ export const toolSchemas = {
     shippingAddressId: z.string().trim().min(1).optional(),
     couponCode: z.string().trim().min(1).optional(),
     notes: z.string().trim().max(1000).optional(),
-    paymentGateway: z.enum(["TEST", "RAZORPAY"]).optional(),
+    paymentGateway: z.enum(["TEST", "RAZORPAY", "ZOHO"]).optional(),
   }),
   initiate_payment: z.object({
     orderId: z.string().trim().min(1),
@@ -51,7 +51,7 @@ export const toolSchemas = {
   checkout_cart: z.object({
     couponCode: z.string().trim().min(1).optional(),
     notes: z.string().trim().max(1000).optional(),
-    paymentGateway: z.enum(["TEST", "RAZORPAY"]).optional(),
+    paymentGateway: z.enum(["TEST", "RAZORPAY", "ZOHO"]).optional(),
   }),
   compare_prices: z.object({
     componentId: z.string().trim().min(1),

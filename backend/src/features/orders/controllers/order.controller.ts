@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { OrderStatus, PaymentGateway } from "../../../generated/prisma/client.js";
 import { logAdminAction } from "../../../services/admin-action-log.service.js";
+import { initiatePayment as initiateZohoPayment } from "../../payments/services/zoho.service.js";
 import {
   cancelUserOrder,
   confirmUserOrderPayment,
@@ -28,19 +29,40 @@ function isOrderStatus(value: unknown): value is OrderStatus {
 
 export async function createOrderHandler(req: Request, res: Response) {
   try {
+    const userId = userIdFromRequest(req);
+    const paymentGateway = req.body.paymentGateway || PaymentGateway.ZOHO;
     const payload = await createOrder({
-      userId: userIdFromRequest(req),
+      userId,
       items: Array.isArray(req.body.items) ? req.body.items : [],
       shippingAddress: req.body.shippingAddress,
       shippingAddressId: req.body.shippingAddressId,
-      paymentGateway: req.body.paymentGateway || PaymentGateway.TEST,
+      paymentGateway,
       couponCode: req.body.couponCode,
       notes: req.body.notes,
     });
 
+    let paymentUrl = payload.paymentUrl;
+    let paymentError: string | undefined;
+
+    if (paymentGateway === PaymentGateway.ZOHO) {
+      try {
+        const idempotencyKey = req.headers["x-idempotency-key"] as string | undefined;
+        const payment = await initiateZohoPayment(payload.order.id, userId, idempotencyKey);
+        paymentUrl = payment.checkoutUrl;
+      } catch (error) {
+        console.error("[checkout] Zoho payment initiation failed", error);
+        paymentUrl = undefined;
+        paymentError = "Zoho Payments is temporarily unavailable. Please retry from your order details.";
+      }
+    }
+
     res.status(201).json({
       success: true,
-      data: payload,
+      data: {
+        ...payload,
+        paymentUrl,
+        paymentError,
+      },
     });
   } catch (error) {
     res.status(400).json({

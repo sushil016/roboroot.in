@@ -1,29 +1,32 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
+import { ArrowRight, Flame } from "lucide-react";
 import { componentApi } from "@/features/products/services/product.service";
-import { useCartStore, formatPrice } from "@/store/cart.store";
-import { useWishlistStore } from "@/store/wishlist.store";
-import { toast } from "sonner";
-import { Heart, ShoppingCart, Star, Package, ArrowRight } from "lucide-react";
+import { HomeProductCard } from "@/features/dashboard/components/HomeProductCard";
 import type { Component } from "@/types/marketplace.types";
 
-const cardVariants: any = {
-  hidden: { opacity: 0, y: 24 },
-  show: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.5,
-      ease: [0.22, 1, 0.36, 1],
-      delay: i * 0.08,
-    },
-  }),
-};
+const cardVariants = {
+  hidden: { opacity: 0, y: 18 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] } },
+} satisfies Variants;
 
-// Fallback high-fidelity mock data in case the database is empty
+const carouselVariants = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.07 } },
+} satisfies Variants;
+
+const ratingSamples = [
+  4.9,
+  4.8,
+  4.8,
+  4.7,
+  4.7,
+  4.6,
+];
+
 const MOCK_BEST_SELLERS: Component[] = [
   {
     id: "mock-bs-1",
@@ -36,6 +39,7 @@ const MOCK_BEST_SELLERS: Component[] = [
     imageUrl: null,
     brand: "RoboRoot",
     unitPriceCents: 64900,
+    discountedPriceCents: 59900,
     stockQuantity: 120,
     category: "Development Boards",
     subcategory: "Arduino compatible",
@@ -82,6 +86,7 @@ const MOCK_BEST_SELLERS: Component[] = [
     imageUrl: null,
     brand: "STEM Store",
     unitPriceCents: 329900,
+    discountedPriceCents: 299900,
     stockQuantity: 45,
     category: "STEM Store",
     subcategory: "DIY Kits",
@@ -117,129 +122,69 @@ const MOCK_BEST_SELLERS: Component[] = [
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },
+  {
+    id: "mock-bs-5",
+    slug: "esp32-wroom-32-wifi-bluetooth-module",
+    name: "ESP32 WROOM-32 WiFi Bluetooth Module",
+    sku: "COM-ESP32-WROOM",
+    description: "Dual-mode wireless module for IoT telemetry and connected devices.",
+    typicalUseCase: "WiFi and Bluetooth robotics control",
+    vendorLink: null,
+    imageUrl: null,
+    brand: "Espressif",
+    unitPriceCents: 39900,
+    stockQuantity: 160,
+    category: "Communication Modules",
+    subcategory: "WiFi & Bluetooth",
+    productType: "MODULE",
+    isBestSeller: true,
+    isRobomaniacItem: false,
+    isSoftware: false,
+    isActive: true,
+    tags: ["esp32", "wifi", "bluetooth"],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: "mock-bs-6",
+    slug: "l298n-dual-h-bridge-motor-driver-module",
+    name: "L298N Dual H-Bridge Motor Driver Module",
+    sku: "DRV-L298N",
+    description: "Reliable dual motor driver board for mobile robots and small automation builds.",
+    typicalUseCase: "Driving DC motors from Arduino or ESP32",
+    vendorLink: null,
+    imageUrl: null,
+    brand: null,
+    unitPriceCents: 18900,
+    stockQuantity: 135,
+    category: "Motors & Actuators",
+    subcategory: "Motor Drivers",
+    productType: "MOTOR_ACTUATOR",
+    isBestSeller: true,
+    isRobomaniacItem: false,
+    isSoftware: false,
+    isActive: true,
+    tags: ["driver", "motor", "robotics"],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
 ];
 
-function BestSellerCard({ component, rank }: { component: Component; rank: number }) {
-  const addItem = useCartStore((state) => state.addItem);
-  const toggleWishlist = useWishlistStore((state) => state.toggleItem);
-  const isWishlisted = useWishlistStore((state) => state.isWishlisted(component.id));
-  const isOutOfStock = component.stockQuantity === 0;
-
-  const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (isOutOfStock) {
-      toast.error("Out of stock");
-      return;
-    }
-    addItem(component, 1);
-    toast.success("Added to cart", { description: component.name });
-  };
-
+function ProductSkeleton() {
   return (
-    <div className="group relative flex flex-col h-full w-full overflow-hidden rounded-2xl border border-[#D2D2D0] bg-white p-3 sm:p-4 transition-all duration-300 hover:border-[#1CA2D1]/40 hover:shadow-xl hover:-translate-y-1">
-      {/* Rank Indicator */}
-      <div className="absolute left-2 top-2 sm:left-3 sm:top-3 z-10 flex items-center gap-0.5 sm:gap-1 rounded-full bg-zinc-950 px-2 py-0.5 sm:px-2.5 sm:py-1 text-[9px] sm:text-[10px] font-black text-white shadow-sm">
-        <span>#{rank}</span>
-        <Star className="h-2.5 w-2.5 sm:h-3 sm:w-3 fill-amber-400 text-amber-400" />
-      </div>
-
-      {/* Wishlist Button */}
-      <button
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          toggleWishlist(component);
-          toast.success(isWishlisted ? "Removed from wishlist" : "Saved to wishlist");
-        }}
-        className={`absolute right-2 top-2 sm:right-3 sm:top-3 z-10 flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full shadow-sm border transition-all duration-200 ${
-          isWishlisted
-            ? "border-transparent bg-[#1CA2D1] text-white scale-100"
-            : "border-[#D2D2D0] bg-[#F2F2F0]/90 text-zinc-500 hover:bg-white hover:text-zinc-800"
-        }`}
-      >
-        <Heart className="h-3 w-3 sm:h-3.5 sm:w-3.5" fill={isWishlisted ? "currentColor" : "none"} />
-      </button>
-
-      {/* Image container */}
-      <Link href={`/components/${component.slug}`} className="relative flex aspect-square w-full shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[#F2F2F0]/60 p-2 sm:p-4">
-        {component.imageUrl ? (
-          <img
-            src={component.imageUrl}
-            alt={component.name}
-            className="max-h-full max-w-full object-contain transition-transform duration-500 group-hover:scale-105"
-            loading="lazy"
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center">
-            <Package className="h-8 w-8 sm:h-12 sm:w-12 text-zinc-200" />
+    <div className="min-h-[410px] w-[82vw] shrink-0 rounded-2xl border border-zinc-200 bg-white p-4 sm:w-[48vw] md:w-[34vw] lg:w-[300px] xl:w-[296px]">
+      <div className="aspect-square animate-pulse rounded-xl bg-zinc-100" />
+      <div className="space-y-3 px-1 pt-5">
+        <div className="h-3 w-20 animate-pulse rounded-full bg-zinc-100" />
+        <div className="h-5 w-full animate-pulse rounded bg-zinc-100" />
+        <div className="h-5 w-3/4 animate-pulse rounded bg-zinc-100" />
+        <div className="h-4 w-28 animate-pulse rounded bg-zinc-100" />
+        <div className="flex items-end justify-between pt-7">
+          <div className="space-y-2">
+            <div className="h-5 w-24 animate-pulse rounded bg-zinc-100" />
+            <div className="h-3 w-16 animate-pulse rounded bg-zinc-100" />
           </div>
-        )}
-      </Link>
-
-      {/* Info */}
-      <div className="mt-3 sm:mt-4 flex flex-1 flex-col justify-between">
-        <div>
-          {/* Category */}
-          <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-[#1CA2D1] h-4 flex items-center truncate">
-            {component.subcategory || component.category}
-          </span>
-
-          {/* Title */}
-          <Link href={`/components/${component.slug}`} className="mt-1 block h-8 sm:h-10 flex-shrink-0 overflow-hidden">
-            <h3 className="line-clamp-2 text-xs sm:text-sm font-bold leading-snug text-[#222222] group-hover:text-[#1CA2D1] transition-colors">
-              {component.name}
-            </h3>
-          </Link>
-
-          {/* Rating and Reviews */}
-          <div className="mt-1.5 flex h-4 items-center gap-1">
-            <div className="flex items-center text-amber-400">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} className="h-2.5 w-2.5 sm:h-3 sm:w-3 fill-current" />
-              ))}
-            </div>
-            <span className="text-[9px] sm:text-[10px] font-bold text-zinc-500">5.0</span>
-            <span className="hidden xs:inline text-[9px] font-medium text-zinc-400">({(150 - rank * 20)})</span>
-          </div>
-        </div>
-
-        {/* Price and Add button */}
-        <div className="mt-3 flex items-center justify-between border-t border-[#F2F2F0] pt-2 sm:pt-3 flex-shrink-0">
-          <div className="flex flex-col">
-            {component.discountedPriceCents && component.discountedPriceCents < component.unitPriceCents ? (
-              <>
-                <div className="flex flex-wrap items-baseline gap-1">
-                  <span className="text-sm sm:text-lg font-black text-[#1CA2D1]">
-                    {formatPrice(component.discountedPriceCents)}
-                  </span>
-                  <span className="text-[10px] sm:text-xs text-zinc-400 line-through">
-                    {formatPrice(component.unitPriceCents)}
-                  </span>
-                </div>
-              </>
-            ) : (
-              <>
-                <span className="text-sm sm:text-lg font-black text-[#1CA2D1]">
-                  {formatPrice(component.unitPriceCents)}
-                </span>
-              </>
-            )}
-            <span className="text-[8px] sm:text-[9px] font-medium text-zinc-400">Inc. GST</span>
-          </div>
-
-          <button
-            onClick={handleAddToCart}
-            disabled={isOutOfStock}
-            className={`flex h-8 sm:h-9 items-center justify-center gap-1.5 rounded-xl px-2 sm:px-3 text-[10px] sm:text-xs font-bold transition-all duration-200 ${
-              isOutOfStock
-                ? "bg-zinc-100 text-zinc-400 cursor-not-allowed"
-                : "bg-zinc-950 text-white hover:bg-[#1CA2D1] hover:shadow-md hover:shadow-[#1CA2D1]/15"
-            }`}
-          >
-            <ShoppingCart className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-            <span className="hidden xs:inline">Add</span>
-          </button>
+          <div className="h-11 w-11 animate-pulse rounded-full bg-zinc-100" />
         </div>
       </div>
     </div>
@@ -249,70 +194,65 @@ function BestSellerCard({ component, rank }: { component: Component; rank: numbe
 export function BestSellersSection() {
   const { data, isLoading } = useQuery({
     queryKey: ["best-sellers"],
-    queryFn: () => componentApi.getComponents({ isBestSeller: true, limit: 4, sortBy: "name" }),
+    queryFn: () => componentApi.getComponents({ isBestSeller: true, limit: 10, sortBy: "name" }),
     staleTime: 5 * 60 * 1000,
   });
 
-  const components = data?.components && data.components.length > 0
-    ? data.components
-    : MOCK_BEST_SELLERS;
+  const components =
+    data?.components && data.components.length > 0
+      ? data.components
+      : MOCK_BEST_SELLERS;
 
   return (
-    <section className="mx-auto max-w-7xl px-4 py-8">
-      <div className="rounded-[2.5rem] bg-[#F2F2F0] border border-[#D2D2D0] px-4 py-8 sm:px-12 shadow-sm">
-        {/* Centered header */}
-        <div className="mb-12 text-center">
-          <span className="rounded-full bg-[#1CA2D1]/10 px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-[#1CA2D1]">
-            🔥 Best Sellers
+  <section className="mx-auto max-w-7xl px-4 py-14 sm:py-16 border-0 border-zinc-200 border-t rounded-t-4xl ">
+      <div className="mx-auto mb-12 max-w-2xl text-center sm:mb-14">
+        <div>
+          <span className="inline-flex rounded-full bg-brand-primary px-8 py-3 text-sm font-light uppercase tracking-[0.22em] text-brand-secondary-3 ">
+            BEST SELLERS
           </span>
-          <h2 className="mt-4 text-2xl sm:text-4xl font-black text-zinc-950">
-            Fast-Moving Favorites
-          </h2>
-          <p className="mx-auto mt-3 max-w-2xl text-xs sm:text-sm font-medium leading-relaxed text-zinc-600">
-            Discover our most popular microcontrollers, sensors, actuators, and learning kits trusted by students, creators, and professionals across India.
-          </p>
-        </div>
+          <h2 className="mt-3 text-2xl font-bold sm:text-3xl">Fast-Moving Favorites</h2> 
 
-        {/* Product grid */}
-        <motion.div
-          className="grid gap-3 sm:gap-6 grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 items-stretch"
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-60px" }}
-        >
-          {isLoading
-            ? Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="overflow-hidden rounded-2xl border border-[#E4E4D8] bg-white animate-pulse h-[280px] sm:h-[380px]">
-                  <div className="aspect-square bg-[#F0F0E8]" />
-                  <div className="space-y-2.5 px-4 py-4">
-                    <div className="h-2.5 w-14 rounded-full bg-[#E8E8E6]" />
-                    <div className="h-4 w-full rounded-md bg-[#E8E8E6]" />
-                    <div className="h-4 w-3/4 rounded-md bg-[#E8E8E6]" />
-                    <div className="flex items-center justify-between pt-2">
-                      <div className="h-6 w-20 rounded-md bg-[#E8E8E6]" />
-                      <div className="h-2.5 w-16 rounded-full bg-[#E8E8E6]" />
-                    </div>
-                  </div>
-                </div>
-              ))
-            : components.map((component, idx) => (
-                <motion.div key={component.id} custom={idx} variants={cardVariants} className="h-full flex">
-                  <BestSellerCard component={component} rank={idx + 1} />
-                </motion.div>
-              ))}
-        </motion.div>
-
-        {/* View All CTA */}
-        <div className="mt-12 flex justify-center">
-          <Link
-            href="/components?isBestSeller=true"
-            className="flex items-center gap-2 rounded-xl bg-zinc-950 px-6 py-3 sm:px-8 sm:py-3.5 text-xs sm:text-sm font-black text-white transition hover:bg-[#1CA2D1] hover:shadow-lg"
-          >
-            Explore All Best Sellers
-            <ArrowRight className="h-4 w-4" />
-          </Link>
         </div>
       </div>
+
+      <motion.div
+        className="-mx-4 flex snap-x gap-5 overflow-x-auto px-4 pb-4 [scrollbar-width:thin]"
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, margin: "-60px" }}
+        variants={carouselVariants}
+      >
+        {isLoading
+          ? Array.from({ length: 6 }).map((_, index) => <ProductSkeleton key={index} />)
+          : components.map((component, index) => {
+              const rating = ratingSamples[index % ratingSamples.length];
+
+              return (
+                <motion.div
+                  key={component.id}
+                  variants={cardVariants}
+                  className="w-[82vw] shrink-0 snap-start sm:w-[48vw] md:w-[34vw] lg:w-[300px] xl:w-[296px]"
+                >
+                  <HomeProductCard
+                    component={component}
+                    badge={`#${index + 1}`}
+                    badgeTone="rank"
+                    rating={rating}
+                  />
+                </motion.div>
+              );
+            })}
+      </motion.div>
+
+      {/* <div className="mt-8 flex justify-center">
+        <Link
+          href="/components?isBestSeller=true"
+          className="inline-flex items-center gap-2 rounded-full bg-zinc-950 px-6 py-3 text-sm font-black text-white transition hover:bg-[var(--brand-primary)] hover:shadow-lg"
+        >
+          Explore All Best Sellers
+          <ArrowRight className="h-4 w-4" />
+        </Link>
+      </div> */}
     </section>
   );
 }

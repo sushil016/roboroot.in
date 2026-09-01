@@ -10,7 +10,7 @@ import { MagicCard } from "@/components/ui/magic-card";
 const gradientPairs: Record<string, [string, string]> = {
   "Semiconductors":     ["#6366f1", "#818cf8"],
   "Sensors":            ["#06b6d4", "#22d3ee"],
-  "Development Boards": ["#1CA2D1", "#38bdf8"],
+  "Development Boards": ["var(--brand-primary)", "#38bdf8"],
   "Motors & Actuators": ["#f97316", "#fb923c"],
   "Power & Batteries":  ["#10b981", "#34d399"],
   "Drones & Aerospace": ["#8b5cf6", "#a78bfa"],
@@ -55,7 +55,7 @@ export function CategoryCard({
   totalCount,
   productImages = [],
 }: CategoryCardProps) {
-  const [gradFrom, gradTo] = gradientPairs[name] ?? ["#1CA2D1", "#38bdf8"];
+  const [gradFrom, gradTo] = gradientPairs[name] ?? ["var(--brand-primary)", "#38bdf8"];
   const bgColor = imageBgColors[name] ?? "#eff6ff";
 
   const displayDescription =

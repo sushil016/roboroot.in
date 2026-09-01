@@ -32,14 +32,14 @@ export function FeaturedBuildsSection() {
       >
         <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <p className="text-sm font-black uppercase tracking-[0.18em] text-[#1CA2D1]">
+            <p className="text-sm font-black uppercase tracking-[0.18em] text-[var(--brand-primary)]">
               Featured Builds
             </p>
             <h2 className="mt-2 text-3xl font-black">Start with a proven project path</h2>
           </div>
           <Link
             href="/projects"
-            className="btn-underline-white inline-flex h-11 w-fit items-center rounded-xl bg-[#1CA2D1] px-6 text-sm font-black text-white transition hover:opacity-90"
+            className="btn-underline-white inline-flex h-11 w-fit items-center rounded-xl bg-[var(--brand-primary)] px-6 text-sm font-black text-white transition hover:opacity-90"
           >
             All Projects
           </Link>
@@ -84,7 +84,7 @@ export function FeaturedBuildsSection() {
                     href={`/projects/${project.slug}`}
                     className="card-hover-bar block rounded-xl border border-white/10 bg-[#F2F2F0]/5 p-5 transition"
                   >
-                    <Boxes className="h-8 w-8 text-[#1CA2D1]" />
+                    <Boxes className="h-8 w-8 text-[var(--brand-primary)]" />
                     <h3 className="mt-5 min-h-14 text-lg font-black leading-7">{project.title}</h3>
                     <p className="mt-3 text-sm font-semibold text-zinc-400">{parts.join(" • ")}</p>
                   </Link>
@@ -102,7 +102,7 @@ export function FeaturedBuildsSection() {
         transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
         className="card-hover-bar rounded-2xl border border-[#D2D2D0] bg-[#F2F2F0] p-6 shadow-sm"
       >
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-background text-[#1CA2D1]">
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-background text-[var(--brand-primary)]">
           <PackageCheck className="h-6 w-6" />
         </div>
         <h2 className="mt-5 text-2xl font-black text-zinc-950">Build your BOM faster</h2>
@@ -113,15 +113,15 @@ export function FeaturedBuildsSection() {
         <div className="mt-6 space-y-3 text-sm font-bold text-zinc-700">
           <div className="flex items-center justify-between border-b border-[#D2D2D0] pb-3">
             <span>Catalog categories</span>
-            <span className="text-[#1CA2D1]">8+</span>
+            <span className="text-[var(--brand-primary)]">8+</span>
           </div>
           <div className="flex items-center justify-between border-b border-[#D2D2D0] pb-3">
             <span>Project verticals</span>
-            <span className="text-[#1CA2D1]">IoT, AI, UAV</span>
+            <span className="text-[var(--brand-primary)]">IoT, AI, UAV</span>
           </div>
           <div className="flex items-center justify-between">
             <span>STEM products</span>
-            <span className="text-[#1CA2D1]">Kits + software</span>
+            <span className="text-[var(--brand-primary)]">Kits + software</span>
           </div>
         </div>
       </motion.aside>

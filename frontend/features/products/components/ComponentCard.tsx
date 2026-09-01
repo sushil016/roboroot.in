@@ -73,7 +73,7 @@ export function ComponentCard({ component }: ComponentCardProps) {
                 toast.success(isWishlisted ? 'Removed from wishlist' : 'Saved to wishlist');
               }}
               className={`absolute bottom-2 right-2 z-10 flex h-9 w-9 items-center justify-center rounded-full shadow ${
-                isWishlisted ? 'bg-[#1CA2D1] text-white' : 'bg-[#F2F2F0] text-zinc-700'
+                isWishlisted ? 'bg-[var(--brand-primary)] text-white' : 'bg-[#F2F2F0] text-zinc-700'
               }`}
               aria-label="Toggle wishlist"
             >
@@ -144,7 +144,7 @@ export function ComponentCard({ component }: ComponentCardProps) {
           <div className="flex items-baseline gap-2 mb-1">
             {component.discountedPriceCents && component.discountedPriceCents < component.unitPriceCents ? (
               <>
-                <span className="text-2xl font-bold text-[#1CA2D1]">
+                <span className="text-2xl font-bold text-[var(--brand-primary)]">
                   {formatPrice(component.discountedPriceCents)}
                 </span>
                 <span className="text-sm text-muted-foreground line-through">
@@ -155,7 +155,7 @@ export function ComponentCard({ component }: ComponentCardProps) {
                 </span>
               </>
             ) : (
-              <span className="text-2xl font-bold text-[#1CA2D1]">
+              <span className="text-2xl font-bold text-[var(--brand-primary)]">
                 {formatPrice(component.unitPriceCents)}
               </span>
             )}

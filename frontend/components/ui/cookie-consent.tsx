@@ -108,9 +108,9 @@ function Toggle({
       className={`
         relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full
         border-2 border-transparent transition-colors duration-200 ease-in-out
-        focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1CA2D1] focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950
+        focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950
         ${disabled ? "cursor-not-allowed opacity-60" : ""}
-        ${enabled ? "bg-[#1CA2D1]" : "bg-zinc-700"}
+        ${enabled ? "bg-[var(--brand-primary)]" : "bg-zinc-700"}
       `}
     >
       <span
@@ -152,7 +152,7 @@ function CategoryRow({
           <div className="flex items-center gap-2">
             <span className="text-sm font-bold text-white">{category.label}</span>
             {category.required && (
-              <span className="rounded-md bg-[#1CA2D1]/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#1CA2D1]">
+              <span className="rounded-md bg-[var(--brand-primary)]/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[var(--brand-primary)]">
                 Required
               </span>
             )}
@@ -286,8 +286,8 @@ export function CookieConsent() {
             <div className="p-5">
               {/* Header */}
               <div className="flex items-start gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#1CA2D1]/20 to-[#1CA2D1]/5 ring-1 ring-[#1CA2D1]/30">
-                  <Cookie className="h-5 w-5 text-[#1CA2D1]" />
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[var(--brand-primary)]/20 to-[var(--brand-primary)]/5 ring-1 ring-[var(--brand-primary)]/30">
+                  <Cookie className="h-5 w-5 text-[var(--brand-primary)]" />
                 </div>
                 <div className="flex-1 pr-6">
                   <h3 className="text-sm font-black text-white">Cookie Preferences</h3>
@@ -296,7 +296,7 @@ export function CookieConsent() {
                     improve your shopping experience.{" "}
                     <Link
                       href="/privacy"
-                      className="text-[#1CA2D1] underline-offset-2 hover:underline"
+                      className="text-[var(--brand-primary)] underline-offset-2 hover:underline"
                     >
                       Privacy Policy
                     </Link>
@@ -339,7 +339,7 @@ export function CookieConsent() {
                     </button>
                     <button
                       onClick={handleSavePreferences}
-                      className="flex-1 rounded-xl bg-[#1CA2D1] px-4 py-2.5 text-xs font-bold text-white transition-all hover:bg-[#1CA2D1]/90 hover:shadow-lg hover:shadow-[#1CA2D1]/20"
+                      className="flex-1 rounded-xl bg-[var(--brand-primary)] px-4 py-2.5 text-xs font-bold text-white transition-all hover:bg-[var(--brand-primary)]/90 hover:shadow-lg hover:shadow-[var(--brand-primary)]/20"
                     >
                       Save Preferences
                     </button>
@@ -361,7 +361,7 @@ export function CookieConsent() {
                     </button>
                     <button
                       onClick={handleAcceptAll}
-                      className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#1CA2D1] px-4 py-2.5 text-xs font-bold text-white transition-all hover:bg-[#1CA2D1]/90 hover:shadow-lg hover:shadow-[#1CA2D1]/20"
+                      className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-[var(--brand-primary)] px-4 py-2.5 text-xs font-bold text-white transition-all hover:bg-[var(--brand-primary)]/90 hover:shadow-lg hover:shadow-[var(--brand-primary)]/20"
                     >
                       <ShieldCheck className="h-3.5 w-3.5" />
                       Accept All

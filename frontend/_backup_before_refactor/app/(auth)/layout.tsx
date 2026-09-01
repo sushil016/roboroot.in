@@ -15,7 +15,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         className="pointer-events-none fixed inset-0 opacity-[0.04]"
         style={{
           backgroundImage:
-            "linear-gradient(#1CA2D1 1px, transparent 1px), linear-gradient(to right, #1CA2D1 1px, transparent 1px)",
+            "linear-gradient(var(--brand-primary) 1px, transparent 1px), linear-gradient(to right, var(--brand-primary) 1px, transparent 1px)",
           backgroundSize: "48px 48px",
         }}
       />

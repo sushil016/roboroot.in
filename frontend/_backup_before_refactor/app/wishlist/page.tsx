@@ -54,9 +54,9 @@ export default function WishlistPage() {
         {items.length === 0 && (
           <MagicCard
             className="rounded-2xl [--color-background:#ffffff]"
-            gradientFrom="#1CA2D1"
+            gradientFrom="var(--brand-primary)"
             gradientTo="#E8E8E6"
-            gradientColor="#1CA2D1"
+            gradientColor="var(--brand-primary)"
             gradientOpacity={0.05}
           >
             <div className="flex flex-col items-center gap-5 p-16 text-center">
@@ -69,7 +69,7 @@ export default function WishlistPage() {
                   Tap the heart icon on any product to save it here.
                 </p>
               </div>
-              <Button asChild className="bg-[#222222] hover:bg-[#1CA2D1]">
+              <Button asChild className="bg-[#222222] hover:bg-[var(--brand-primary)]">
                 <Link href="/components">Browse Components</Link>
               </Button>
             </div>
@@ -90,9 +90,9 @@ export default function WishlistPage() {
                 >
                   <MagicCard
                     className="rounded-2xl [--color-background:#ffffff] h-full"
-                    gradientFrom="#1CA2D1"
+                    gradientFrom="var(--brand-primary)"
                     gradientTo="#E8E8E6"
-                    gradientColor="#1CA2D1"
+                    gradientColor="var(--brand-primary)"
                     gradientOpacity={0.06}
                   >
                     <div className="flex flex-col p-4 h-full">
@@ -105,12 +105,12 @@ export default function WishlistPage() {
                             imageClassName="object-contain"
                           />
                         </div>
-                        <p className="line-clamp-2 min-h-[2.5rem] text-sm font-semibold text-[#222222] leading-5 group-hover:text-[#1CA2D1] transition-colors">
+                        <p className="line-clamp-2 min-h-[2.5rem] text-sm font-semibold text-[#222222] leading-5 group-hover:text-[var(--brand-primary)] transition-colors">
                           {component.name}
                         </p>
                       </Link>
                       <div className="mt-2">
-                        <p className="text-lg font-bold text-[#1CA2D1]">
+                        <p className="text-lg font-bold text-[var(--brand-primary)]">
                           {formatPrice(component.unitPriceCents)}
                         </p>
                         <p className="text-[10px] font-semibold text-emerald-600">Inc. GST</p>
@@ -118,7 +118,7 @@ export default function WishlistPage() {
                       <div className="mt-3 grid grid-cols-2 gap-2 mt-auto pt-3">
                         <button
                           onClick={() => handleAddToCart(component)}
-                          className="flex h-9 items-center justify-center gap-1.5 rounded-xl bg-[#222222] text-xs font-semibold text-white hover:bg-[#1CA2D1] transition-colors"
+                          className="flex h-9 items-center justify-center gap-1.5 rounded-xl bg-[#222222] text-xs font-semibold text-white hover:bg-[var(--brand-primary)] transition-colors"
                         >
                           <ShoppingCart className="h-3.5 w-3.5" />
                           Add

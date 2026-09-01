@@ -64,7 +64,7 @@ function VerifyEmailContent() {
           <p className="text-sm text-zinc-500">{message}</p>
           <Link
             href="/login"
-            className="inline-flex h-11 items-center gap-2 rounded-xl bg-[#222222] px-6 text-sm font-bold text-white hover:bg-[#1CA2D1] transition-colors"
+            className="inline-flex h-11 items-center gap-2 rounded-xl bg-[#222222] px-6 text-sm font-bold text-white hover:bg-[var(--brand-primary)] transition-colors"
           >
             Continue to login
           </Link>
@@ -81,7 +81,7 @@ function VerifyEmailContent() {
           <div className="flex flex-col items-center gap-3">
             <Link
               href="/login"
-              className="inline-flex h-11 items-center gap-2 rounded-xl bg-[#222222] px-6 text-sm font-bold text-white hover:bg-[#1CA2D1] transition-colors"
+              className="inline-flex h-11 items-center gap-2 rounded-xl bg-[#222222] px-6 text-sm font-bold text-white hover:bg-[var(--brand-primary)] transition-colors"
             >
               Go to login
             </Link>
@@ -125,7 +125,7 @@ function ResendButton() {
         placeholder="Your email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className="flex-1 rounded-xl border border-[#D2D2D0] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1CA2D1]"
+        className="flex-1 rounded-xl border border-[#D2D2D0] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)]"
       />
       <button
         type="button"

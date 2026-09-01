@@ -5,20 +5,19 @@ import { FeaturedBuildsSection } from "@/features/dashboard/components/FeaturedB
 import { HeroSection } from "@/features/dashboard/components/HeroSection";
 import { ProjectVideosSection } from "@/features/dashboard/components/ProjectVideosSection";
 import { ServicesSection } from "@/features/dashboard/components/ServicesSection";
-import RoborootAiSection from "./Services";
-import { SideRays } from "@/components/SideRays";
+import { SuggestionForYouSection } from "@/features/dashboard/components/SuggestionForYouSection";
 
 export function LandingPage() {
   return (
-    <div className="relative bg-transparent text-foreground min-h-screen" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+    <div className="relative bg-background text-foreground min-h-screen" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
       <div className="relative z-10">
         <HeroSection />
         <CategorySection />
-        <BestSellersSection />
         <NewArrivalsSection />
-        {/* <ServicesSection /> */}
+        <BestSellersSection />
+        <SuggestionForYouSection />
+        <ServicesSection />
         {/* <ProjectVideosSection /> */}
-        <RoborootAiSection />
         {/* <FeaturedBuildsSection /> */}
       </div>
     </div>

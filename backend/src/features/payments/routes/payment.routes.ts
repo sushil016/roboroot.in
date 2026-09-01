@@ -4,6 +4,8 @@ import {
   initiatePaymentHandler,
   razorpayWebhookHandler,
   verifyPaymentHandler,
+  zohoReturnHandler,
+  zohoWebhookHandler,
 } from "../controllers/payment.controller.js";
 
 const router: RouterType = Router();
@@ -14,8 +16,16 @@ router.post(
   express.raw({ type: "application/json" }),
   razorpayWebhookHandler,
 );
+router.post(
+  "/webhook/zoho",
+  express.raw({ type: "application/json" }),
+  zohoWebhookHandler,
+);
 
-// Initiate: creates a Razorpay order and returns credentials for frontend modal
+// Hosted checkout return URLs configured during Zoho session creation, NO auth
+router.get("/zoho/return/:orderId/:result", zohoReturnHandler);
+
+// Initiate: creates gateway session/order and returns frontend payment details
 router.post("/:orderId/initiate", authenticate, initiatePaymentHandler);
 
 // Verify: frontend-side success callback — verify signature and confirm order

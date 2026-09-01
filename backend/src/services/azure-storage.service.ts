@@ -18,6 +18,8 @@ import fs from 'fs/promises';
 // Azure Blob Storage Configuration
 const AZURE_STORAGE_CONNECTION_STRING = process.env.AZURE_STORAGE_CONNECTION_STRING || '';
 const AZURE_STORAGE_CONTAINER_NAME = process.env.AZURE_STORAGE_CONTAINER_NAME || 'robo-gig-uploads';
+const AZURE_PRIVATE_STORAGE_CONTAINER_NAME =
+  process.env.AZURE_PRIVATE_STORAGE_CONTAINER_NAME || 'roboroot-private';
 
 // Extract account name and key from connection string for SAS token generation
 function getStorageCredentials(): { accountName: string; accountKey: string } | null {
@@ -49,6 +51,19 @@ export enum FileType {
   PROJECT_THUMBNAIL = 'project-thumbnails',
   BULK_ORDER_CSV = 'bulk-orders',
 }
+
+export type PrivateStorageProvider = 'AZURE' | 'LOCAL';
+
+export type PrivateUploadResult = {
+  storageProvider: PrivateStorageProvider;
+  storageKey: string;
+  size: number;
+  contentType: string;
+};
+
+export type PrivateFileAccess =
+  | { type: 'redirect'; url: string }
+  | { type: 'local'; absolutePath: string };
 
 interface UploadResult {
   url: string;
@@ -88,6 +103,15 @@ async function getContainerClient(): Promise<ContainerClient> {
     await containerClient.createIfNotExists();
   });
 
+  return containerClient;
+}
+
+async function getPrivateContainerClient(): Promise<ContainerClient> {
+  const blobServiceClient = getBlobServiceClient();
+  const containerClient = blobServiceClient.getContainerClient(
+    AZURE_PRIVATE_STORAGE_CONTAINER_NAME,
+  );
+  await containerClient.createIfNotExists();
   return containerClient;
 }
 
@@ -302,6 +326,92 @@ export async function uploadMultipleFilesToAzure(
   }
 }
 
+export async function uploadPrivateFile(
+  buffer: Buffer,
+  originalFilename: string,
+  mimeType: string,
+  folder = '3d-models',
+): Promise<PrivateUploadResult> {
+  const extension = path.extname(originalFilename).toLowerCase();
+  const storageKey = `${folder}/${Date.now()}-${uuidv4()}${extension}`;
+
+  try {
+    const containerClient = await getPrivateContainerClient();
+    const blobClient = containerClient.getBlockBlobClient(storageKey);
+    await blobClient.uploadData(buffer, {
+      blobHTTPHeaders: {
+        blobContentType: mimeType,
+        blobContentDisposition: 'attachment',
+      },
+    });
+
+    return {
+      storageProvider: 'AZURE',
+      storageKey,
+      size: buffer.length,
+      contentType: mimeType,
+    };
+  } catch (error) {
+    console.warn('Private Azure upload failed, using protected local storage.', error);
+    const privateRoot = path.resolve(process.cwd(), 'private', 'uploads');
+    const absolutePath = path.resolve(privateRoot, storageKey);
+    if (!absolutePath.startsWith(`${privateRoot}${path.sep}`)) {
+      throw new Error('Invalid private storage path');
+    }
+    await fs.mkdir(path.dirname(absolutePath), { recursive: true });
+    await fs.writeFile(absolutePath, buffer);
+
+    return {
+      storageProvider: 'LOCAL',
+      storageKey,
+      size: buffer.length,
+      contentType: mimeType,
+    };
+  }
+}
+
+export async function getPrivateFileAccess(
+  storageProvider: PrivateStorageProvider,
+  storageKey: string,
+  downloadName: string,
+): Promise<PrivateFileAccess> {
+  if (storageProvider === 'LOCAL') {
+    const privateRoot = path.resolve(process.cwd(), 'private', 'uploads');
+    const absolutePath = path.resolve(privateRoot, storageKey);
+    if (!absolutePath.startsWith(`${privateRoot}${path.sep}`)) {
+      throw new Error('Invalid private storage path');
+    }
+    await fs.access(absolutePath);
+    return { type: 'local', absolutePath };
+  }
+
+  const credentials = getStorageCredentials();
+  if (!credentials) {
+    throw new Error('Azure credentials are required to download private files');
+  }
+
+  const containerClient = await getPrivateContainerClient();
+  const blobClient = containerClient.getBlockBlobClient(storageKey);
+  const sharedKeyCredential = new StorageSharedKeyCredential(
+    credentials.accountName,
+    credentials.accountKey,
+  );
+  const safeName = downloadName.replace(/[\r\n"]/g, '_');
+  const sasToken = generateBlobSASQueryParameters(
+    {
+      containerName: AZURE_PRIVATE_STORAGE_CONTAINER_NAME,
+      blobName: storageKey,
+      permissions: BlobSASPermissions.parse('r'),
+      startsOn: new Date(Date.now() - 60_000),
+      expiresOn: new Date(Date.now() + 10 * 60_000),
+      contentDisposition: `attachment; filename="${safeName}"`,
+    },
+    sharedKeyCredential,
+  ).toString();
+
+  return { type: 'redirect', url: `${blobClient.url}?${sasToken}` };
+}
+
 /**
  * Delete file from Azure Blob Storage
  */
@@ -342,6 +452,8 @@ export default {
   uploadMultipleFilesToAzure,
   deleteFileFromAzure,
   deleteMultipleFilesFromAzure,
+  uploadPrivateFile,
+  getPrivateFileAccess,
   UPLOAD_LIMITS,
   FileType,
 };

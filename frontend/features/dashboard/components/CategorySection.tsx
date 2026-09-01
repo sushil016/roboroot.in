@@ -47,14 +47,14 @@ export function CategorySection() {
         className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between"
       >
         <div>
-          <p className="text-xs sm:text-sm font-semibold uppercase tracking-[0.18em] text-[#1CA2D1]">
+          <p className="text-xs sm:text-sm font-semibold uppercase tracking-[0.10em] text-[var(--brand-primary)]">
             Shop By Category
           </p>
-          <h2 className="mt-1.5 text-xl sm:text-3xl font-bold text-[#222222]">All electronics categories</h2>
+          <h2 className="mt-1.5 text-xl sm:text-3xl font-bold text-[#242424]">All electronics categories</h2>
         </div>
         <Link
           href="/categories"
-          className="inline-flex h-9 sm:h-10 w-fit items-center justify-center rounded-xl bg-[#222222] px-4 sm:px-5 text-xs sm:text-sm font-semibold text-white transition hover:bg-[#1CA2D1]"
+          className="inline-flex h-9 sm:h-10 w-fit items-center justify-center rounded-xl bg-brand-primary px-4 sm:px-5 text-xs sm:text-sm font-semibold text-brand-secondary-3 transition hover:bg-[var(--brand-primary)]"
         >
           Browse All →
         </Link>
@@ -106,8 +106,7 @@ export function CategorySection() {
         <div className="mt-8 flex justify-center">
           <Link
             href="/categories"
-            className="inline-flex items-center gap-2 rounded-2xl border-2 border-[#222222] px-8 py-3 text-sm font-semibold text-[#222222] transition-colors hover:bg-[#222222] hover:text-white"
-          >
+            className="inline-flex items-center gap-2 rounded-2xl border-2 border-brand-primary px-6 py-3 text-sm font-semibold text-[#222222] transition-colors hover-border-0 hover:bg-brand-secondary-2 hover:text-brand-primary">
             Browse All Categories →
           </Link>
         </div>

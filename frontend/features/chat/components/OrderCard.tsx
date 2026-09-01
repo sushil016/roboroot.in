@@ -156,7 +156,7 @@ export function OrderCard({ order }: OrderCardProps) {
         </div>
       </div>
 
-      {/* Pay Now — in-chat Razorpay popup for orders awaiting payment */}
+      {/* Pay Now - in-chat payment for orders awaiting payment */}
       {isPayable && (
         <div className="p-3 bg-card border-t border-border">
           <button
@@ -189,7 +189,7 @@ export function OrderCard({ order }: OrderCardProps) {
             </p>
           )}
           <p className="mt-2.5 text-center text-[9px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
-            🔒 Secure Razorpay checkout · UPI · Cards · Net Banking
+            Secure checkout · UPI · Cards · Net Banking
           </p>
         </div>
       )}

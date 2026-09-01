@@ -35,10 +35,10 @@ export function CookieConsent() {
           transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
           className="fixed bottom-4 left-1/2 z-[100] w-[calc(100%-2rem)] max-w-2xl -translate-x-1/2"
         >
-          <div className="flex flex-col gap-4 rounded-2xl border-2 border-zinc-900 bg-zinc-950 p-5 shadow-[4px_4px_0px_0px_#1CA2D1] sm:flex-row sm:items-center">
+          <div className="flex flex-col gap-4 rounded-2xl border-2 border-zinc-900 bg-zinc-950 p-5 shadow-[4px_4px_0px_0px_var(--brand-primary)] sm:flex-row sm:items-center">
             {/* Icon */}
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#1CA2D1]/10 ring-1 ring-[#1CA2D1]/30">
-              <Cookie className="h-5 w-5 text-[#1CA2D1]" />
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--brand-primary)]/10 ring-1 ring-[var(--brand-primary)]/30">
+              <Cookie className="h-5 w-5 text-[var(--brand-primary)]" />
             </div>
 
             {/* Text */}
@@ -49,7 +49,7 @@ export function CookieConsent() {
               <p className="mt-0.5 text-xs font-medium leading-relaxed text-zinc-400">
                 We use cookies to improve your browsing experience and analyse site traffic.
                 By continuing, you agree to our{" "}
-                <Link href="/privacy" className="text-[#1CA2D1] underline-offset-2 hover:underline">
+                <Link href="/privacy" className="text-[var(--brand-primary)] underline-offset-2 hover:underline">
                   Privacy Policy
                 </Link>
                 .
@@ -66,7 +66,7 @@ export function CookieConsent() {
               </button>
               <button
                 onClick={accept}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-[#1CA2D1] px-4 py-2 text-xs font-black text-white transition-opacity hover:opacity-90"
+                className="inline-flex items-center gap-1.5 rounded-xl bg-[var(--brand-primary)] px-4 py-2 text-xs font-black text-white transition-opacity hover:opacity-90"
               >
                 <ShieldCheck className="h-3.5 w-3.5" />
                 Accept All

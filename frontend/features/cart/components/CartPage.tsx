@@ -8,12 +8,24 @@ import { toast } from "sonner";
 import { formatPrice, useCartStore } from "@/store/cart.store";
 import { ProductImage } from "@/features/products/components/ProductImage";
 import { MagicCard } from "@/components/ui/magic-card";
+import { useQuery } from "@tanstack/react-query";
+import {
+  calculateDeliveryFee,
+  DEFAULT_DELIVERY_SETTINGS,
+  getDeliverySettings,
+} from "@/features/checkout/services/delivery-settings.service";
 
 export function CartPage() {
   const router = useRouter();
   const { items, updateQuantity, removeItem, clearCart, getSubtotal } = useCartStore();
   const subtotal = getSubtotal();
-  const shipping = subtotal >= 50000 || subtotal === 0 ? 0 : 5000;
+  const deliverySettingsQuery = useQuery({
+    queryKey: ["delivery-settings"],
+    queryFn: getDeliverySettings,
+    refetchOnMount: "always",
+  });
+  const deliverySettings = deliverySettingsQuery.data ?? DEFAULT_DELIVERY_SETTINGS;
+  const shipping = calculateDeliveryFee(subtotal, deliverySettings);
   const total = subtotal + shipping;
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -28,7 +40,7 @@ export function CartPage() {
       <div className="bg-[#222222] rounded-b-[2.5rem] px-6 py-12">
         <div className="mx-auto max-w-7xl">
           <div className="flex items-center gap-2 mb-3">
-            <ShoppingCart className="h-4 w-4 text-[#1CA2D1]" />
+            <ShoppingCart className="h-4 w-4 text-[var(--brand-primary)]" />
             <span className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">
               Shopping Cart
             </span>
@@ -49,9 +61,9 @@ export function CartPage() {
           <div className="lg:col-span-2">
             <MagicCard
               className="rounded-2xl [--color-background:#ffffff]"
-              gradientFrom="#1CA2D1"
+              gradientFrom="var(--brand-primary)"
               gradientTo="#E8E8E6"
-              gradientColor="#1CA2D1"
+              gradientColor="var(--brand-primary)"
               gradientOpacity={0.05}
             >
               <div className="flex flex-col items-center gap-5 p-16 text-center">
@@ -66,7 +78,7 @@ export function CartPage() {
                 </div>
                 <Link
                   href="/components"
-                  className="inline-flex h-11 items-center gap-2 rounded-xl bg-[#222222] px-6 text-sm font-semibold text-white hover:bg-[#1CA2D1] transition-colors"
+                  className="inline-flex h-11 items-center gap-2 rounded-xl bg-[#222222] px-6 text-sm font-semibold text-white hover:bg-[var(--brand-primary)] transition-colors"
                 >
                   Browse Components
                   <ArrowRight className="h-4 w-4" />
@@ -89,9 +101,9 @@ export function CartPage() {
                   >
                     <MagicCard
                       className="rounded-2xl [--color-background:#ffffff]"
-                      gradientFrom="#1CA2D1"
+                      gradientFrom="var(--brand-primary)"
                       gradientTo="#E8E8E6"
-                      gradientColor="#1CA2D1"
+                      gradientColor="var(--brand-primary)"
                       gradientOpacity={0.05}
                     >
                       <div className="p-5">
@@ -110,7 +122,7 @@ export function CartPage() {
                             <div>
                               <Link
                                 href={`/components/${item.component.slug}`}
-                                className="text-sm sm:text-base font-bold text-[#222222] hover:text-[#1CA2D1] transition-colors line-clamp-2"
+                                className="text-sm sm:text-base font-bold text-[#222222] hover:text-[var(--brand-primary)] transition-colors line-clamp-2"
                               >
                                 {item.component.name}
                               </Link>
@@ -153,7 +165,7 @@ export function CartPage() {
                                 </button>
                               </div>
                               <div className="flex items-center gap-3 sm:gap-4">
-                                <p className="text-base sm:text-xl font-bold text-[#1CA2D1]">
+                                <p className="text-base sm:text-xl font-bold text-[var(--brand-primary)]">
                                   {formatPrice(item.component.unitPriceCents * item.quantity)}
                                 </p>
                                 <button
@@ -191,9 +203,9 @@ export function CartPage() {
             <aside className="h-fit lg:sticky lg:top-24">
               <MagicCard
                 className="rounded-2xl [--color-background:#ffffff]"
-                gradientFrom="#1CA2D1"
+                gradientFrom="var(--brand-primary)"
                 gradientTo="#E8E8E6"
-                gradientColor="#1CA2D1"
+                gradientColor="var(--brand-primary)"
                 gradientOpacity={0.07}
               >
                 <div className="p-6 space-y-5">
@@ -209,22 +221,24 @@ export function CartPage() {
                         {shipping === 0 ? "Free" : formatPrice(shipping)}
                       </span>
                     </div>
-                    {subtotal < 50000 && subtotal > 0 && (
+                    {deliverySettings.deliveryFeeEnabled &&
+                      subtotal < deliverySettings.freeDeliveryThresholdCents &&
+                      subtotal > 0 && (
                       <p className="text-[11px] text-zinc-400 bg-[#F2F2F0] rounded-lg px-3 py-2">
-                        Add ₹{formatPrice(50000 - subtotal).replace("₹", "")} more for free shipping
+                        Add {formatPrice(deliverySettings.freeDeliveryThresholdCents - subtotal)} more for free shipping
                       </p>
                     )}
                     <div className="border-t border-[#D2D2D0] pt-3">
                       <div className="flex justify-between">
                         <span className="text-base font-bold text-[#222222]">Total</span>
-                        <span className="text-xl font-bold text-[#1CA2D1]">{formatPrice(total)}</span>
+                        <span className="text-xl font-bold text-[var(--brand-primary)]">{formatPrice(total)}</span>
                       </div>
                       <p className="text-[10px] text-emerald-600 font-medium mt-0.5">Including GST</p>
                     </div>
                   </div>
                   <button
                     onClick={() => router.push("/checkout")}
-                    className="w-full h-12 rounded-xl bg-[#222222] text-sm font-bold text-white hover:bg-[#1CA2D1] transition-colors flex items-center justify-center gap-2"
+                    className="w-full h-12 rounded-xl bg-[#222222] text-sm font-bold text-white hover:bg-[var(--brand-primary)] transition-colors flex items-center justify-center gap-2"
                   >
                     Proceed to Checkout
                     <ArrowRight className="h-4 w-4" />

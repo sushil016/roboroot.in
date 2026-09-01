@@ -124,7 +124,7 @@ function EmptyState({ onSelectPrompt }: EmptyStateProps) {
     <div className="flex flex-col items-center justify-center h-full min-h-[320px] gap-6 py-6 font-sans">
       {/* Premium pulsing AI Avatar */}
       <div className="flex size-14 items-center justify-center rounded-2xl bg-zinc-50 border border-zinc-200 shadow-xs animate-[float_3s_ease-in-out_infinite] shrink-0">
-        <Bot className="size-7 text-[#1CA2D1]" />
+        <Bot className="size-7 text-[var(--brand-primary)]" />
       </div>
 
       <div className="text-center">
@@ -152,8 +152,8 @@ function EmptyState({ onSelectPrompt }: EmptyStateProps) {
 
       {/* tip command list hint */}
       <p className="flex items-center gap-1.5 text-[10px] text-zinc-400 font-black tracking-wider uppercase select-none">
-        <Bot className="size-3 text-[#1CA2D1]" />
-        Tip: type <kbd className="rounded bg-zinc-100 border border-zinc-200 px-1.5 py-0.5 font-mono text-[9px] text-[#1CA2D1]">/</kbd> for quick commands
+        <Bot className="size-3 text-[var(--brand-primary)]" />
+        Tip: type <kbd className="rounded bg-zinc-100 border border-zinc-200 px-1.5 py-0.5 font-mono text-[9px] text-[var(--brand-primary)]">/</kbd> for quick commands
       </p>
     </div>
   );

@@ -32,7 +32,7 @@ function ToggleRow({
         aria-checked={checked}
         onClick={() => onChange(!checked)}
         className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none ${
-          checked ? "bg-[#1CA2D1]" : "bg-zinc-200"
+          checked ? "bg-[var(--brand-primary)]" : "bg-zinc-200"
         }`}
       >
         <span
@@ -68,7 +68,7 @@ export function SettingsPage() {
           <Settings className="h-7 w-7 text-zinc-400" />
         </div>
         <h1 className="text-2xl font-bold text-[#222222]">Login to manage settings</h1>
-        <Button asChild className="bg-[#1CA2D1] hover:bg-[#1CA2D1]/90">
+        <Button asChild className="bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90">
           <Link href="/login?redirect=/settings">Login</Link>
         </Button>
       </div>
@@ -93,16 +93,16 @@ export function SettingsPage() {
           <SectionHeader icon={User} label="Profile" />
           <MagicCard
             className="rounded-2xl [--color-background:#ffffff]"
-            gradientFrom="#1CA2D1"
+            gradientFrom="var(--brand-primary)"
             gradientTo="#E8E8E6"
-            gradientColor="#1CA2D1"
+            gradientColor="var(--brand-primary)"
             gradientOpacity={0.05}
           >
             <div className="flex items-center justify-between p-5">
               <div className="space-y-1">
                 <p className="text-sm font-bold text-[#222222]">{user?.name || "No name set"}</p>
                 <p className="text-xs text-zinc-500">{user?.email}</p>
-                <span className="inline-flex rounded-full bg-[#1CA2D1]/10 px-2 py-0.5 text-[10px] font-semibold text-[#1CA2D1]">
+                <span className="inline-flex rounded-full bg-[var(--brand-primary)]/10 px-2 py-0.5 text-[10px] font-semibold text-[var(--brand-primary)]">
                   {user?.role}
                 </span>
               </div>
@@ -137,9 +137,9 @@ export function SettingsPage() {
           <SectionHeader icon={Lock} label="Security" />
           <MagicCard
             className="rounded-2xl [--color-background:#ffffff]"
-            gradientFrom="#1CA2D1"
+            gradientFrom="var(--brand-primary)"
             gradientTo="#E8E8E6"
-            gradientColor="#1CA2D1"
+            gradientColor="var(--brand-primary)"
             gradientOpacity={0.05}
           >
             <div className="p-5 flex items-center justify-between gap-4">

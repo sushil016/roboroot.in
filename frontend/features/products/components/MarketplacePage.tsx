@@ -131,7 +131,7 @@ export function MarketplacePage() {
             <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
               <p className="font-bold text-[#222222]">Filters</p>
               <button
-                className="text-sm font-semibold text-[#1CA2D1]"
+                className="text-sm font-semibold text-[var(--brand-primary)]"
                 onClick={() => setMobileFiltersOpen(false)}
               >
                 Done
@@ -264,7 +264,7 @@ export function MarketplacePage() {
                               }}
                               className={
                                 page === currentPage
-                                  ? "border-[#222222] bg-[#222222] text-white hover:bg-[#1CA2D1] hover:border-[#1CA2D1]"
+                                  ? "border-[#222222] bg-[#222222] text-white hover:bg-[var(--brand-primary)] hover:border-[var(--brand-primary)]"
                                   : "cursor-pointer hover:bg-[#E8E8E6] border-transparent"
                               }
                             >

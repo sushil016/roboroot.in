@@ -42,7 +42,7 @@ export function RegisterForm() {
             autoComplete="name"
             disabled={isLoading}
             className={cn(
-              "w-full rounded-xl border bg-[#EBEBEB] px-4 py-3 text-sm font-medium text-[#222222] placeholder:text-zinc-400 outline-none transition focus:border-[#1CA2D1] focus:bg-white focus:ring-2 focus:ring-[#1CA2D1]/20",
+              "w-full rounded-xl border bg-[#EBEBEB] px-4 py-3 text-sm font-medium text-[#222222] placeholder:text-zinc-400 outline-none transition focus:border-[var(--brand-primary)] focus:bg-white focus:ring-2 focus:ring-[var(--brand-primary)]/20",
               errors.name ? "border-red-400" : "border-[#D2D2D0]"
             )}
           />
@@ -61,7 +61,7 @@ export function RegisterForm() {
             autoComplete="email"
             disabled={isLoading}
             className={cn(
-              "w-full rounded-xl border bg-[#EBEBEB] px-4 py-3 text-sm font-medium text-[#222222] placeholder:text-zinc-400 outline-none transition focus:border-[#1CA2D1] focus:bg-white focus:ring-2 focus:ring-[#1CA2D1]/20",
+              "w-full rounded-xl border bg-[#EBEBEB] px-4 py-3 text-sm font-medium text-[#222222] placeholder:text-zinc-400 outline-none transition focus:border-[var(--brand-primary)] focus:bg-white focus:ring-2 focus:ring-[var(--brand-primary)]/20",
               errors.email ? "border-red-400" : "border-[#D2D2D0]"
             )}
           />
@@ -80,7 +80,7 @@ export function RegisterForm() {
             type="text"
             placeholder="IIT Bombay, VIT, etc."
             disabled={isLoading}
-            className="w-full rounded-xl border border-[#D2D2D0] bg-[#EBEBEB] px-4 py-3 text-sm font-medium text-[#222222] placeholder:text-zinc-400 outline-none transition focus:border-[#1CA2D1] focus:bg-white focus:ring-2 focus:ring-[#1CA2D1]/20"
+            className="w-full rounded-xl border border-[#D2D2D0] bg-[#EBEBEB] px-4 py-3 text-sm font-medium text-[#222222] placeholder:text-zinc-400 outline-none transition focus:border-[var(--brand-primary)] focus:bg-white focus:ring-2 focus:ring-[var(--brand-primary)]/20"
           />
         </div>
 
@@ -95,7 +95,7 @@ export function RegisterForm() {
               autoComplete="new-password"
               disabled={isLoading}
               className={cn(
-                "w-full rounded-xl border bg-[#EBEBEB] px-4 py-3 pr-11 text-sm font-medium text-[#222222] placeholder:text-zinc-400 outline-none transition focus:border-[#1CA2D1] focus:bg-white focus:ring-2 focus:ring-[#1CA2D1]/20",
+                "w-full rounded-xl border bg-[#EBEBEB] px-4 py-3 pr-11 text-sm font-medium text-[#222222] placeholder:text-zinc-400 outline-none transition focus:border-[var(--brand-primary)] focus:bg-white focus:ring-2 focus:ring-[var(--brand-primary)]/20",
                 errors.password ? "border-red-400" : "border-[#D2D2D0]"
               )}
             />
@@ -123,7 +123,7 @@ export function RegisterForm() {
             autoComplete="new-password"
             disabled={isLoading}
             className={cn(
-              "w-full rounded-xl border bg-[#EBEBEB] px-4 py-3 text-sm font-medium text-[#222222] placeholder:text-zinc-400 outline-none transition focus:border-[#1CA2D1] focus:bg-white focus:ring-2 focus:ring-[#1CA2D1]/20",
+              "w-full rounded-xl border bg-[#EBEBEB] px-4 py-3 text-sm font-medium text-[#222222] placeholder:text-zinc-400 outline-none transition focus:border-[var(--brand-primary)] focus:bg-white focus:ring-2 focus:ring-[var(--brand-primary)]/20",
               errors.confirmPassword ? "border-red-400" : "border-[#D2D2D0]"
             )}
           />
@@ -136,7 +136,7 @@ export function RegisterForm() {
         <button
           type="submit"
           disabled={isLoading}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#1CA2D1] py-3 text-sm font-black text-white shadow-md shadow-[#1CA2D1]/20 transition hover:opacity-90 disabled:opacity-60"
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--brand-primary)] py-3 text-sm font-black text-white shadow-md shadow-[var(--brand-primary)]/20 transition hover:opacity-90 disabled:opacity-60"
         >
           {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
           {isLoading ? "Creating account…" : "Create Account"}
@@ -158,7 +158,7 @@ export function RegisterForm() {
 
       <p className="mt-6 text-center text-sm text-zinc-500">
         Already have an account?{" "}
-        <Link href="/login" className="font-bold text-[#1CA2D1] hover:underline">
+        <Link href="/login" className="font-bold text-[var(--brand-primary)] hover:underline">
           Sign in
         </Link>
       </p>

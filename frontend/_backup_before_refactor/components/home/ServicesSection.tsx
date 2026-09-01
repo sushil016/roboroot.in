@@ -15,7 +15,7 @@ export function ServicesSection() {
           transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
           className="mb-8"
         >
-          <p className="text-sm font-black uppercase tracking-[0.18em] text-[#1CA2D1]">
+          <p className="text-sm font-black uppercase tracking-[0.18em] text-[var(--brand-primary)]">
             Our Services
           </p>
           <h2 className="mt-2 text-3xl font-black text-zinc-950">
@@ -42,7 +42,7 @@ export function ServicesSection() {
                   }}
                   className="card-hover-bar w-72 shrink-0 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] p-6"
                 >
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#F2F2F0] text-[#1CA2D1] shadow-sm">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#F2F2F0] text-[var(--brand-primary)] shadow-sm">
                     <Icon className="h-6 w-6" />
                   </div>
                   <h3 className="mt-5 text-xl font-black text-zinc-950">{service.title}</h3>

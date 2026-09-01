@@ -21,12 +21,17 @@ import {
   lowStockHandler,
   dashboardKpisHandler,
 } from "../features/admin/controllers/analytics.controller.js";
+import {
+  getDeliverySettingsHandler,
+  updateDeliverySettingsHandler,
+} from "../features/settings/controllers/store-settings.controller.js";
 import { authenticate, authorize } from "../middlewares/auth.middleware.js";
 import { validate } from "../middlewares/validate.middleware.js";
 import {
   adminCustomerIdParamsSchema,
   adminCustomerListQuerySchema,
   adminCustomerStatusBodySchema,
+  adminDeliverySettingsBodySchema,
   adminRoleMutationBodySchema,
 } from "../validators/admin.validator.js";
 
@@ -40,6 +45,14 @@ router.use(authorize("ADMIN"));
 router.post("/promote", validate({ body: adminRoleMutationBodySchema }), promoteToAdminController);
 router.post("/demote", validate({ body: adminRoleMutationBodySchema }), demoteFromAdminController);
 router.get("/list", listAdminsController);
+
+// Store settings
+router.get("/settings/delivery", getDeliverySettingsHandler);
+router.patch(
+  "/settings/delivery",
+  validate({ body: adminDeliverySettingsBodySchema }),
+  updateDeliverySettingsHandler,
+);
 
 // Customer management
 router.get("/customers", validate({ query: adminCustomerListQuerySchema }), listCustomersHandler);

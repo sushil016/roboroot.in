@@ -70,7 +70,7 @@ export default function OrdersPage() {
           <h1 className="text-2xl font-bold text-[#222222]">Login to view orders</h1>
           <p className="mt-1 text-sm text-zinc-500">Your order history is linked to your account.</p>
         </div>
-        <Button asChild className="bg-[#1CA2D1] hover:bg-[#1CA2D1]/90">
+        <Button asChild className="bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90">
           <Link href="/login?redirect=/orders">Login</Link>
         </Button>
       </div>
@@ -96,9 +96,9 @@ export default function OrdersPage() {
         {!ordersQuery.isLoading && ordersQuery.data?.length === 0 && (
           <MagicCard
             className="rounded-2xl [--color-background:#ffffff]"
-            gradientFrom="#1CA2D1"
+            gradientFrom="var(--brand-primary)"
             gradientTo="#E8E8E6"
-            gradientColor="#1CA2D1"
+            gradientColor="var(--brand-primary)"
             gradientOpacity={0.05}
           >
             <div className="flex flex-col items-center gap-5 p-14 text-center">
@@ -109,7 +109,7 @@ export default function OrdersPage() {
                 <h2 className="text-lg font-bold text-[#222222]">No orders yet</h2>
                 <p className="mt-1 text-sm text-zinc-500">Start shopping to see your orders here.</p>
               </div>
-              <Button asChild className="bg-[#222222] hover:bg-[#1CA2D1]">
+              <Button asChild className="bg-[#222222] hover:bg-[var(--brand-primary)]">
                 <Link href="/components">Browse Components</Link>
               </Button>
             </div>
@@ -126,9 +126,9 @@ export default function OrdersPage() {
             >
               <MagicCard
                 className="rounded-2xl [--color-background:#ffffff]"
-                gradientFrom="#1CA2D1"
+                gradientFrom="var(--brand-primary)"
                 gradientTo="#E8E8E6"
-                gradientColor="#1CA2D1"
+                gradientColor="var(--brand-primary)"
                 gradientOpacity={0.05}
               >
                 <div className="p-5 space-y-4">
@@ -152,7 +152,7 @@ export default function OrdersPage() {
                       </span>
                     </div>
                     <div className="flex flex-col items-start gap-2 sm:items-end">
-                      <p className="text-2xl font-bold text-[#1CA2D1]">
+                      <p className="text-2xl font-bold text-[var(--brand-primary)]">
                         {formatPrice(order.totalAmountCents)}
                       </p>
                       <Link

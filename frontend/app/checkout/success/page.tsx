@@ -47,15 +47,15 @@ export default async function CheckoutSuccessPage({ searchParams }: SuccessPageP
               <h2 className="font-bold text-[#222222]">What happens next?</h2>
               <ul className="mt-3 space-y-2 text-sm text-zinc-500">
                 <li className="flex items-start gap-2">
-                  <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[#1CA2D1]" />
+                  <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--brand-primary)]" />
                   Your order is being reviewed by our team.
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[#1CA2D1]" />
+                  <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--brand-primary)]" />
                   You&apos;ll receive a confirmation email once it ships.
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[#1CA2D1]" />
+                  <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--brand-primary)]" />
                   Track your order status in My Orders.
                 </li>
               </ul>
@@ -66,7 +66,7 @@ export default async function CheckoutSuccessPage({ searchParams }: SuccessPageP
         <div className="flex flex-col gap-3 sm:flex-row">
           <Link
             href={params.orderId ? `/orders/${params.orderId}` : "/orders"}
-            className="flex h-12 flex-1 items-center justify-center gap-2 rounded-xl bg-[#222222] text-sm font-bold text-white hover:bg-[#1CA2D1] transition-colors"
+            className="flex h-12 flex-1 items-center justify-center gap-2 rounded-xl bg-[#222222] text-sm font-bold text-white hover:bg-[var(--brand-primary)] transition-colors"
           >
             <Package className="h-4 w-4" />
             View My Order

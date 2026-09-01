@@ -77,7 +77,7 @@ export function PcbPage() {
       <div className="bg-[#222222] rounded-b-[2.5rem] px-6 py-16">
         <div className="mx-auto max-w-7xl">
           <div className="flex items-center gap-2 mb-4">
-            <CircuitBoard className="h-4 w-4 text-[#1CA2D1]" />
+            <CircuitBoard className="h-4 w-4 text-[var(--brand-primary)]" />
             <span className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">
               PCB Services
             </span>
@@ -104,9 +104,9 @@ export function PcbPage() {
             >
               <MagicCard
                 className="rounded-2xl h-full [--color-background:#ffffff]"
-                gradientFrom="#1CA2D1"
+                gradientFrom="var(--brand-primary)"
                 gradientTo="#E8E8E6"
-                gradientColor="#1CA2D1"
+                gradientColor="var(--brand-primary)"
                 gradientOpacity={0.06}
               >
                 <div className="p-5 space-y-3">
@@ -133,9 +133,9 @@ export function PcbPage() {
               >
                 <MagicCard
                   className="rounded-2xl [--color-background:#ffffff]"
-                  gradientFrom="#1CA2D1"
+                  gradientFrom="var(--brand-primary)"
                   gradientTo="#E8E8E6"
-                  gradientColor="#1CA2D1"
+                  gradientColor="var(--brand-primary)"
                   gradientOpacity={0.07}
                 >
                   <div className="flex flex-col items-center gap-5 p-14 text-center">
@@ -157,7 +157,7 @@ export function PcbPage() {
                       </button>
                       <Link
                         href="/profile"
-                        className="h-10 rounded-xl bg-[#222222] px-5 text-sm font-bold text-white hover:bg-[#1CA2D1] transition-colors flex items-center justify-center gap-2"
+                        className="h-10 rounded-xl bg-[#222222] px-5 text-sm font-bold text-white hover:bg-[var(--brand-primary)] transition-colors flex items-center justify-center gap-2"
                       >
                         View My Quotes <ArrowRight className="h-3.5 w-3.5" />
                       </Link>
@@ -169,9 +169,9 @@ export function PcbPage() {
               <form onSubmit={handleSubmit}>
                 <MagicCard
                   className="rounded-2xl [--color-background:#ffffff]"
-                  gradientFrom="#1CA2D1"
+                  gradientFrom="var(--brand-primary)"
                   gradientTo="#E8E8E6"
-                  gradientColor="#1CA2D1"
+                  gradientColor="var(--brand-primary)"
                   gradientOpacity={0.05}
                 >
                   <div className="p-6 space-y-6">
@@ -186,7 +186,7 @@ export function PcbPage() {
                           <select
                             value={form.boardLayers}
                             onChange={(e) => set("boardLayers", Number(e.target.value))}
-                            className="w-full h-11 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 text-sm font-medium text-[#222222] outline-none focus:border-[#1CA2D1] focus:bg-white"
+                            className="w-full h-11 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 text-sm font-medium text-[#222222] outline-none focus:border-[var(--brand-primary)] focus:bg-white"
                           >
                             {[1, 2, 4, 6, 8, 10, 12].map((n) => (
                               <option key={n} value={n}>{n} Layer{n > 1 ? "s" : ""}</option>
@@ -202,7 +202,7 @@ export function PcbPage() {
                             value={form.quantity}
                             onChange={(e) => set("quantity", Number(e.target.value))}
                             required
-                            className="w-full h-11 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 text-sm font-medium text-[#222222] outline-none focus:border-[#1CA2D1] focus:bg-white"
+                            className="w-full h-11 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 text-sm font-medium text-[#222222] outline-none focus:border-[var(--brand-primary)] focus:bg-white"
                           />
                         </label>
                         <label className="space-y-1.5">
@@ -214,7 +214,7 @@ export function PcbPage() {
                             value={form.boardSizeX}
                             onChange={(e) => set("boardSizeX", Number(e.target.value))}
                             required
-                            className="w-full h-11 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 text-sm font-medium text-[#222222] outline-none focus:border-[#1CA2D1] focus:bg-white"
+                            className="w-full h-11 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 text-sm font-medium text-[#222222] outline-none focus:border-[var(--brand-primary)] focus:bg-white"
                           />
                         </label>
                         <label className="space-y-1.5">
@@ -226,7 +226,7 @@ export function PcbPage() {
                             value={form.boardSizeY}
                             onChange={(e) => set("boardSizeY", Number(e.target.value))}
                             required
-                            className="w-full h-11 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 text-sm font-medium text-[#222222] outline-none focus:border-[#1CA2D1] focus:bg-white"
+                            className="w-full h-11 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 text-sm font-medium text-[#222222] outline-none focus:border-[var(--brand-primary)] focus:bg-white"
                           />
                         </label>
                         <label className="space-y-1.5">
@@ -234,7 +234,7 @@ export function PcbPage() {
                           <select
                             value={form.surfaceFinish}
                             onChange={(e) => set("surfaceFinish", e.target.value)}
-                            className="w-full h-11 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 text-sm font-medium text-[#222222] outline-none focus:border-[#1CA2D1] focus:bg-white"
+                            className="w-full h-11 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 text-sm font-medium text-[#222222] outline-none focus:border-[var(--brand-primary)] focus:bg-white"
                           >
                             {SURFACE_FINISHES.map((f) => (
                               <option key={f} value={f}>{f}</option>
@@ -246,7 +246,7 @@ export function PcbPage() {
                           <select
                             value={form.copperWeight}
                             onChange={(e) => set("copperWeight", e.target.value)}
-                            className="w-full h-11 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 text-sm font-medium text-[#222222] outline-none focus:border-[#1CA2D1] focus:bg-white"
+                            className="w-full h-11 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 text-sm font-medium text-[#222222] outline-none focus:border-[var(--brand-primary)] focus:bg-white"
                           >
                             {COPPER_WEIGHTS.map((w) => (
                               <option key={w} value={w}>{w}</option>
@@ -267,7 +267,7 @@ export function PcbPage() {
                         value={form.gerberFileUrl}
                         onChange={(e) => set("gerberFileUrl", e.target.value)}
                         placeholder="https://drive.google.com/... or any public link"
-                        className="w-full h-11 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 text-sm font-medium text-[#222222] outline-none focus:border-[#1CA2D1] focus:bg-white placeholder:text-zinc-400 placeholder:font-normal"
+                        className="w-full h-11 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 text-sm font-medium text-[#222222] outline-none focus:border-[var(--brand-primary)] focus:bg-white placeholder:text-zinc-400 placeholder:font-normal"
                       />
                       <p className="text-[11px] text-zinc-400">
                         Upload your Gerber ZIP to Google Drive, Dropbox, or WeTransfer and paste the link.
@@ -281,7 +281,7 @@ export function PcbPage() {
                         value={form.notes}
                         onChange={(e) => set("notes", e.target.value)}
                         placeholder="Special requirements, stackup, impedance control, silkscreen color..."
-                        className="w-full min-h-24 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 py-3 text-sm font-medium text-[#222222] outline-none focus:border-[#1CA2D1] focus:bg-white placeholder:text-zinc-400 placeholder:font-normal resize-none"
+                        className="w-full min-h-24 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 py-3 text-sm font-medium text-[#222222] outline-none focus:border-[var(--brand-primary)] focus:bg-white placeholder:text-zinc-400 placeholder:font-normal resize-none"
                       />
                     </div>
 
@@ -298,7 +298,7 @@ export function PcbPage() {
                     <button
                       type="submit"
                       disabled={isSubmitting || !isAuthenticated}
-                      className="w-full h-12 rounded-xl bg-[#222222] text-sm font-bold text-white hover:bg-[#1CA2D1] disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                      className="w-full h-12 rounded-xl bg-[#222222] text-sm font-bold text-white hover:bg-[var(--brand-primary)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
                     >
                       {isSubmitting ? "Submitting..." : (
                         <>Submit Quote Request <ArrowRight className="h-4 w-4" /></>
@@ -314,9 +314,9 @@ export function PcbPage() {
           <div className="space-y-4 lg:sticky lg:top-24">
             <MagicCard
               className="rounded-2xl [--color-background:#ffffff]"
-              gradientFrom="#1CA2D1"
+              gradientFrom="var(--brand-primary)"
               gradientTo="#E8E8E6"
-              gradientColor="#1CA2D1"
+              gradientColor="var(--brand-primary)"
               gradientOpacity={0.06}
             >
               <div className="p-5 space-y-4">
@@ -329,7 +329,7 @@ export function PcbPage() {
                     "Production starts, boards shipped to your door",
                   ].map((step, i) => (
                     <li key={i} className="flex gap-3 text-sm text-zinc-600">
-                      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#1CA2D1] text-[10px] font-bold text-white mt-0.5">
+                      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--brand-primary)] text-[10px] font-bold text-white mt-0.5">
                         {i + 1}
                       </span>
                       {step}
@@ -341,9 +341,9 @@ export function PcbPage() {
 
             <MagicCard
               className="rounded-2xl [--color-background:#ffffff]"
-              gradientFrom="#1CA2D1"
+              gradientFrom="var(--brand-primary)"
               gradientTo="#E8E8E6"
-              gradientColor="#1CA2D1"
+              gradientColor="var(--brand-primary)"
               gradientOpacity={0.04}
             >
               <div className="p-5 space-y-3">
@@ -370,11 +370,11 @@ export function PcbPage() {
               <p className="text-sm font-bold text-[#222222]">Need help?</p>
               <p className="text-xs text-zinc-500">
                 Email us at{" "}
-                <a href="mailto:pcb@roboroot.in" className="text-[#1CA2D1] font-semibold hover:underline">
+                <a href="mailto:pcb@roboroot.in" className="text-[var(--brand-primary)] font-semibold hover:underline">
                   pcb@roboroot.in
                 </a>{" "}
                 or reach out via the{" "}
-                <Link href="/contact" className="text-[#1CA2D1] font-semibold hover:underline">
+                <Link href="/contact" className="text-[var(--brand-primary)] font-semibold hover:underline">
                   contact page
                 </Link>.
               </p>

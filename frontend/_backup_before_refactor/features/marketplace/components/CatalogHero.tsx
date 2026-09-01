@@ -34,7 +34,7 @@ export function CatalogHero({
         <div className="flex items-start justify-between gap-4">
           <div>
             <div className="mb-3 flex items-center gap-2">
-              <Cpu className="h-4 w-4 text-[#1CA2D1]" />
+              <Cpu className="h-4 w-4 text-[var(--brand-primary)]" />
               <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500">
                 Electronics Catalog
               </span>
@@ -61,7 +61,7 @@ export function CatalogHero({
               onClick={() => onFilterChange({ category: undefined, subcategory: undefined })}
               className={`rounded-full border px-3 py-1 text-xs font-semibold transition-all duration-150 ${
                 !filters.category
-                  ? "border-[#1CA2D1] bg-[#1CA2D1] text-white"
+                  ? "border-[var(--brand-primary)] bg-[var(--brand-primary)] text-white"
                   : "border-zinc-700 text-zinc-400 hover:border-zinc-500 hover:text-zinc-200"
               }`}
             >
@@ -75,7 +75,7 @@ export function CatalogHero({
                 }
                 className={`rounded-full border px-3 py-1 text-xs font-semibold transition-all duration-150 ${
                   filters.category === cat.category
-                    ? "border-[#1CA2D1] bg-[#1CA2D1] text-white"
+                    ? "border-[var(--brand-primary)] bg-[var(--brand-primary)] text-white"
                     : "border-zinc-700 text-zinc-400 hover:border-zinc-500 hover:text-zinc-200"
                 }`}
               >

@@ -78,7 +78,7 @@ function ResetPasswordForm() {
             onChange={(e) => setNewPassword(e.target.value)}
             required
             minLength={8}
-            className="border-[#D2D2D0] focus-visible:ring-[#1CA2D1]"
+            className="border-[#D2D2D0] focus-visible:ring-[var(--brand-primary)]"
           />
           <Input
             type="password"
@@ -86,12 +86,12 @@ function ResetPasswordForm() {
             value={confirm}
             onChange={(e) => setConfirm(e.target.value)}
             required
-            className="border-[#D2D2D0] focus-visible:ring-[#1CA2D1]"
+            className="border-[#D2D2D0] focus-visible:ring-[var(--brand-primary)]"
           />
           {error && <p className="text-sm text-red-500">{error}</p>}
           <Button
             disabled={isLoading || !token}
-            className="w-full bg-[#222222] hover:bg-[#1CA2D1]"
+            className="w-full bg-[#222222] hover:bg-[var(--brand-primary)]"
           >
             {isLoading ? "Updating..." : "Update Password"}
           </Button>
@@ -100,7 +100,7 @@ function ResetPasswordForm() {
 
       {!success && (
         <p className="text-center text-sm text-zinc-500">
-          <Link href="/forgot-password" className="hover:text-[#1CA2D1]">
+          <Link href="/forgot-password" className="hover:text-[var(--brand-primary)]">
             Request a new link
           </Link>
         </p>

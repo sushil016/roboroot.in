@@ -177,7 +177,7 @@ export function CatalogSidebar({
               <input
                 value={minPrice}
                 onChange={(e) => onMinPrice(e.target.value)}
-                className="h-9 w-full rounded-xl border border-[#D2D2D0] bg-white pl-6 pr-3 text-[11px] font-semibold text-[#222222] outline-none transition-colors focus:border-[#1CA2D1]"
+                className="h-9 w-full rounded-xl border border-[#D2D2D0] bg-white pl-6 pr-3 text-[11px] font-semibold text-[#222222] outline-none transition-colors focus:border-[var(--brand-primary)]"
                 placeholder="Min"
                 type="number"
                 min="0"
@@ -190,7 +190,7 @@ export function CatalogSidebar({
               <input
                 value={maxPrice}
                 onChange={(e) => onMaxPrice(e.target.value)}
-                className="h-9 w-full rounded-xl border border-[#D2D2D0] bg-white pl-6 pr-3 text-[11px] font-semibold text-[#222222] outline-none transition-colors focus:border-[#1CA2D1]"
+                className="h-9 w-full rounded-xl border border-[#D2D2D0] bg-white pl-6 pr-3 text-[11px] font-semibold text-[#222222] outline-none transition-colors focus:border-[var(--brand-primary)]"
                 placeholder="Max"
                 type="number"
                 min="0"
@@ -199,7 +199,7 @@ export function CatalogSidebar({
           </div>
           <button
             onClick={onApplyPrice}
-            className="w-full rounded-xl bg-[#222222] py-2 text-xs font-bold text-white transition-colors hover:bg-[#1CA2D1]"
+            className="w-full rounded-xl bg-[#222222] py-2 text-xs font-bold text-white transition-colors hover:bg-[var(--brand-primary)]"
           >
             Apply Price Filter
           </button>
@@ -256,7 +256,7 @@ export function CatalogSidebar({
                       <ChevronRight
                         className={cn(
                           "h-3 w-3",
-                          isExpanded ? "text-[#1CA2D1]" : "text-zinc-400"
+                          isExpanded ? "text-[var(--brand-primary)]" : "text-zinc-400"
                         )}
                       />
                     </motion.div>
@@ -279,11 +279,11 @@ export function CatalogSidebar({
                           className={cn(
                             "flex w-full items-center justify-between rounded-lg px-2 py-1.5 text-left text-xs transition-colors",
                             !filters.subcategory && isActive
-                              ? "font-semibold text-[#1CA2D1]"
+                              ? "font-semibold text-[var(--brand-primary)]"
                               : "text-zinc-500 hover:text-[#222222] hover:bg-white/70"
                           )}
                         >
-                          <span className="font-semibold text-[#1CA2D1]">All {cat.category}</span>
+                          <span className="font-semibold text-[var(--brand-primary)]">All {cat.category}</span>
                           <span className="text-[10px] tabular-nums text-zinc-400">{cat.count}</span>
                         </button>
                         {cat.subcategories.map((sub, si) => (
@@ -296,7 +296,7 @@ export function CatalogSidebar({
                             className={cn(
                               "flex w-full items-center justify-between rounded-lg px-2 py-1.5 text-left text-xs transition-colors",
                               filters.subcategory === sub.name
-                                ? "font-semibold text-[#1CA2D1]"
+                                ? "font-semibold text-[var(--brand-primary)]"
                                 : "text-zinc-500 hover:text-[#222222] hover:bg-white/70"
                             )}
                           >

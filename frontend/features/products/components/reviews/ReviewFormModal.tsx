@@ -147,7 +147,7 @@ export function ReviewFormModal({
               placeholder="Summarize your experience..."
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full h-11 px-4 text-sm border border-[#D2D2D0] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1CA2D1]/20 focus:border-[#1CA2D1] transition-all"
+              className="w-full h-11 px-4 text-sm border border-[#D2D2D0] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)]/20 focus:border-[var(--brand-primary)] transition-all"
             />
           </div>
 
@@ -161,7 +161,7 @@ export function ReviewFormModal({
               placeholder="What did you like or dislike? How is the quality?"
               value={body}
               onChange={(e) => setBody(e.target.value)}
-              className="w-full p-4 text-sm border border-[#D2D2D0] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1CA2D1]/20 focus:border-[#1CA2D1] transition-all resize-none"
+              className="w-full p-4 text-sm border border-[#D2D2D0] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)]/20 focus:border-[var(--brand-primary)] transition-all resize-none"
             />
           </div>
 
@@ -171,7 +171,7 @@ export function ReviewFormModal({
               Add Photo (Optional)
             </label>
             <div className="flex items-center gap-3">
-              <label className="h-14 w-14 shrink-0 rounded-xl border-2 border-dashed border-[#D2D2D0] hover:border-[#1CA2D1] cursor-pointer flex flex-col items-center justify-center text-zinc-400 hover:text-[#1CA2D1] transition-all bg-zinc-50">
+              <label className="h-14 w-14 shrink-0 rounded-xl border-2 border-dashed border-[#D2D2D0] hover:border-[var(--brand-primary)] cursor-pointer flex flex-col items-center justify-center text-zinc-400 hover:text-[var(--brand-primary)] transition-all bg-zinc-50">
                 <span className="text-[20px] font-light leading-none">+</span>
                 <span className="text-[8px] font-bold uppercase tracking-wider mt-1">Upload</span>
                 <input
@@ -211,7 +211,7 @@ export function ReviewFormModal({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 h-11 bg-[#222222] hover:bg-[#1CA2D1] text-white font-bold text-xs rounded-xl shadow-xs transition-colors cursor-pointer disabled:opacity-50"
+              className="flex-1 h-11 bg-[#222222] hover:bg-[var(--brand-primary)] text-white font-bold text-xs rounded-xl shadow-xs transition-colors cursor-pointer disabled:opacity-50"
             >
               {isSubmitting ? "Submitting..." : "Submit Review"}
             </button>

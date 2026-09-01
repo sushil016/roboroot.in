@@ -51,14 +51,14 @@ export function CategorySection() {
         className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
       >
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#1CA2D1]">
+          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--brand-primary)]">
             Shop By Category
           </p>
           <h2 className="mt-2 text-3xl font-bold text-[#222222]">All electronics categories</h2>
         </div>
         <Link
           href="/categories"
-          className="inline-flex h-10 w-fit items-center justify-center rounded-xl bg-[#222222] px-5 text-sm font-semibold text-white transition hover:bg-[#1CA2D1]"
+          className="inline-flex h-10 w-fit items-center justify-center rounded-xl bg-[#222222] px-5 text-sm font-semibold text-white transition hover:bg-[var(--brand-primary)]"
         >
           Browse All →
         </Link>

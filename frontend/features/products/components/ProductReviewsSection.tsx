@@ -102,7 +102,7 @@ export function ProductReviewsSection({
     <section className="space-y-8 border-t border-[#D2D2D0] pt-10">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#1CA2D1]">
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--brand-primary)]">
             Customer Feedback
           </p>
           <h2 className="mt-1 text-2xl font-extrabold text-[#222222]">
@@ -111,7 +111,7 @@ export function ProductReviewsSection({
         </div>
         <button
           onClick={handleWriteReviewClick}
-          className="flex items-center justify-center gap-2 h-11 px-6 rounded-xl bg-[#222222] hover:bg-[#1CA2D1] text-xs font-bold text-white transition active:scale-95 cursor-pointer shadow-xs"
+          className="flex items-center justify-center gap-2 h-11 px-6 rounded-xl bg-[#222222] hover:bg-[var(--brand-primary)] text-xs font-bold text-white transition active:scale-95 cursor-pointer shadow-xs"
         >
           <PenSquare className="h-4 w-4" />
           <span>Write a Review</span>

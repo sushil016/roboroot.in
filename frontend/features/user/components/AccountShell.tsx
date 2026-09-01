@@ -82,12 +82,12 @@ export function AccountShell({ children }: { children: React.ReactNode }) {
               </div>
             ) : (
               <>
-                <Avatar className="h-10 w-10 border-2 border-[#1CA2D1]/20 shrink-0">
+                <Avatar className="h-10 w-10 border-2 border-[var(--brand-primary)]/20 shrink-0">
                   <AvatarImage
                     src={user?.avatarUrl || undefined}
                     alt={user?.name || user?.email || ""}
                   />
-                  <AvatarFallback className="bg-[#1CA2D1]/10 text-[#1CA2D1] text-sm font-bold">
+                  <AvatarFallback className="bg-[var(--brand-primary)]/10 text-[var(--brand-primary)] text-sm font-bold">
                     {user ? getInitials(user.name, user.email) : "?"}
                   </AvatarFallback>
                 </Avatar>
@@ -106,7 +106,7 @@ export function AccountShell({ children }: { children: React.ReactNode }) {
                       href={ADMIN_URL}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex h-8 w-8 items-center justify-center rounded-xl text-[#1CA2D1] bg-[#1CA2D1]/10 hover:bg-[#1CA2D1]/15 transition-colors"
+                      className="flex h-8 w-8 items-center justify-center rounded-xl text-[var(--brand-primary)] bg-[var(--brand-primary)]/10 hover:bg-[var(--brand-primary)]/15 transition-colors"
                       title="Admin Console"
                     >
                       <Shield className="h-4 w-4" />
@@ -134,7 +134,7 @@ export function AccountShell({ children }: { children: React.ReactNode }) {
                   href={href}
                   className={`flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-bold whitespace-nowrap transition-all duration-200 border ${
                     isActive
-                      ? "bg-[#1CA2D1] text-white border-transparent shadow-sm"
+                      ? "bg-[var(--brand-primary)] text-white border-transparent shadow-sm"
                       : "bg-white text-zinc-600 border-[#D2D2D0] hover:text-[#222222]"
                   }`}
                 >
@@ -164,12 +164,12 @@ export function AccountShell({ children }: { children: React.ReactNode }) {
                 </div>
               ) : (
                 <div className="flex items-center gap-3">
-                  <Avatar className="h-10 w-10 border-2 border-[#1CA2D1]/20 shrink-0">
+                  <Avatar className="h-10 w-10 border-2 border-[var(--brand-primary)]/20 shrink-0">
                     <AvatarImage
                       src={user?.avatarUrl || undefined}
                       alt={user?.name || user?.email || ""}
                     />
-                    <AvatarFallback className="bg-[#1CA2D1]/10 text-[#1CA2D1] text-sm font-bold">
+                    <AvatarFallback className="bg-[var(--brand-primary)]/10 text-[var(--brand-primary)] text-sm font-bold">
                       {user ? getInitials(user.name, user.email) : "?"}
                     </AvatarFallback>
                   </Avatar>
@@ -201,7 +201,7 @@ export function AccountShell({ children }: { children: React.ReactNode }) {
                           isActive={isActive}
                           className={
                             isActive
-                              ? "bg-[#1CA2D1]/10 text-[#1CA2D1] font-semibold hover:bg-[#1CA2D1]/15 hover:text-[#1CA2D1]"
+                              ? "bg-[var(--brand-primary)]/10 text-[var(--brand-primary)] font-semibold hover:bg-[var(--brand-primary)]/15 hover:text-[var(--brand-primary)]"
                               : "text-zinc-600 hover:text-[#222222] hover:bg-[#E8E8E6]"
                           }
                         >
@@ -211,7 +211,7 @@ export function AccountShell({ children }: { children: React.ReactNode }) {
                             {isActive && (
                               <motion.div
                                 layoutId="account-nav-indicator"
-                                className="ml-auto h-1.5 w-1.5 rounded-full bg-[#1CA2D1]"
+                                className="ml-auto h-1.5 w-1.5 rounded-full bg-[var(--brand-primary)]"
                                 transition={{ duration: 0.2 }}
                               />
                             )}
@@ -231,7 +231,7 @@ export function AccountShell({ children }: { children: React.ReactNode }) {
                   href={ADMIN_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex w-full items-center gap-2.5 rounded-lg px-2 py-2 text-sm font-semibold text-[#1CA2D1] transition-colors hover:bg-[#1CA2D1]/10"
+                  className="flex w-full items-center gap-2.5 rounded-lg px-2 py-2 text-sm font-semibold text-[var(--brand-primary)] transition-colors hover:bg-[var(--brand-primary)]/10"
                 >
                   <Shield className="h-4 w-4 shrink-0" />
                   <span>Admin Console</span>

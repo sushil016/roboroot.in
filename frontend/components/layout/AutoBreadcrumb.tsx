@@ -48,6 +48,8 @@ function looksLikeId(segment: string): boolean {
   if (/^[0-9a-f]{24}$/i.test(segment)) return true;
   // Any 20+ char hex-only string
   if (/^[0-9a-f]{20,}$/i.test(segment)) return true;
+  // CUID / CUID2 identifiers used by marketplace records
+  if (/^c[a-z0-9]{20,}$/i.test(segment)) return true;
   return false;
 }
 

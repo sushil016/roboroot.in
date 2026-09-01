@@ -36,7 +36,7 @@ export function LoginForm() {
             autoComplete="email"
             disabled={isLoading}
             className={cn(
-              "w-full rounded-xl border bg-[#EBEBEB] px-4 py-3 text-sm font-medium text-[#222222] placeholder:text-zinc-400 outline-none transition focus:border-[#1CA2D1] focus:bg-white focus:ring-2 focus:ring-[#1CA2D1]/20",
+              "w-full rounded-xl border bg-[#EBEBEB] px-4 py-3 text-sm font-medium text-[#222222] placeholder:text-zinc-400 outline-none transition focus:border-[var(--brand-primary)] focus:bg-white focus:ring-2 focus:ring-[var(--brand-primary)]/20",
               errors.email ? "border-red-400" : "border-[#D2D2D0]"
             )}
           />
@@ -51,7 +51,7 @@ export function LoginForm() {
             <label className="block text-sm font-bold text-[#222222]">Password</label>
             <Link
               href="/forgot-password"
-              className="text-xs font-semibold text-[#1CA2D1] hover:underline"
+              className="text-xs font-semibold text-[var(--brand-primary)] hover:underline"
             >
               Forgot password?
             </Link>
@@ -64,7 +64,7 @@ export function LoginForm() {
               autoComplete="current-password"
               disabled={isLoading}
               className={cn(
-                "w-full rounded-xl border bg-[#EBEBEB] px-4 py-3 pr-11 text-sm font-medium text-[#222222] placeholder:text-zinc-400 outline-none transition focus:border-[#1CA2D1] focus:bg-white focus:ring-2 focus:ring-[#1CA2D1]/20",
+                "w-full rounded-xl border bg-[#EBEBEB] px-4 py-3 pr-11 text-sm font-medium text-[#222222] placeholder:text-zinc-400 outline-none transition focus:border-[var(--brand-primary)] focus:bg-white focus:ring-2 focus:ring-[var(--brand-primary)]/20",
                 errors.password ? "border-red-400" : "border-[#D2D2D0]"
               )}
             />
@@ -86,7 +86,7 @@ export function LoginForm() {
         <button
           type="submit"
           disabled={isLoading}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#1CA2D1] py-3 text-sm font-black text-white shadow-md shadow-[#1CA2D1]/20 transition hover:opacity-90 disabled:opacity-60"
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--brand-primary)] py-3 text-sm font-black text-white shadow-md shadow-[var(--brand-primary)]/20 transition hover:opacity-90 disabled:opacity-60"
         >
           {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
           {isLoading ? "Signing in…" : "Sign In"}
@@ -110,7 +110,7 @@ export function LoginForm() {
               ? `/register?redirect=${encodeURIComponent(new URLSearchParams(window.location.search).get("redirect")!)}`
               : "/register"
           }
-          className="font-bold text-[#1CA2D1] hover:underline"
+          className="font-bold text-[var(--brand-primary)] hover:underline"
         >
           Create one free
         </Link>

@@ -212,7 +212,7 @@ export function InputBar({ disabled, isStreaming, onSend, onStop, inputValue }: 
           </div>
           <div className="min-w-0">
             <p className="flex items-center gap-1.5 text-xs font-bold text-zinc-800">
-              <ImageIcon className="size-3.5 text-[#1CA2D1]" />
+              <ImageIcon className="size-3.5 text-[var(--brand-primary)]" />
               {imageName}
             </p>
             <p className="text-[9px] text-zinc-400 font-bold uppercase mt-0.5">AI will inspect and analyze this hardware image</p>

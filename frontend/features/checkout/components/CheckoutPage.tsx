@@ -4,7 +4,7 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { CreditCard, ShieldCheck, MapPin, Tag, ArrowRight, CheckCircle2, Package } from "lucide-react";
+import { ShieldCheck, MapPin, Tag, ArrowRight, CheckCircle2, Package } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { useAuthStore } from "@/store/user.store";
@@ -14,6 +14,11 @@ import { orderApi } from "@/features/products/services/product.service";
 import { PaymentGateway, type CouponValidationResponse } from "@/types/marketplace.types";
 import { ProductImage } from "@/features/products/components/ProductImage";
 import { MagicCard } from "@/components/ui/magic-card";
+import {
+  calculateDeliveryFee,
+  DEFAULT_DELIVERY_SETTINGS,
+  getDeliverySettings,
+} from "@/features/checkout/services/delivery-settings.service";
 
 const initialAddress = {
   name: "",
@@ -37,11 +42,6 @@ const ADDRESS_FIELDS: [keyof typeof initialAddress, string, boolean][] = [
   ["country", "Country", true],
 ];
 
-const PAYMENT_OPTIONS = [
-  { value: PaymentGateway.RAZORPAY, title: "Razorpay", copy: "UPI, cards, net banking & wallets" },
-  { value: PaymentGateway.TEST, title: "Test Payment", copy: "Instant confirmation (dev only)" },
-];
-
 export function CheckoutPage() {
   const router = useRouter();
   const { isAuthenticated, isLoading } = useAuthStore();
@@ -49,7 +49,6 @@ export function CheckoutPage() {
   const [address, setAddress] = useState(initialAddress);
   const [selectedAddressId, setSelectedAddressId] = useState("");
   const [useNewAddress, setUseNewAddress] = useState(true);
-  const [paymentGateway, setPaymentGateway] = useState<PaymentGateway>(PaymentGateway.RAZORPAY);
   const [notes, setNotes] = useState("");
   const [couponCode, setCouponCode] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState<CouponValidationResponse | null>(null);
@@ -62,8 +61,14 @@ export function CheckoutPage() {
     queryFn: () => addressApi.list(),
     enabled: isAuthenticated,
   });
-  const savedAddresses = addressesQuery.data || [];
-  const shipping = subtotal >= 50000 || subtotal === 0 ? 0 : 5000;
+  const deliverySettingsQuery = useQuery({
+    queryKey: ["delivery-settings"],
+    queryFn: getDeliverySettings,
+    refetchOnMount: "always",
+  });
+  const savedAddresses = useMemo(() => addressesQuery.data || [], [addressesQuery.data]);
+  const deliverySettings = deliverySettingsQuery.data ?? DEFAULT_DELIVERY_SETTINGS;
+  const shipping = calculateDeliveryFee(subtotal, deliverySettings);
   const discount = appliedCoupon?.discountCents || 0;
   const total = Math.max(0, subtotal + shipping - discount);
 
@@ -96,14 +101,18 @@ export function CheckoutPage() {
         items: items.map((item) => ({ componentId: item.component.id, quantity: item.quantity })),
         shippingAddressId: useNewAddress ? undefined : selectedAddressId,
         shippingAddress: useNewAddress ? address : undefined,
-        paymentGateway,
+        paymentGateway: PaymentGateway.ZOHO,
         couponCode: appliedCoupon?.code,
         notes: notes || undefined,
       });
       clearCart();
-      if (payload.paymentUrl) { router.push(payload.paymentUrl); return; }
-      toast.success("Order placed successfully");
-      router.push(`/checkout/success?orderId=${payload.order.id}`);
+      if (payload.paymentUrl) {
+        window.location.assign(payload.paymentUrl);
+        return;
+      }
+
+      toast.error(payload.paymentError || "Order created, but secure payment could not be opened");
+      router.push(`/orders/${payload.order.id}`);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Checkout failed");
     } finally {
@@ -147,7 +156,7 @@ export function CheckoutPage() {
           <p className="text-sm text-zinc-500">Add products before checkout.</p>
           <Link
             href="/components"
-            className="inline-flex h-11 items-center gap-2 rounded-xl bg-[#222222] px-6 text-sm font-semibold text-white hover:bg-[#1CA2D1] transition-colors"
+            className="inline-flex h-11 items-center gap-2 rounded-xl bg-[#222222] px-6 text-sm font-semibold text-white hover:bg-[var(--brand-primary)] transition-colors"
           >
             Browse Components <ArrowRight className="h-4 w-4" />
           </Link>
@@ -162,10 +171,10 @@ export function CheckoutPage() {
       <div className="bg-[#222222] rounded-b-[2.5rem] px-6 py-12">
         <div className="mx-auto max-w-7xl">
           <div className="flex items-center gap-2 mb-3">
-            <Package className="h-4 w-4 text-[#1CA2D1]" />
+            <Package className="h-4 w-4 text-[var(--brand-primary)]" />
             <span className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">Checkout</span>
           </div>
-          <h1 className="text-4xl font-bold text-white md:text-5xl tracking-tight">Shipping & Payment</h1>
+          <h1 className="text-4xl font-bold text-white md:text-5xl tracking-tight">Secure Checkout</h1>
           {!isAuthenticated && (
             <p className="mt-3 text-sm font-medium text-amber-400">
               You need to{" "}
@@ -187,9 +196,9 @@ export function CheckoutPage() {
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}>
             <MagicCard
               className="rounded-2xl [--color-background:#ffffff]"
-              gradientFrom="#1CA2D1"
+              gradientFrom="var(--brand-primary)"
               gradientTo="#E8E8E6"
-              gradientColor="#1CA2D1"
+              gradientColor="var(--brand-primary)"
               gradientOpacity={0.05}
             >
               <div className="p-6 space-y-5">
@@ -211,7 +220,7 @@ export function CheckoutPage() {
                         key={savedAddress.id}
                         className={`relative flex cursor-pointer flex-col gap-1.5 rounded-xl border p-4 transition-colors ${
                           !useNewAddress && selectedAddressId === savedAddress.id
-                            ? "border-[#1CA2D1] bg-[#1CA2D1]/5"
+                            ? "border-[var(--brand-primary)] bg-[var(--brand-primary)]/5"
                             : "border-[#D2D2D0] hover:border-zinc-300"
                         }`}
                       >
@@ -223,11 +232,11 @@ export function CheckoutPage() {
                           className="sr-only"
                         />
                         {!useNewAddress && selectedAddressId === savedAddress.id && (
-                          <CheckCircle2 className="absolute right-3 top-3 h-4 w-4 text-[#1CA2D1]" />
+                          <CheckCircle2 className="absolute right-3 top-3 h-4 w-4 text-[var(--brand-primary)]" />
                         )}
                         <span className="text-sm font-bold text-[#222222]">{savedAddress.name}</span>
                         {savedAddress.isDefault && (
-                          <span className="inline-flex w-fit rounded-full bg-[#1CA2D1]/10 px-2 py-0.5 text-[10px] font-semibold text-[#1CA2D1]">
+                          <span className="inline-flex w-fit rounded-full bg-[var(--brand-primary)]/10 px-2 py-0.5 text-[10px] font-semibold text-[var(--brand-primary)]">
                             Default
                           </span>
                         )}
@@ -241,7 +250,7 @@ export function CheckoutPage() {
                     ))}
                     <label
                       className={`relative flex cursor-pointer flex-col gap-1.5 rounded-xl border p-4 transition-colors ${
-                        useNewAddress ? "border-[#1CA2D1] bg-[#1CA2D1]/5" : "border-[#D2D2D0] hover:border-zinc-300"
+                        useNewAddress ? "border-[var(--brand-primary)] bg-[var(--brand-primary)]/5" : "border-[#D2D2D0] hover:border-zinc-300"
                       }`}
                     >
                       <input
@@ -252,7 +261,7 @@ export function CheckoutPage() {
                         className="sr-only"
                       />
                       {useNewAddress && (
-                        <CheckCircle2 className="absolute right-3 top-3 h-4 w-4 text-[#1CA2D1]" />
+                        <CheckCircle2 className="absolute right-3 top-3 h-4 w-4 text-[var(--brand-primary)]" />
                       )}
                       <span className="text-sm font-bold text-[#222222]">New address</span>
                       <span className="text-xs text-zinc-500">Add a new delivery location.</span>
@@ -269,7 +278,7 @@ export function CheckoutPage() {
                         onChange={(e) => setAddress((prev) => ({ ...prev, [key]: e.target.value }))}
                         placeholder={placeholder}
                         required={required}
-                        className="h-11 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 text-sm font-medium text-[#222222] outline-none transition-colors focus:border-[#1CA2D1] focus:bg-white placeholder:text-zinc-400"
+                        className="h-11 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 text-sm font-medium text-[#222222] outline-none transition-colors focus:border-[var(--brand-primary)] focus:bg-white placeholder:text-zinc-400"
                       />
                     ))}
                   </div>
@@ -279,67 +288,19 @@ export function CheckoutPage() {
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="Order notes, GST details, delivery instructions (optional)"
-                  className="min-h-20 w-full rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 py-3 text-sm font-medium text-[#222222] outline-none transition-colors focus:border-[#1CA2D1] focus:bg-white placeholder:text-zinc-400 resize-none"
+                  className="min-h-20 w-full rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 py-3 text-sm font-medium text-[#222222] outline-none transition-colors focus:border-[var(--brand-primary)] focus:bg-white placeholder:text-zinc-400 resize-none"
                 />
               </div>
             </MagicCard>
           </motion.div>
 
-          {/* Payment method */}
+          {/* Coupon */}
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.07, ease: [0.22, 1, 0.36, 1] }}>
             <MagicCard
               className="rounded-2xl [--color-background:#ffffff]"
-              gradientFrom="#1CA2D1"
+              gradientFrom="var(--brand-primary)"
               gradientTo="#E8E8E6"
-              gradientColor="#1CA2D1"
-              gradientOpacity={0.05}
-            >
-              <div className="p-6 space-y-5">
-                <div className="flex items-center gap-2.5">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#222222]">
-                    <CreditCard className="h-4 w-4 text-white" />
-                  </div>
-                  <h2 className="text-lg font-bold text-[#222222]">Payment Method</h2>
-                </div>
-                <div className="grid gap-3 md:grid-cols-3">
-                  {PAYMENT_OPTIONS.map(({ value, title, copy }) => (
-                    <label
-                      key={value}
-                      className={`relative flex cursor-pointer flex-col gap-1.5 rounded-xl border p-4 transition-colors ${
-                        paymentGateway === value
-                          ? "border-[#1CA2D1] bg-[#1CA2D1]/5"
-                          : "border-[#D2D2D0] hover:border-zinc-300"
-                      }`}
-                    >
-                      <input
-                        type="radio"
-                        value={value}
-                        checked={paymentGateway === value}
-                        onChange={() => setPaymentGateway(value as PaymentGateway)}
-                        className="sr-only"
-                      />
-                      {paymentGateway === value && (
-                        <CheckCircle2 className="absolute right-3 top-3 h-4 w-4 text-[#1CA2D1]" />
-                      )}
-                      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#E8E8E6]">
-                        <CreditCard className="h-4 w-4 text-[#222222]" />
-                      </div>
-                      <span className="text-sm font-bold text-[#222222]">{title}</span>
-                      <span className="text-xs text-zinc-500">{copy}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-            </MagicCard>
-          </motion.div>
-
-          {/* Coupon */}
-          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.14, ease: [0.22, 1, 0.36, 1] }}>
-            <MagicCard
-              className="rounded-2xl [--color-background:#ffffff]"
-              gradientFrom="#1CA2D1"
-              gradientTo="#E8E8E6"
-              gradientColor="#1CA2D1"
+              gradientColor="var(--brand-primary)"
               gradientOpacity={0.05}
             >
               <div className="p-6 space-y-4">
@@ -350,22 +311,22 @@ export function CheckoutPage() {
                   <h2 className="text-lg font-bold text-[#222222]">Coupon Code</h2>
                 </div>
                 <p className="text-xs text-zinc-400">
-                  Try <code className="font-mono font-bold text-[#1CA2D1]">ROBO10</code>,{" "}
-                  <code className="font-mono font-bold text-[#1CA2D1]">STUDENT250</code>, or{" "}
-                  <code className="font-mono font-bold text-[#1CA2D1]">FREESHIP</code> during development.
+                  Try <code className="font-mono font-bold text-[var(--brand-primary)]">ROBO10</code>,{" "}
+                  <code className="font-mono font-bold text-[var(--brand-primary)]">STUDENT250</code>, or{" "}
+                  <code className="font-mono font-bold text-[var(--brand-primary)]">FREESHIP</code> during development.
                 </p>
                 <div className="flex gap-2">
                   <input
                     value={couponCode}
                     onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
                     placeholder="Enter coupon code"
-                    className="h-11 flex-1 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 text-sm font-bold uppercase tracking-wider text-[#222222] outline-none transition-colors focus:border-[#1CA2D1] focus:bg-white placeholder:text-zinc-300 placeholder:font-normal placeholder:tracking-normal"
+                    className="h-11 flex-1 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 text-sm font-bold uppercase tracking-wider text-[#222222] outline-none transition-colors focus:border-[var(--brand-primary)] focus:bg-white placeholder:text-zinc-300 placeholder:font-normal placeholder:tracking-normal"
                   />
                   <button
                     type="button"
                     onClick={handleApplyCoupon}
                     disabled={isApplyingCoupon}
-                    className="h-11 rounded-xl bg-[#222222] px-5 text-sm font-bold text-white hover:bg-[#1CA2D1] disabled:opacity-50 transition-colors"
+                    className="h-11 rounded-xl bg-[#222222] px-5 text-sm font-bold text-white hover:bg-[var(--brand-primary)] disabled:opacity-50 transition-colors"
                   >
                     {isApplyingCoupon ? "..." : "Apply"}
                   </button>
@@ -396,9 +357,9 @@ export function CheckoutPage() {
         <aside className="h-fit lg:sticky lg:top-24">
           <MagicCard
             className="rounded-2xl [--color-background:#ffffff]"
-            gradientFrom="#1CA2D1"
+            gradientFrom="var(--brand-primary)"
             gradientTo="#E8E8E6"
-            gradientColor="#1CA2D1"
+            gradientColor="var(--brand-primary)"
             gradientOpacity={0.07}
           >
             <div className="p-6 space-y-5">
@@ -449,22 +410,30 @@ export function CheckoutPage() {
                 )}
                 <div className="flex justify-between border-t border-[#D2D2D0] pt-2.5">
                   <span className="text-base font-bold text-[#222222]">Total</span>
-                  <span className="text-xl font-bold text-[#1CA2D1]">{formatPrice(total)}</span>
+                  <span className="text-xl font-bold text-[var(--brand-primary)]">{formatPrice(total)}</span>
                 </div>
+              </div>
+
+              <div className="rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3">
+                <div className="flex items-center gap-2 text-sm font-bold text-[#222222]">
+                  <ShieldCheck className="h-4 w-4 text-[var(--brand-primary)]" />
+                  Zoho Payments
+                </div>
+                <p className="mt-1 pl-6 text-xs text-zinc-500">Secure hosted payment with UPI and cards.</p>
               </div>
 
               <button
                 disabled={isSubmitting || !canCheckout || !isAuthenticated}
-                className="w-full h-12 rounded-xl bg-[#222222] text-sm font-bold text-white hover:bg-[#1CA2D1] disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                className="w-full h-12 rounded-xl bg-[#222222] text-sm font-bold text-white hover:bg-[var(--brand-primary)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
               >
-                {isSubmitting ? "Placing order..." : (
-                  <>Place Order <ArrowRight className="h-4 w-4" /></>
+                {isSubmitting ? "Opening secure payment..." : (
+                  <>Pay {formatPrice(total)} <ArrowRight className="h-4 w-4" /></>
                 )}
               </button>
 
               <div className="flex items-center justify-center gap-2 text-xs text-zinc-400">
                 <ShieldCheck className="h-3.5 w-3.5" />
-                <span>Secured & encrypted checkout</span>
+                <span>You will continue to Zoho Payments</span>
               </div>
             </div>
           </MagicCard>

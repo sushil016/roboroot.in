@@ -147,7 +147,7 @@ export default function CheckoutPage() {
           <p className="text-sm text-zinc-500">Add products before checkout.</p>
           <Link
             href="/components"
-            className="inline-flex h-11 items-center gap-2 rounded-xl bg-[#222222] px-6 text-sm font-semibold text-white hover:bg-[#1CA2D1] transition-colors"
+            className="inline-flex h-11 items-center gap-2 rounded-xl bg-[#222222] px-6 text-sm font-semibold text-white hover:bg-[var(--brand-primary)] transition-colors"
           >
             Browse Components <ArrowRight className="h-4 w-4" />
           </Link>
@@ -162,7 +162,7 @@ export default function CheckoutPage() {
       <div className="bg-[#222222] rounded-b-[2.5rem] px-6 py-12">
         <div className="mx-auto max-w-7xl">
           <div className="flex items-center gap-2 mb-3">
-            <Package className="h-4 w-4 text-[#1CA2D1]" />
+            <Package className="h-4 w-4 text-[var(--brand-primary)]" />
             <span className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">Checkout</span>
           </div>
           <h1 className="text-4xl font-bold text-white md:text-5xl tracking-tight">Shipping & Payment</h1>
@@ -187,9 +187,9 @@ export default function CheckoutPage() {
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}>
             <MagicCard
               className="rounded-2xl [--color-background:#ffffff]"
-              gradientFrom="#1CA2D1"
+              gradientFrom="var(--brand-primary)"
               gradientTo="#E8E8E6"
-              gradientColor="#1CA2D1"
+              gradientColor="var(--brand-primary)"
               gradientOpacity={0.05}
             >
               <div className="p-6 space-y-5">
@@ -211,7 +211,7 @@ export default function CheckoutPage() {
                         key={savedAddress.id}
                         className={`relative flex cursor-pointer flex-col gap-1.5 rounded-xl border p-4 transition-colors ${
                           !useNewAddress && selectedAddressId === savedAddress.id
-                            ? "border-[#1CA2D1] bg-[#1CA2D1]/5"
+                            ? "border-[var(--brand-primary)] bg-[var(--brand-primary)]/5"
                             : "border-[#D2D2D0] hover:border-zinc-300"
                         }`}
                       >
@@ -223,11 +223,11 @@ export default function CheckoutPage() {
                           className="sr-only"
                         />
                         {!useNewAddress && selectedAddressId === savedAddress.id && (
-                          <CheckCircle2 className="absolute right-3 top-3 h-4 w-4 text-[#1CA2D1]" />
+                          <CheckCircle2 className="absolute right-3 top-3 h-4 w-4 text-[var(--brand-primary)]" />
                         )}
                         <span className="text-sm font-bold text-[#222222]">{savedAddress.name}</span>
                         {savedAddress.isDefault && (
-                          <span className="inline-flex w-fit rounded-full bg-[#1CA2D1]/10 px-2 py-0.5 text-[10px] font-semibold text-[#1CA2D1]">
+                          <span className="inline-flex w-fit rounded-full bg-[var(--brand-primary)]/10 px-2 py-0.5 text-[10px] font-semibold text-[var(--brand-primary)]">
                             Default
                           </span>
                         )}
@@ -241,7 +241,7 @@ export default function CheckoutPage() {
                     ))}
                     <label
                       className={`relative flex cursor-pointer flex-col gap-1.5 rounded-xl border p-4 transition-colors ${
-                        useNewAddress ? "border-[#1CA2D1] bg-[#1CA2D1]/5" : "border-[#D2D2D0] hover:border-zinc-300"
+                        useNewAddress ? "border-[var(--brand-primary)] bg-[var(--brand-primary)]/5" : "border-[#D2D2D0] hover:border-zinc-300"
                       }`}
                     >
                       <input
@@ -252,7 +252,7 @@ export default function CheckoutPage() {
                         className="sr-only"
                       />
                       {useNewAddress && (
-                        <CheckCircle2 className="absolute right-3 top-3 h-4 w-4 text-[#1CA2D1]" />
+                        <CheckCircle2 className="absolute right-3 top-3 h-4 w-4 text-[var(--brand-primary)]" />
                       )}
                       <span className="text-sm font-bold text-[#222222]">New address</span>
                       <span className="text-xs text-zinc-500">Add a new delivery location.</span>
@@ -269,7 +269,7 @@ export default function CheckoutPage() {
                         onChange={(e) => setAddress((prev) => ({ ...prev, [key]: e.target.value }))}
                         placeholder={placeholder}
                         required={required}
-                        className="h-11 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 text-sm font-medium text-[#222222] outline-none transition-colors focus:border-[#1CA2D1] focus:bg-white placeholder:text-zinc-400"
+                        className="h-11 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 text-sm font-medium text-[#222222] outline-none transition-colors focus:border-[var(--brand-primary)] focus:bg-white placeholder:text-zinc-400"
                       />
                     ))}
                   </div>
@@ -279,7 +279,7 @@ export default function CheckoutPage() {
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="Order notes, GST details, delivery instructions (optional)"
-                  className="min-h-20 w-full rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 py-3 text-sm font-medium text-[#222222] outline-none transition-colors focus:border-[#1CA2D1] focus:bg-white placeholder:text-zinc-400 resize-none"
+                  className="min-h-20 w-full rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 py-3 text-sm font-medium text-[#222222] outline-none transition-colors focus:border-[var(--brand-primary)] focus:bg-white placeholder:text-zinc-400 resize-none"
                 />
               </div>
             </MagicCard>
@@ -289,9 +289,9 @@ export default function CheckoutPage() {
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.07, ease: [0.22, 1, 0.36, 1] }}>
             <MagicCard
               className="rounded-2xl [--color-background:#ffffff]"
-              gradientFrom="#1CA2D1"
+              gradientFrom="var(--brand-primary)"
               gradientTo="#E8E8E6"
-              gradientColor="#1CA2D1"
+              gradientColor="var(--brand-primary)"
               gradientOpacity={0.05}
             >
               <div className="p-6 space-y-5">
@@ -307,7 +307,7 @@ export default function CheckoutPage() {
                       key={value}
                       className={`relative flex cursor-pointer flex-col gap-1.5 rounded-xl border p-4 transition-colors ${
                         paymentGateway === value
-                          ? "border-[#1CA2D1] bg-[#1CA2D1]/5"
+                          ? "border-[var(--brand-primary)] bg-[var(--brand-primary)]/5"
                           : "border-[#D2D2D0] hover:border-zinc-300"
                       }`}
                     >
@@ -319,7 +319,7 @@ export default function CheckoutPage() {
                         className="sr-only"
                       />
                       {paymentGateway === value && (
-                        <CheckCircle2 className="absolute right-3 top-3 h-4 w-4 text-[#1CA2D1]" />
+                        <CheckCircle2 className="absolute right-3 top-3 h-4 w-4 text-[var(--brand-primary)]" />
                       )}
                       <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#E8E8E6]">
                         <CreditCard className="h-4 w-4 text-[#222222]" />
@@ -337,9 +337,9 @@ export default function CheckoutPage() {
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.14, ease: [0.22, 1, 0.36, 1] }}>
             <MagicCard
               className="rounded-2xl [--color-background:#ffffff]"
-              gradientFrom="#1CA2D1"
+              gradientFrom="var(--brand-primary)"
               gradientTo="#E8E8E6"
-              gradientColor="#1CA2D1"
+              gradientColor="var(--brand-primary)"
               gradientOpacity={0.05}
             >
               <div className="p-6 space-y-4">
@@ -350,22 +350,22 @@ export default function CheckoutPage() {
                   <h2 className="text-lg font-bold text-[#222222]">Coupon Code</h2>
                 </div>
                 <p className="text-xs text-zinc-400">
-                  Try <code className="font-mono font-bold text-[#1CA2D1]">ROBO10</code>,{" "}
-                  <code className="font-mono font-bold text-[#1CA2D1]">STUDENT250</code>, or{" "}
-                  <code className="font-mono font-bold text-[#1CA2D1]">FREESHIP</code> during development.
+                  Try <code className="font-mono font-bold text-[var(--brand-primary)]">ROBO10</code>,{" "}
+                  <code className="font-mono font-bold text-[var(--brand-primary)]">STUDENT250</code>, or{" "}
+                  <code className="font-mono font-bold text-[var(--brand-primary)]">FREESHIP</code> during development.
                 </p>
                 <div className="flex gap-2">
                   <input
                     value={couponCode}
                     onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
                     placeholder="Enter coupon code"
-                    className="h-11 flex-1 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 text-sm font-bold uppercase tracking-wider text-[#222222] outline-none transition-colors focus:border-[#1CA2D1] focus:bg-white placeholder:text-zinc-300 placeholder:font-normal placeholder:tracking-normal"
+                    className="h-11 flex-1 rounded-xl border border-[#D2D2D0] bg-[#F2F2F0] px-3 text-sm font-bold uppercase tracking-wider text-[#222222] outline-none transition-colors focus:border-[var(--brand-primary)] focus:bg-white placeholder:text-zinc-300 placeholder:font-normal placeholder:tracking-normal"
                   />
                   <button
                     type="button"
                     onClick={handleApplyCoupon}
                     disabled={isApplyingCoupon}
-                    className="h-11 rounded-xl bg-[#222222] px-5 text-sm font-bold text-white hover:bg-[#1CA2D1] disabled:opacity-50 transition-colors"
+                    className="h-11 rounded-xl bg-[#222222] px-5 text-sm font-bold text-white hover:bg-[var(--brand-primary)] disabled:opacity-50 transition-colors"
                   >
                     {isApplyingCoupon ? "..." : "Apply"}
                   </button>
@@ -396,9 +396,9 @@ export default function CheckoutPage() {
         <aside className="h-fit lg:sticky lg:top-24">
           <MagicCard
             className="rounded-2xl [--color-background:#ffffff]"
-            gradientFrom="#1CA2D1"
+            gradientFrom="var(--brand-primary)"
             gradientTo="#E8E8E6"
-            gradientColor="#1CA2D1"
+            gradientColor="var(--brand-primary)"
             gradientOpacity={0.07}
           >
             <div className="p-6 space-y-5">
@@ -449,13 +449,13 @@ export default function CheckoutPage() {
                 )}
                 <div className="flex justify-between border-t border-[#D2D2D0] pt-2.5">
                   <span className="text-base font-bold text-[#222222]">Total</span>
-                  <span className="text-xl font-bold text-[#1CA2D1]">{formatPrice(total)}</span>
+                  <span className="text-xl font-bold text-[var(--brand-primary)]">{formatPrice(total)}</span>
                 </div>
               </div>
 
               <button
                 disabled={isSubmitting || !canCheckout || !isAuthenticated}
-                className="w-full h-12 rounded-xl bg-[#222222] text-sm font-bold text-white hover:bg-[#1CA2D1] disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                className="w-full h-12 rounded-xl bg-[#222222] text-sm font-bold text-white hover:bg-[var(--brand-primary)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
               >
                 {isSubmitting ? "Placing order..." : (
                   <>Place Order <ArrowRight className="h-4 w-4" /></>

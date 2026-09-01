@@ -59,7 +59,7 @@ export function CategoriesPage() {
       <div className="bg-[#222222] rounded-b-[2.5rem] px-6 py-10 pb-14 mt-2">
         <div className="max-w-3xl mx-auto flex flex-col items-center text-center gap-4">
           <div className="flex items-center gap-2">
-            <Layers className="h-4 w-4 text-[#1CA2D1]" />
+            <Layers className="h-4 w-4 text-[var(--brand-primary)]" />
             <span className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">
               Electronics Catalog
             </span>
@@ -69,7 +69,7 @@ export function CategoriesPage() {
             as="h1"
             className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight justify-center"
             textClassName="text-white"
-            flipTextClassName="text-[#1CA2D1]"
+            flipTextClassName="text-[var(--brand-primary)]"
             staggerDuration={0.025}
             rotateDirection="bottom"
           >
@@ -147,7 +147,7 @@ export function CategoriesPage() {
                           animate={{ rotate: isExpanded ? 90 : 0 }}
                           transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
                         >
-                          <ChevronRight className={`w-3.5 h-3.5 ${isExpanded ? "text-[#1CA2D1]" : "text-gray-400"}`} />
+                          <ChevronRight className={`w-3.5 h-3.5 ${isExpanded ? "text-[var(--brand-primary)]" : "text-gray-400"}`} />
                         </motion.div>
                       </div>
                     </button>
@@ -165,7 +165,7 @@ export function CategoriesPage() {
                           <div className="ml-3 pl-3 border-l border-[#D2D2D0] mt-0.5 mb-1 space-y-0.5">
                             <Link
                               href={`/components?category=${encodeURIComponent(cat.category)}`}
-                              className="block px-2 py-1.5 text-xs font-semibold text-[#1CA2D1] hover:bg-white/70 rounded-lg transition-colors"
+                              className="block px-2 py-1.5 text-xs font-semibold text-[var(--brand-primary)] hover:bg-white/70 rounded-lg transition-colors"
                             >
                               All {cat.category}
                             </Link>

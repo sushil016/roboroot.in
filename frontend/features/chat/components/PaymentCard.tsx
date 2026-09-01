@@ -43,7 +43,7 @@ export function PaymentCard({ payment }: PaymentCardProps) {
 
   return (
     <div className="mt-4 overflow-hidden rounded-2xl border border-border bg-card shadow-sm animate-in fade-in slide-in-from-bottom-1 duration-300">
-      <div className="bg-gradient-to-r from-[#1CA2D1]/10 to-transparent px-4 py-3 border-b border-border">
+      <div className="bg-gradient-to-r from-[var(--brand-primary)]/10 to-transparent px-4 py-3 border-b border-border">
         <div className="flex items-center gap-2 text-foreground">
           <CreditCard className="size-4 text-primary" />
           <span className="text-[11px] font-bold uppercase tracking-[0.14em]">Secure Payment</span>
@@ -56,7 +56,7 @@ export function PaymentCard({ payment }: PaymentCardProps) {
         <p className="mt-1 text-3xl font-extrabold text-primary font-mono tracking-tight tabular-nums">
           ₹{(payment.amountCents / 100).toLocaleString("en-IN")}
         </p>
-        <p className="mt-2 text-[9px] font-bold text-muted-foreground uppercase tracking-[0.14em]">UPI · Cards · Net Banking — powered by Razorpay</p>
+        <p className="mt-2 text-[9px] font-bold text-muted-foreground uppercase tracking-[0.14em]">UPI · Cards · Net Banking — secure checkout</p>
       </div>
 
       <div className="p-3 bg-card">

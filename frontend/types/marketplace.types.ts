@@ -217,6 +217,7 @@ export enum OrderItemType {
 
 export enum PaymentGateway {
   RAZORPAY = 'RAZORPAY',
+  ZOHO = 'ZOHO',
   PHONEPE = 'PHONEPE',
   STRIPE = 'STRIPE',
   TEST = 'TEST',
@@ -253,6 +254,7 @@ export interface CreateOrderRequest {
 export interface CreateOrderResponse {
   order: Order;
   paymentUrl?: string;
+  paymentError?: string;
 }
 
 export interface CouponValidationResponse {

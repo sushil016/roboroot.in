@@ -10,7 +10,14 @@ const razorpay = new Razorpay({
   key_secret: process.env.RAZORPAY_KEY_SECRET!,
 });
 
-export type InitiatePaymentResult = { gatewayOrderId: string; keyId: string; amount: number; currency: string; orderId: string };
+export type InitiatePaymentResult = {
+  gateway: "RAZORPAY";
+  gatewayOrderId: string;
+  keyId: string;
+  amount: number;
+  currency: string;
+  orderId: string;
+};
 
 export async function initiatePayment(orderId: string, userId: string, idempotencyKey?: string): Promise<InitiatePaymentResult> {
   // Idempotency: if this key was already used, return the cached response
@@ -32,7 +39,7 @@ export async function initiatePayment(orderId: string, userId: string, idempoten
   }
 
   // Reuse an existing Razorpay order only if it's a real gateway ID (starts with "order_")
-  const existingPayment = await prisma.payment.findFirst({ where: { orderId, status: "CREATED" } });
+  const existingPayment = await prisma.payment.findFirst({ where: { orderId, gateway: "RAZORPAY", status: "CREATED" } });
   let gatewayOrderId: string;
 
   const existingGatewayId = existingPayment?.gatewayOrderId;
@@ -68,6 +75,7 @@ export async function initiatePayment(orderId: string, userId: string, idempoten
   }
 
   const response = {
+    gateway: "RAZORPAY" as const,
     gatewayOrderId,
     keyId: process.env.RAZORPAY_KEY_ID!,
     amount: order.totalAmountCents,

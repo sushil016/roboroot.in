@@ -21,7 +21,7 @@ interface ProductRevealCardProps {
 const CATEGORY_ACCENT: Record<string, string> = {
   Semiconductors: "#6366f1",
   Sensors: "#06b6d4",
-  "Development Boards": "#1CA2D1",
+  "Development Boards": "var(--brand-primary)",
   "Motors & Actuators": "#f97316",
   "Power & Batteries": "#10b981",
   "Drones & Aerospace": "#8b5cf6",
@@ -40,7 +40,7 @@ export function ProductRevealCard({
   const [hovered, setHovered] = useState(false);
   const isOutOfStock = component.stockQuantity === 0;
   const isLowStock = !isOutOfStock && component.stockQuantity <= 10;
-  const accent = CATEGORY_ACCENT[component.category] ?? "#1CA2D1";
+  const accent = CATEGORY_ACCENT[component.category] ?? "var(--brand-primary)";
 
   return (
     <div
@@ -99,7 +99,7 @@ export function ProductRevealCard({
           className={cn(
             "absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full border shadow-sm transition-all duration-200",
             isWishlisted
-              ? "border-transparent bg-[#1CA2D1] text-white scale-100 opacity-100"
+              ? "border-transparent bg-[var(--brand-primary)] text-white scale-100 opacity-100"
               : hovered
               ? "border-[#D2D2D0] bg-white text-zinc-400 opacity-100 scale-100"
               : "border-[#D2D2D0] bg-white text-zinc-400 opacity-0 scale-90"
@@ -159,7 +159,7 @@ export function ProductRevealCard({
           href={`/components/${component.id}`}
           className="mt-1.5 block"
         >
-          <h3 className="line-clamp-2 text-[14px] font-bold leading-[1.4] text-[#222222] hover:text-[#1CA2D1] transition-colors">
+          <h3 className="line-clamp-2 text-[14px] font-bold leading-[1.4] text-[#222222] hover:text-[var(--brand-primary)] transition-colors">
             {component.name}
           </h3>
         </Link>
@@ -172,7 +172,7 @@ export function ProductRevealCard({
         {/* Price row */}
         <div className="mt-auto flex items-end justify-between pt-3">
           <div className="flex flex-col">
-            <span className="text-[18px] font-black leading-none text-[#1CA2D1]">
+            <span className="text-[18px] font-black leading-none text-[var(--brand-primary)]">
               {formatPrice(component.unitPriceCents)}
             </span>
             <span className="mt-0.5 text-[10px] font-semibold text-emerald-600">Inc. GST</span>
@@ -205,8 +205,8 @@ export function ProductRevealCard({
             isOutOfStock
               ? "cursor-not-allowed bg-zinc-100 text-zinc-400"
               : hovered
-              ? "bg-[#1CA2D1] text-white shadow-md shadow-[#1CA2D1]/20"
-              : "bg-[#F2F2F0] text-[#222222] hover:bg-[#1CA2D1] hover:text-white"
+              ? "bg-[var(--brand-primary)] text-white shadow-md shadow-[var(--brand-primary)]/20"
+              : "bg-[#F2F2F0] text-[#222222] hover:bg-[var(--brand-primary)] hover:text-white"
           )}
         >
           {isOutOfStock ? (

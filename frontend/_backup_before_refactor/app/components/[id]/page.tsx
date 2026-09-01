@@ -143,7 +143,7 @@ export default function ComponentDetailPage() {
         </div>
         <Link
           href="/components"
-          className="inline-flex items-center gap-2 rounded-xl bg-[#222222] px-6 py-3 text-sm font-bold text-white transition hover:bg-[#1CA2D1]"
+          className="inline-flex items-center gap-2 rounded-xl bg-[#222222] px-6 py-3 text-sm font-bold text-white transition hover:bg-[var(--brand-primary)]"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to Components
@@ -230,7 +230,7 @@ export default function ComponentDetailPage() {
                   key={label}
                   className="flex flex-col items-center gap-1.5 rounded-xl border border-[#D2D2D0] bg-white p-3 text-center"
                 >
-                  <Icon className="h-4 w-4 text-[#1CA2D1]" />
+                  <Icon className="h-4 w-4 text-[var(--brand-primary)]" />
                   <p className="text-[10px] font-semibold leading-tight text-zinc-600">{label}</p>
                 </div>
               ))}
@@ -247,7 +247,7 @@ export default function ComponentDetailPage() {
             {/* Badges + name */}
             <div>
               <div className="mb-3 flex flex-wrap gap-1.5">
-                <span className="rounded-full bg-[#1CA2D1]/10 px-3 py-0.5 text-[11px] font-semibold text-[#1CA2D1]">
+                <span className="rounded-full bg-[var(--brand-primary)]/10 px-3 py-0.5 text-[11px] font-semibold text-[var(--brand-primary)]">
                   {compactProductType(component.productType)}
                 </span>
                 {component.isBestSeller && (
@@ -272,7 +272,7 @@ export default function ComponentDetailPage() {
               </div>
 
               <div className="mt-4 flex items-end gap-3">
-                <span className="text-3xl font-bold text-[#1CA2D1]">
+                <span className="text-3xl font-bold text-[var(--brand-primary)]">
                   {formatPrice(component.unitPriceCents)}
                 </span>
                 <span className="mb-0.5 text-xs font-semibold text-emerald-600">Inc. GST</span>
@@ -362,8 +362,8 @@ export default function ComponentDetailPage() {
                     isOutOfStock
                       ? "cursor-not-allowed bg-zinc-200 text-zinc-400"
                       : itemQty > 0
-                      ? "bg-[#1CA2D1]/15 text-[#1CA2D1] border border-[#1CA2D1]/30 hover:bg-[#1CA2D1]/25"
-                      : "bg-[#1CA2D1] text-white hover:bg-[#1CA2D1]/90"
+                      ? "bg-[var(--brand-primary)]/15 text-[var(--brand-primary)] border border-[var(--brand-primary)]/30 hover:bg-[var(--brand-primary)]/25"
+                      : "bg-[var(--brand-primary)] text-white hover:bg-[var(--brand-primary)]/90"
                   )}
                 >
                   <ShoppingCart className="h-4 w-4 shrink-0" />
@@ -372,7 +372,7 @@ export default function ComponentDetailPage() {
                 <button
                   onClick={handleBuyNow}
                   disabled={isOutOfStock}
-                  className="inline-flex h-12 items-center justify-center rounded-xl bg-[#222222] text-sm font-bold text-white transition-colors hover:bg-[#1CA2D1] disabled:cursor-not-allowed disabled:bg-zinc-200 disabled:text-zinc-400"
+                  className="inline-flex h-12 items-center justify-center rounded-xl bg-[#222222] text-sm font-bold text-white transition-colors hover:bg-[var(--brand-primary)] disabled:cursor-not-allowed disabled:bg-zinc-200 disabled:text-zinc-400"
                 >
                   Buy Now
                 </button>
@@ -384,7 +384,7 @@ export default function ComponentDetailPage() {
                 className={cn(
                   "inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl border text-sm font-semibold transition-all",
                   isWishlisted
-                    ? "border-[#1CA2D1]/40 bg-[#1CA2D1]/8 text-[#1CA2D1]"
+                    ? "border-[var(--brand-primary)]/40 bg-[var(--brand-primary)]/8 text-[var(--brand-primary)]"
                     : "border-[#D2D2D0] text-zinc-600 hover:border-[#222222] hover:text-[#222222]"
                 )}
               >
@@ -402,7 +402,7 @@ export default function ComponentDetailPage() {
                 href={component.vendorLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#1CA2D1] hover:underline"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--brand-primary)] hover:underline"
               >
                 View vendor / datasheet
                 <ExternalLink className="h-3.5 w-3.5" />
@@ -465,8 +465,8 @@ export default function ComponentDetailPage() {
                   )}
 
                   {component.typicalUseCase && (
-                    <div className="rounded-2xl border border-[#1CA2D1]/20 bg-[#1CA2D1]/5 p-5">
-                      <p className="mb-2 text-xs font-bold uppercase tracking-[0.15em] text-[#1CA2D1]">
+                    <div className="rounded-2xl border border-[var(--brand-primary)]/20 bg-[var(--brand-primary)]/5 p-5">
+                      <p className="mb-2 text-xs font-bold uppercase tracking-[0.15em] text-[var(--brand-primary)]">
                         Typical Use Case
                       </p>
                       <p className="text-sm leading-7 text-zinc-700">{component.typicalUseCase}</p>
@@ -533,18 +533,18 @@ export default function ComponentDetailPage() {
                       href={component.vendorLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-4 rounded-2xl border border-[#D2D2D0] bg-white p-5 transition hover:border-[#1CA2D1]/40 hover:shadow-sm group"
+                      className="flex items-center gap-4 rounded-2xl border border-[#D2D2D0] bg-white p-5 transition hover:border-[var(--brand-primary)]/40 hover:shadow-sm group"
                     >
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#1CA2D1]/10">
-                        <ExternalLink className="h-4 w-4 text-[#1CA2D1]" />
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--brand-primary)]/10">
+                        <ExternalLink className="h-4 w-4 text-[var(--brand-primary)]" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-[#222222] group-hover:text-[#1CA2D1] transition-colors">
+                        <p className="font-semibold text-[#222222] group-hover:text-[var(--brand-primary)] transition-colors">
                           Vendor / Datasheet Link
                         </p>
                         <p className="mt-0.5 truncate text-xs text-zinc-400">{component.vendorLink}</p>
                       </div>
-                      <ExternalLink className="h-4 w-4 text-zinc-300 group-hover:text-[#1CA2D1] shrink-0 transition-colors" />
+                      <ExternalLink className="h-4 w-4 text-zinc-300 group-hover:text-[var(--brand-primary)] shrink-0 transition-colors" />
                     </a>
                   ) : (
                     <div className="flex flex-col items-center gap-3 rounded-2xl border border-[#D2D2D0] bg-white p-10 text-center">
@@ -561,13 +561,13 @@ export default function ComponentDetailPage() {
                     <div className="space-y-2 text-sm">
                       <Link
                         href="/projects"
-                        className="flex items-center gap-2 text-[#1CA2D1] hover:underline font-medium"
+                        className="flex items-center gap-2 text-[var(--brand-primary)] hover:underline font-medium"
                       >
                         Browse project tutorials →
                       </Link>
                       <Link
                         href="/contact"
-                        className="flex items-center gap-2 text-[#1CA2D1] hover:underline font-medium"
+                        className="flex items-center gap-2 text-[var(--brand-primary)] hover:underline font-medium"
                       >
                         Contact technical support →
                       </Link>
@@ -589,7 +589,7 @@ export default function ComponentDetailPage() {
           >
             <div className="mb-6 flex items-center justify-between">
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#1CA2D1]">
+                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--brand-primary)]">
                   From {component.category}
                 </p>
                 <h2 className="mt-1 text-xl font-bold text-[#222222]">Related Components</h2>

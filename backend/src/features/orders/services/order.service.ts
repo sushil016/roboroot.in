@@ -10,6 +10,10 @@ import {
 import { queueEmailNotification } from "../../../services/email-notification.service.js";
 import { validateAndApplyCoupon, type CouponDiscount } from "../../coupons/services/coupon.service.js";
 import { createShipment } from "../../shipping/services/shiprocket.service.js";
+import {
+  calculateDeliveryFee,
+  getDeliverySettings,
+} from "../../settings/services/store-settings.service.js";
 
 type CheckoutAddress = {
   name: string;
@@ -130,8 +134,9 @@ export async function createOrder(input: CreateOrderInput) {
     assertAddress(input.shippingAddress);
   }
 
-  const gateway = input.paymentGateway || PaymentGateway.TEST;
+  const gateway = input.paymentGateway || PaymentGateway.ZOHO;
   const isTestPayment = gateway === PaymentGateway.TEST;
+  const deliverySettings = await getDeliverySettings();
 
   return prisma.$transaction(async (tx) => {
     // Atomically validate stock and deduct inside the transaction to prevent overselling
@@ -170,7 +175,7 @@ export async function createOrder(input: CreateOrderInput) {
       return sum + (component?.unitPriceCents || 0) * item.quantity;
     }, 0);
 
-    const shippingCents = subtotalCents >= 50000 ? 0 : 5000;
+    const shippingCents = calculateDeliveryFee(subtotalCents, deliverySettings);
 
     // DB-backed coupon validation (replaces hardcoded coupons)
     let coupon: (CouponDiscount & { couponId?: string }) | CouponValidation | null = null;

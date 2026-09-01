@@ -170,7 +170,7 @@ export function ProductImageGallery({
               className={cn(
                 "relative h-16 w-16 shrink-0 overflow-hidden rounded-xl border-2 bg-[#F2F2F0] transition-all duration-150",
                 i === activeIdx
-                  ? "border-[#1CA2D1] shadow-sm"
+                  ? "border-[var(--brand-primary)] shadow-sm"
                   : "border-transparent hover:border-[#D2D2D0]"
               )}
               aria-label={`View ${item.type === "VIDEO" ? "video" : `image ${i + 1}`}`}
@@ -191,7 +191,7 @@ export function ProductImageGallery({
               {i === activeIdx && (
                 <motion.div
                   layoutId="thumb-active"
-                  className="absolute inset-x-0 bottom-0 h-0.5 bg-[#1CA2D1]"
+                  className="absolute inset-x-0 bottom-0 h-0.5 bg-[var(--brand-primary)]"
                   transition={{ duration: 0.2 }}
                 />
               )}

@@ -111,8 +111,8 @@ export function CommandPalette() {
               className="flex cursor-pointer flex-col items-center gap-3 py-10 text-sm"
               onClick={handleSearch}
             >
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#1CA2D1]/10">
-                <Search className="h-5 w-5 text-[#1CA2D1]" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--brand-primary)]/10">
+                <Search className="h-5 w-5 text-[var(--brand-primary)]" />
               </div>
               <div className="text-center">
                 <p className="font-semibold text-[#222222]">
@@ -137,13 +137,13 @@ export function CommandPalette() {
               onSelect={handleSearch}
               className="gap-3 cursor-pointer"
             >
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#1CA2D1]/10 shrink-0">
-                <Search className="h-3.5 w-3.5 text-[#1CA2D1]" />
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[var(--brand-primary)]/10 shrink-0">
+                <Search className="h-3.5 w-3.5 text-[var(--brand-primary)]" />
               </div>
               <span className="font-medium">
-                Search &ldquo;<span className="text-[#1CA2D1]">{searchValue}</span>&rdquo; in Components
+                Search &ldquo;<span className="text-[var(--brand-primary)]">{searchValue}</span>&rdquo; in Components
               </span>
-              <ArrowRight className="ml-auto h-3 w-3 text-[#1CA2D1]" />
+              <ArrowRight className="ml-auto h-3 w-3 text-[var(--brand-primary)]" />
             </CommandItem>
           </CommandGroup>
         )}
@@ -184,8 +184,8 @@ export function CommandPalette() {
                 }
                 className="gap-3 cursor-pointer"
               >
-                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#1CA2D1]/10 shrink-0">
-                  <Layers className="h-3.5 w-3.5 text-[#1CA2D1]" />
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[var(--brand-primary)]/10 shrink-0">
+                  <Layers className="h-3.5 w-3.5 text-[var(--brand-primary)]" />
                 </div>
                 <span className="font-medium">{cat.category}</span>
                 <span className="ml-auto text-xs text-muted-foreground tabular-nums">
