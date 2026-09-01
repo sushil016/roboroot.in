@@ -15,6 +15,7 @@ const footerGroups = [
       ["Browse Categories", "/categories"],
       ["Featured Projects", "/projects"],
       ["STEM Store", "/stem-store"],
+      ["3D Printing", "/3d-printing"],
       ["About Us", "/about"],
       ["Contact", "/contact"],
     ],
@@ -23,6 +24,7 @@ const footerGroups = [
     title: "Account",
     links: [
       ["My Orders", "/orders"],
+      ["3D Print Orders", "/3d-printing/orders"],
       ["Wishlist", "/wishlist"],
       ["Cart", "/cart"],
       ["Settings", "/settings"],

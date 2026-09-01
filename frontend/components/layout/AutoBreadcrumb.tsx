@@ -14,6 +14,7 @@ const SEGMENT_LABELS: Record<string, string> = {
   payment:           'Payment',
   success:           'Order Confirmed',
   orders:            'Orders',
+  '3d-printing':     '3D Printing',
   profile:           'Profile',
   settings:          'Settings',
   wishlist:          'Wishlist',

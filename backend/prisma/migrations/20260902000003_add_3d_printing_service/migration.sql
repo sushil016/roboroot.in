@@ -50,7 +50,7 @@ CREATE TABLE "PrintMaterial" (
     "name" TEXT NOT NULL,
     "densityGramsPerCm3" DOUBLE PRECISION NOT NULL,
     "pricePerGramCents" INTEGER NOT NULL,
-    "colors" TEXT[],
+    "colors" TEXT[] NOT NULL,
     "isActive" BOOLEAN NOT NULL DEFAULT true,
     "sortOrder" INTEGER NOT NULL DEFAULT 0,
 

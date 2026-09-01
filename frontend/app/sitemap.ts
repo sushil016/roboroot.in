@@ -9,6 +9,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/components",
     "/categories",
     "/pcb",
+    "/3d-printing",
     "/projects",
     "/stem-store",
   ].map((route) => ({
@@ -67,7 +68,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.7,
       }));
     }
-  } catch (error) {
+  } catch {
     // sitemap generation continues without product routes
   }
 
@@ -91,7 +92,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.6,
       }));
     }
-  } catch (error) {
+  } catch {
     // Continue without project routes
   }
 

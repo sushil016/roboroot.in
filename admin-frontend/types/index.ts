@@ -231,6 +231,7 @@ export type AdminSection =
   | "subcategories"
   | "projects"
   | "orders"
+  | "3d-printing"
   | "coupons"
   | "careers"
   | "media"

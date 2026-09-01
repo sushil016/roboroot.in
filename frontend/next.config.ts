@@ -1,8 +1,11 @@
 import type { NextConfig } from "next";
 import { withSentryConfig } from "@sentry/nextjs";
 
+const shouldBuildStandalone =
+  process.platform !== "win32" || process.env.NEXT_STANDALONE === "true";
+
 const nextConfig: NextConfig = {
-  output: "standalone",
+  ...(shouldBuildStandalone ? { output: "standalone" as const } : {}),
   images: {
     unoptimized: true,
     remotePatterns: [

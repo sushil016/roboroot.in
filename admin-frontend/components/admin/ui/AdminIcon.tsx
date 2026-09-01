@@ -80,6 +80,14 @@ const iconPaths: Record<AdminIconName, React.ReactNode> = {
       <path d="M9 8a3 3 0 0 0 6 0" />
     </>
   ),
+  threeDPrinting: (
+    <>
+      <path d="m12 3 7.5 4.2v8.6L12 20l-7.5-4.2V7.2L12 3Z" />
+      <path d="M4.8 7.5 12 11.6l7.2-4.1" />
+      <path d="M12 20v-8.4" />
+      <path d="M8.5 5 16 9.2" />
+    </>
+  ),
   coupons: (
     <>
       <path d="M20 12a2 2 0 1 1 0-4 2 2 0 0 1 0 4Z" />

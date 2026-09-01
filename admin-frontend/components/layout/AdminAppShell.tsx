@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import { AdminSidebar } from "./AdminSidebar";
 import { AdminHeader } from "./AdminHeader";
 import { useAdmin } from "@/core/context/AdminContext";
-import { STOREFRONT_URL } from "@/config/env";
 import type { AdminSection } from "@/types";
 import { adminLogin } from "@/api/auth";
 
@@ -47,6 +46,7 @@ export function AdminAppShell({ children }: { children: React.ReactNode }) {
   else if (pathname.startsWith("/subcategories")) activeSection = "subcategories";
   else if (pathname.startsWith("/projects")) activeSection = "projects";
   else if (pathname.startsWith("/orders")) activeSection = "orders";
+  else if (pathname.startsWith("/3d-printing")) activeSection = "3d-printing";
   else if (pathname.startsWith("/coupons")) activeSection = "coupons";
   else if (pathname.startsWith("/careers")) activeSection = "careers";
   else if (pathname.startsWith("/media")) activeSection = "media";

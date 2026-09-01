@@ -1,6 +1,7 @@
 node_modules/
 dist/
 .env
+private/uploads/
 *.log
 .DS_Store
 /src/generated/prisma

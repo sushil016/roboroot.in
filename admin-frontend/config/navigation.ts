@@ -8,6 +8,7 @@ export type AdminIconName =
   | "subcategories"
   | "projects"
   | "orders"
+  | "threeDPrinting"
   | "coupons"
   | "careers"
   | "media"
@@ -42,6 +43,7 @@ export const sectionItems: SidebarItem[] = [
   { id: "subcategories", label: "Sub Categories", icon: "subcategories" },
   { id: "projects", label: "Projects", icon: "projects" },
   { id: "orders", label: "Orders", icon: "orders" },
+  { id: "3d-printing", label: "3D Printing", icon: "threeDPrinting" },
   { id: "coupons", label: "Coupons", icon: "coupons" },
   { id: "careers", label: "Careers", icon: "careers" },
   { id: "media", label: "Images & Media", icon: "media" },

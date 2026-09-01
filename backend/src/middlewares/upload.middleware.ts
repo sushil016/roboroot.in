@@ -67,7 +67,7 @@ export const uploadThreeDModel: RequestHandler = multer({
   storage,
   fileFilter: threeDModelFileFilter,
   limits: {
-    fileSize: Math.max(1, Number(process.env.MAX_3D_MODEL_FILE_SIZE_MB) || 50) * 1024 * 1024,
+    fileSize: Math.max(1, Number(process.env.MAX_3D_MODEL_FILE_SIZE_MB) || 100) * 1024 * 1024,
     files: 1,
   },
 }).single("model");

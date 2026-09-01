@@ -104,8 +104,8 @@ export default function ModelPreview({
     scene.add(grid);
 
     function resize() {
-      const width = Math.max(1, container.clientWidth);
-      const height = Math.max(1, container.clientHeight);
+      const width = Math.max(1, containerRef.current?.clientWidth ?? 1);
+      const height = Math.max(1, containerRef.current?.clientHeight ?? 1);
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
       renderer.setSize(width, height, false);

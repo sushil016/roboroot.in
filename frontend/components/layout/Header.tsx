@@ -22,6 +22,7 @@ import {
   Heart,
   Menu,
   PackageCheck,
+  Printer,
   Radio,
   Search,
   Settings,
@@ -49,6 +50,7 @@ const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/projects', label: 'Projects' },
   { href: '/stem-store', label: 'STEM Store' },
+  { href: '/3d-printing', label: '3D Print' },
   { href: '/orders', label: 'My Orders' },
   { href: '/bulk-order', label: 'Bulk Order' },
   { href: '/about', label: 'About Us' },
@@ -484,6 +486,14 @@ export function Header() {
                     >
                       <ShoppingBag className="h-4 w-4 text-[var(--brand-primary)]" />
                       STEM Store
+                    </Link>
+                    <Link
+                      href="/3d-printing"
+                      className="flex items-center gap-3 rounded-xl border border-[#D2D2D0]/60 bg-[#F2F2F0]/40 px-4 py-3 text-sm font-bold text-zinc-800 hover:bg-[var(--brand-primary)]/5 hover:text-[var(--brand-primary)] hover:border-[var(--brand-primary)]/30 transition-all"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <Printer className="h-4 w-4 text-[var(--brand-primary)]" />
+                      3D Printing
                     </Link>
                     <Link
                       href="/orders"

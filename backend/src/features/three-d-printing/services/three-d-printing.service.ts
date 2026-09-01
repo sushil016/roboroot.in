@@ -598,9 +598,20 @@ export async function updateAdminPrintOrder(
         data: {
           ...(input.trackingAwb !== undefined ? { trackingAwb: input.trackingAwb } : {}),
           ...(input.trackingUrl !== undefined ? { trackingUrl: input.trackingUrl } : {}),
-          ...(input.status === PrintOrderStatus.SHIPPED ? { shippedAt: new Date() } : {}),
-          ...(input.status === PrintOrderStatus.DELIVERED ? { deliveredAt: new Date() } : {}),
         },
+      });
+    }
+
+    if (input.status === PrintOrderStatus.SHIPPED) {
+      await tx.order.update({
+        where: { id: existing.commerceOrderId },
+        data: { shippedAt: new Date() },
+      });
+    }
+    if (input.status === PrintOrderStatus.DELIVERED) {
+      await tx.order.update({
+        where: { id: existing.commerceOrderId },
+        data: { deliveredAt: new Date() },
       });
     }
   });

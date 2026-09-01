@@ -15,7 +15,8 @@
     "email:worker:watch": "tsx src/workers/email-worker.ts continuous 2",
     "email:worker:prod": "node dist/workers/email-worker.js once",
     "bootstrap": "tsx src/scripts/bootstrap.ts",
-    "promote-admin": "tsx src/scripts/promote-admin.ts"
+    "promote-admin": "tsx src/scripts/promote-admin.ts",
+    "verify:3d-model": "tsx src/scripts/verify-3d-model-analysis.ts"
   },
   "keywords": [],
   "author": "",
