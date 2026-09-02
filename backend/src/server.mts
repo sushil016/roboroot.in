@@ -1,4 +1,3 @@
-import "dotenv/config";
 import { initSentry, Sentry } from "./lib/sentry.js";
 initSentry(); // Must be first
 
