@@ -459,7 +459,7 @@ cron.schedule("*/30 * * * *", async () => {
   }
 });
 
-// Start server
+// Keep the entrypoint explicitly ESM so deployment runtimes do not load it as CommonJS.
 const server = app.listen(PORT, () => {
   logger.info("server started", {
     port: PORT,
