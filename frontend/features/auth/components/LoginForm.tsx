@@ -9,6 +9,7 @@ import { Loader2, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { OAuthButtons } from "@/features/auth/components/OAuthButtons";
 import { cn } from "@/lib/utils";
+import { createLegalAcceptance, LEGAL_POLICY_LINKS } from "@/features/legal/constants";
 
 export function LoginForm() {
   const { login, isLoading } = useAuth();
@@ -17,15 +18,25 @@ export function LoginForm() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
-    defaultValues: { email: "", password: "" },
+    defaultValues: { email: "", password: "", legalAccepted: false },
   });
+
+  const legalAccepted = watch("legalAccepted");
 
   return (
     <div className="rounded-2xl border border-[#D2D2D0] bg-white px-8 py-8 shadow-lg">
-      <form onSubmit={handleSubmit((d) => login(d))} className="space-y-5">
+      <form
+        onSubmit={handleSubmit((data) => login({
+          email: data.email,
+          password: data.password,
+          legalConsent: createLegalAcceptance(),
+        }))}
+        className="space-y-5"
+      >
         {/* Email */}
         <div className="space-y-1.5">
           <label className="block text-sm font-bold text-[#222222]">Email</label>
@@ -82,6 +93,33 @@ export function LoginForm() {
           )}
         </div>
 
+        <div>
+          <label className={cn(
+            "flex cursor-pointer items-start gap-3 rounded-xl border bg-white p-3.5 transition-colors",
+            legalAccepted ? "border-[var(--brand-primary)]" : "border-[#D2D2D0]",
+          )}>
+            <input
+              {...register("legalAccepted")}
+              type="checkbox"
+              className="mt-0.5 h-4 w-4 shrink-0 accent-[var(--brand-primary)]"
+              disabled={isLoading}
+            />
+            <span className="text-xs font-medium leading-5 text-zinc-600">
+              I acknowledge the{" "}
+              <Link href={LEGAL_POLICY_LINKS.termsAndConditions} target="_blank" className="font-bold text-[var(--brand-primary)] hover:underline">
+                Terms and Conditions
+              </Link>{" "}
+              and{" "}
+              <Link href={LEGAL_POLICY_LINKS.privacyPolicy} target="_blank" className="font-bold text-[var(--brand-primary)] hover:underline">
+                Privacy Policy
+              </Link>.
+            </span>
+          </label>
+          {errors.legalAccepted && (
+            <p className="mt-1.5 text-xs font-medium text-red-500">{errors.legalAccepted.message}</p>
+          )}
+        </div>
+
         {/* Submit */}
         <button
           type="submit"
@@ -100,7 +138,7 @@ export function LoginForm() {
         <div className="h-px flex-1 bg-[#D2D2D0]" />
       </div>
 
-      <OAuthButtons isLoading={isLoading} />
+      <OAuthButtons isLoading={isLoading} legalAccepted={legalAccepted} />
 
       <p className="mt-6 text-center text-sm text-zinc-500">
         Don&apos;t have an account?{" "}

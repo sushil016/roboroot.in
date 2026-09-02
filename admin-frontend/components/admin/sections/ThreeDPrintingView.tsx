@@ -141,7 +141,7 @@ function OrderDrawer({
   const [trackingAwb, setTrackingAwb] = useState(order.commerceOrder.trackingAwb ?? "");
   const [trackingUrl, setTrackingUrl] = useState(order.commerceOrder.trackingUrl ?? "");
   const [isSaving, setIsSaving] = useState(false);
-  const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadingFileId, setDownloadingFileId] = useState("");
   const [error, setError] = useState("");
   const address = order.commerceOrder.address;
 
@@ -170,15 +170,15 @@ function OrderDrawer({
     }
   }
 
-  async function download() {
-    setIsDownloading(true);
+  async function download(modelFile: AdminPrintOrder["modelFiles"][number]) {
+    setDownloadingFileId(modelFile.id);
     setError("");
     try {
-      await downloadPrintModel(order.modelFile.id, order.modelFile.originalName, token);
+      await downloadPrintModel(modelFile.id, modelFile.originalName, token);
     } catch (downloadError) {
       setError(downloadError instanceof Error ? downloadError.message : "Could not download model");
     } finally {
-      setIsDownloading(false);
+      setDownloadingFileId("");
     }
   }
 
@@ -193,7 +193,7 @@ function OrderDrawer({
               <StatusBadge status={order.status} />
             </div>
             <h2 className="mt-2 text-xl font-extrabold text-[#222222] sm:text-2xl">
-              {order.modelFile.originalName}
+              {order.modelFiles.length} source model{order.modelFiles.length === 1 ? "" : "s"}
             </h2>
             <p className="mt-1 text-xs font-semibold text-zinc-500">
               Received {new Date(order.createdAt).toLocaleString("en-IN")}
@@ -227,18 +227,34 @@ function OrderDrawer({
             <div className="admin-card p-4">
               <div className="flex items-center gap-2 text-zinc-500">
                 <FileBox className="h-4 w-4" />
-                <p className="admin-eyebrow">Source model</p>
+                <p className="admin-eyebrow">Source models</p>
               </div>
-              <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-3 text-xs font-semibold">
-                <div><dt className="text-zinc-500">Format</dt><dd className="mt-1 font-extrabold">{order.modelFile.format}</dd></div>
-                <div><dt className="text-zinc-500">File size</dt><dd className="mt-1 font-extrabold">{(numberValue(order.modelFile.sizeBytes) / 1048576).toFixed(2)} MB</dd></div>
-                <div><dt className="text-zinc-500">Dimensions</dt><dd className="mt-1 font-extrabold">{numberValue(order.modelFile.widthMm).toFixed(1)} x {numberValue(order.modelFile.heightMm).toFixed(1)} x {numberValue(order.modelFile.depthMm).toFixed(1)} mm</dd></div>
-                <div><dt className="text-zinc-500">Triangles</dt><dd className="mt-1 font-extrabold">{numberValue(order.modelFile.triangleCount).toLocaleString("en-IN")}</dd></div>
-              </dl>
-              <button type="button" onClick={() => void download()} disabled={isDownloading} className="admin-button admin-button-primary mt-4 w-full">
-                {isDownloading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
-                {isDownloading ? "Preparing file" : "Download model"}
-              </button>
+              <div className="mt-3 max-h-64 space-y-2 overflow-y-auto">
+                {order.modelFiles.map((modelFile, index) => (
+                  <div key={modelFile.id} className="rounded-md border border-zinc-200 p-3">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="truncate text-xs font-extrabold">{index + 1}. {modelFile.originalName}</p>
+                        <p className="mt-1 text-[10px] font-semibold text-zinc-500">
+                          {modelFile.format} · {(numberValue(modelFile.sizeBytes) / 1048576).toFixed(2)} MB · {numberValue(modelFile.triangleCount).toLocaleString("en-IN")} triangles
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => void download(modelFile)}
+                        disabled={Boolean(downloadingFileId)}
+                        className="admin-action size-9 shrink-0 px-0"
+                        aria-label={`Download ${modelFile.originalName}`}
+                      >
+                        {downloadingFileId === modelFile.id ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+                      </button>
+                    </div>
+                    <p className="mt-2 text-[10px] font-semibold text-zinc-500">
+                      {numberValue(modelFile.widthMm).toFixed(1)} x {numberValue(modelFile.heightMm).toFixed(1)} x {numberValue(modelFile.depthMm).toFixed(1)} mm
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
           </section>
 
@@ -254,7 +270,7 @@ function OrderDrawer({
                 ["Quality", readable(order.quality)],
                 ["Finish", readable(order.finish)],
                 ["Infill", `${order.infillPercent}%`],
-                ["Quantity", order.quantity],
+                ["Set quantity", order.quantity],
                 ["Unit weight", `${numberValue(order.unitWeightGrams).toFixed(2)} g`],
                 ["Total weight", `${numberValue(order.totalWeightGrams).toFixed(2)} g`],
               ].map(([label, value]) => (
@@ -465,11 +481,12 @@ function PricingEditor({
             <span className={`absolute top-1 size-5 rounded-full bg-white shadow transition-transform ${draft.isEnabled ? "translate-x-6" : "translate-x-1"}`} />
           </button>
         </div>
-        <div className="admin-card-content grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="admin-card-content grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
           <CurrencyField label="Setup fee" cents={draft.baseFeeCents} onChange={(value) => setNumber("baseFeeCents", value)} />
           <CurrencyField label="Minimum print order" cents={draft.minimumOrderCents} onChange={(value) => setNumber("minimumOrderCents", value)} />
           <label className="grid gap-1.5 text-xs font-bold text-zinc-600">Shell material allowance (%)<input className="admin-input" type="number" min="0" max="100" value={draft.shellMaterialPercent} onChange={(event) => setNumber("shellMaterialPercent", Number(event.target.value))} /></label>
           <label className="grid gap-1.5 text-xs font-bold text-zinc-600">Maximum model file (MB)<input className="admin-input" type="number" min="1" max="100" value={draft.maxFileSizeMb} onChange={(event) => setNumber("maxFileSizeMb", Number(event.target.value))} /></label>
+          <label className="grid gap-1.5 text-xs font-bold text-zinc-600">Models per order<input className="admin-input" type="number" min="1" max="10" value={draft.maxFilesPerOrder} onChange={(event) => setNumber("maxFilesPerOrder", Number(event.target.value))} /></label>
         </div>
       </section>
 
@@ -651,10 +668,10 @@ export function ThreeDPrintingView() {
                 <tbody>
                   {orders.map((order) => (
                     <tr key={order.id} className="transition hover:bg-[#F7F7F5]">
-                      <td><p className="font-mono text-xs font-extrabold text-[#222222]">{order.reference}</p><p className="mt-1 max-w-48 truncate text-xs font-semibold text-zinc-500">{order.modelFile.originalName}</p></td>
+                      <td><p className="font-mono text-xs font-extrabold text-[#222222]">{order.reference}</p><p className="mt-1 max-w-48 truncate text-xs font-semibold text-zinc-500">{order.modelFiles[0]?.originalName ?? "Print job"}{order.modelFiles.length > 1 ? ` +${order.modelFiles.length - 1}` : ""}</p></td>
                       <td><p className="font-bold text-[#222222]">{order.user.name || "Customer"}</p><p className="mt-1 text-xs font-semibold text-zinc-500">{order.user.email}</p></td>
-                      <td><p className="text-xs font-extrabold text-[#222222]">{order.material.code} / {order.color}</p><p className="mt-1 text-xs font-semibold text-zinc-500">{readable(order.quality)} / {order.infillPercent}% / Qty {order.quantity}</p></td>
-                      <td><p className="font-bold">{numberValue(order.totalWeightGrams).toFixed(2)} g</p><p className="mt-1 text-xs font-semibold text-zinc-500">{numberValue(order.modelFile.volumeMm3 / 1000).toFixed(2)} cm3 mesh</p></td>
+                      <td><p className="text-xs font-extrabold text-[#222222]">{order.material.code} / {order.color}</p><p className="mt-1 text-xs font-semibold text-zinc-500">{readable(order.quality)} / {order.infillPercent}% / {order.quantity} set{order.quantity === 1 ? "" : "s"}</p></td>
+                      <td><p className="font-bold">{numberValue(order.totalWeightGrams).toFixed(2)} g</p><p className="mt-1 text-xs font-semibold text-zinc-500">{order.modelFiles.length} model{order.modelFiles.length === 1 ? "" : "s"}</p></td>
                       <td className="font-extrabold text-[#222222]">{money(order.totalAmountCents)}</td>
                       <td><StatusBadge status={order.status} /></td>
                       <td><p className="text-xs font-bold">{new Date(order.createdAt).toLocaleDateString("en-IN")}</p><p className="mt-1 text-[11px] font-semibold text-zinc-400">{new Date(order.createdAt).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}</p></td>

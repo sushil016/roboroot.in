@@ -22,6 +22,7 @@ const router: RouterType = Router();
 
 // Public routes — cached for 60s (products) and 120s (category tree)
 router.get("/", cacheResponse(60), componentController.getComponentsHandler);
+router.get("/categories/summary", cacheResponse(600), componentController.getCategorySummaryHandler);
 router.get("/categories/tree", cacheResponse(120), componentController.getCategoryTreeHandler);
 
 // Admin analytics routes — MUST be before /:id to avoid Express matching "analytics" as an id param

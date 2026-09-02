@@ -96,10 +96,14 @@ export function PrintOrdersPage() {
                     <p className="font-mono text-sm font-black">{order.reference}</p>
                     <PrintStatusBadge status={order.status} />
                   </div>
-                  <h2 className="mt-3 truncate text-lg font-bold">{order.modelFile.originalName}</h2>
+                  <h2 className="mt-3 truncate text-lg font-bold">
+                    {order.modelFiles[0]?.originalName ?? "3D print job"}
+                    {order.modelFiles.length > 1 ? ` +${order.modelFiles.length - 1} more` : ""}
+                  </h2>
                   <div className="mt-2 flex flex-wrap gap-x-5 gap-y-2 text-xs font-semibold text-zinc-500">
                     <span>{order.material.name} · {order.color}</span>
-                    <span>{order.quantity} piece{order.quantity === 1 ? "" : "s"}</span>
+                    <span>{order.modelFiles.length} model{order.modelFiles.length === 1 ? "" : "s"}</span>
+                    <span>{order.quantity} set{order.quantity === 1 ? "" : "s"}</span>
                     <span>{order.totalWeightGrams.toFixed(1)} g</span>
                     <span className="flex items-center gap-1"><Clock3 className="h-3.5 w-3.5" /> {new Date(order.createdAt).toLocaleDateString("en-IN")}</span>
                   </div>

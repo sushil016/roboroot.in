@@ -49,6 +49,8 @@ export function AdminAppShell({ children }: { children: React.ReactNode }) {
   else if (pathname.startsWith("/3d-printing")) activeSection = "3d-printing";
   else if (pathname.startsWith("/coupons")) activeSection = "coupons";
   else if (pathname.startsWith("/careers")) activeSection = "careers";
+  else if (pathname.startsWith("/support")) activeSection = "support";
+  else if (pathname.startsWith("/consents")) activeSection = "consents";
   else if (pathname.startsWith("/media")) activeSection = "media";
   else if (pathname.startsWith("/settings")) activeSection = "settings";
   else if (pathname.startsWith("/catalog")) activeSection = "catalog";

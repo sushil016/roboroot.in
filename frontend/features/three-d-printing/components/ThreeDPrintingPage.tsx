@@ -14,6 +14,7 @@ import {
   ChevronRight,
   Clock3,
   FileBox,
+  FilePlus2,
   FileUp,
   LoaderCircle,
   LockKeyhole,
@@ -21,6 +22,7 @@ import {
   PackageCheck,
   ShieldCheck,
   Sparkles,
+  Trash2,
   Weight,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -29,6 +31,7 @@ import { formatPrice } from "@/store/cart.store";
 import { addressApi } from "@/features/user/services/address.service";
 import { initiatePayment } from "@/features/payment/services/payment.service";
 import { threeDPrintingApi } from "../services/three-d-printing.service";
+import { createLegalAcceptance, LEGAL_POLICY_LINKS } from "@/features/legal/constants";
 import type {
   PrintFinish,
   PrintModelFile,
@@ -88,8 +91,9 @@ export function ThreeDPrintingPage() {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
   const { isAuthenticated } = useAuthStore();
-  const [file, setFile] = useState<File | null>(null);
-  const [uploadedFile, setUploadedFile] = useState<PrintModelFile | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
+  const [activeFileIndex, setActiveFileIndex] = useState(0);
+  const [uploadedFiles, setUploadedFiles] = useState<PrintModelFile[]>([]);
   const [materialId, setMaterialId] = useState("");
   const [color, setColor] = useState("Black");
   const [quality, setQuality] = useState<PrintQuality>("STANDARD");
@@ -103,6 +107,7 @@ export function ThreeDPrintingPage() {
   const [customerNotes, setCustomerNotes] = useState("");
   const [isQuoting, setIsQuoting] = useState(false);
   const [isOrdering, setIsOrdering] = useState(false);
+  const [legalAccepted, setLegalAccepted] = useState(false);
 
   const configQuery = useQuery({
     queryKey: ["3d-print-config"],
@@ -123,6 +128,10 @@ export function ThreeDPrintingPage() {
   const selectedMaterial =
     materials.find((item) => item.id === materialId) ?? materials[0];
   const addresses = useMemo(() => addressesQuery.data ?? [], [addressesQuery.data]);
+  const activeFile = files[activeFileIndex] ?? null;
+  const analyzedFiles = uploadedFiles.length === files.length ? uploadedFiles : (quote?.files ?? []);
+  const analyzedFile = analyzedFiles[activeFileIndex] ?? null;
+  const maxFiles = Math.min(10, config?.maxFilesPerOrder ?? 10);
 
   useEffect(() => {
     if (!selectedMaterial && materials[0]) {
@@ -141,27 +150,55 @@ export function ThreeDPrintingPage() {
     setQuote(null);
   }
 
-  function selectFile(nextFile: File | undefined) {
-    if (!nextFile) return;
-    const extension = nextFile.name.split(".").pop()?.toLowerCase();
-    if (extension !== "stl" && extension !== "obj") {
-      toast.error("Only STL and OBJ model files are supported");
-      return;
-    }
+  function selectFiles(nextFiles: File[]) {
+    if (nextFiles.length === 0) return;
     const limitMb = config?.maxFileSizeMb ?? 50;
-    if (nextFile.size > limitMb * 1024 * 1024) {
-      toast.error("The model must be " + limitMb + " MB or smaller");
-      return;
+    const validFiles = nextFiles.filter((nextFile) => {
+      const extension = nextFile.name.split(".").pop()?.toLowerCase();
+      if (extension !== "stl" && extension !== "obj") {
+        toast.error(`${nextFile.name}: only STL and OBJ files are supported`);
+        return false;
+      }
+      if (nextFile.size > limitMb * 1024 * 1024) {
+        toast.error(`${nextFile.name}: file must be ${limitMb} MB or smaller`);
+        return false;
+      }
+      return true;
+    });
+    if (validFiles.length === 0) return;
+
+    const existingKeys = new Set(files.map((item) => `${item.name}:${item.size}:${item.lastModified}`));
+    const uniqueFiles = validFiles.filter(
+      (item) => !existingKeys.has(`${item.name}:${item.size}:${item.lastModified}`),
+    );
+    const availableSlots = Math.max(0, maxFiles - files.length);
+    const acceptedFiles = uniqueFiles.slice(0, availableSlots);
+    if (acceptedFiles.length < uniqueFiles.length || availableSlots === 0) {
+      toast.error(`You can upload up to ${maxFiles} model files per order`);
     }
-    setFile(nextFile);
-    setUploadedFile(null);
+    if (acceptedFiles.length === 0) return;
+
+    const firstNewIndex = files.length;
+    setFiles((current) => [...current, ...acceptedFiles]);
+    setActiveFileIndex(firstNewIndex);
+    setUploadedFiles([]);
     invalidateQuote();
   }
 
-  function getConfiguration(fileId: string) {
+  function removeFile(index: number) {
+    setFiles((current) => current.filter((_, fileIndex) => fileIndex !== index));
+    setActiveFileIndex((current) => {
+      if (current > index) return current - 1;
+      if (current === index) return Math.max(0, current - 1);
+      return current;
+    });
+    setUploadedFiles([]);
+    invalidateQuote();
+  }
+
+  function getQuoteConfiguration() {
     if (!selectedMaterial) throw new Error("Select a print material");
     return {
-      fileId,
       materialId: selectedMaterial.id,
       color,
       quality,
@@ -171,14 +208,14 @@ export function ThreeDPrintingPage() {
     };
   }
 
+  function getConfiguration(fileIds: string[]) {
+    return { fileIds, ...getQuoteConfiguration() };
+  }
+
   async function handleGetPrice() {
-    if (!file) {
-      toast.error("Select an STL or OBJ model");
+    if (files.length === 0) {
+      toast.error("Select at least one STL or OBJ model");
       inputRef.current?.click();
-      return;
-    }
-    if (!isAuthenticated) {
-      router.push("/login?redirect=/3d-printing");
       return;
     }
     if (!config?.isEnabled) {
@@ -188,9 +225,21 @@ export function ThreeDPrintingPage() {
 
     setIsQuoting(true);
     try {
-      const model = uploadedFile ?? (await threeDPrintingApi.uploadModel(file));
-      setUploadedFile(model);
-      const nextQuote = await threeDPrintingApi.calculateQuote(getConfiguration(model.id));
+      let nextQuote: PrintQuote;
+      if (isAuthenticated) {
+        const models = uploadedFiles.length === files.length
+          ? uploadedFiles
+          : await threeDPrintingApi.uploadModels(files);
+        setUploadedFiles(models);
+        nextQuote = await threeDPrintingApi.calculateQuote(
+          getConfiguration(models.map((model) => model.id)),
+        );
+      } else {
+        nextQuote = await threeDPrintingApi.calculatePreviewQuote(
+          files,
+          getQuoteConfiguration(),
+        );
+      }
       setQuote(nextQuote);
       toast.success("Instant price calculated");
     } catch (error) {
@@ -212,7 +261,11 @@ export function ThreeDPrintingPage() {
   }
 
   async function handlePlaceOrder() {
-    if (!quote || !uploadedFile) {
+    if (!isAuthenticated) {
+      router.push("/login?redirect=/3d-printing");
+      return;
+    }
+    if (!quote || uploadedFiles.length !== files.length) {
       toast.error("Calculate the current configuration first");
       return;
     }
@@ -220,16 +273,21 @@ export function ThreeDPrintingPage() {
       toast.error("Add a complete delivery address");
       return;
     }
+    if (!legalAccepted) {
+      toast.error("Accept the order policies before payment");
+      return;
+    }
 
     setIsOrdering(true);
     let printOrderId = "";
     try {
       const created = await threeDPrintingApi.createOrder({
-        ...getConfiguration(uploadedFile.id),
+        ...getConfiguration(uploadedFiles.map((model) => model.id)),
         ...(useNewAddress
           ? { shippingAddress: newAddress }
           : { shippingAddressId: selectedAddressId }),
         ...(customerNotes.trim() ? { customerNotes: customerNotes.trim() } : {}),
+        legalConsent: createLegalAcceptance(),
       });
       printOrderId = created.order.id;
       const payment = await initiatePayment(created.commerceOrderId);
@@ -272,28 +330,43 @@ export function ThreeDPrintingPage() {
 
       <main className="mx-auto grid max-w-[1500px] lg:grid-cols-[minmax(0,1.4fr)_460px]">
         <section className="min-w-0 border-b border-zinc-300 lg:h-fit lg:border-b-0 lg:border-r">
-          <ModelPreview file={file} color={color} />
+          <input
+            ref={inputRef}
+            type="file"
+            accept=".stl,.obj"
+            multiple
+            className="sr-only"
+            onChange={(event) => {
+              selectFiles(Array.from(event.target.files ?? []));
+              event.target.value = "";
+            }}
+          />
+          <ModelPreview
+            file={activeFile}
+            color={color}
+            onUpload={() => inputRef.current?.click()}
+          />
           <div className="grid grid-cols-2 border-t border-zinc-800 bg-zinc-950 text-white sm:grid-cols-4">
-            <Metric label="Format" value={uploadedFile?.format ?? file?.name.split(".").pop()?.toUpperCase() ?? "STL / OBJ"} />
+            <Metric label="Format" value={analyzedFile?.format ?? activeFile?.name.split(".").pop()?.toUpperCase() ?? "STL / OBJ"} />
             <Metric
               label="Dimensions"
               value={
-                uploadedFile
+                analyzedFile
                   ? [
-                      formatNumber(uploadedFile.widthMm),
-                      formatNumber(uploadedFile.depthMm),
-                      formatNumber(uploadedFile.heightMm),
+                      formatNumber(analyzedFile.widthMm),
+                      formatNumber(analyzedFile.depthMm),
+                      formatNumber(analyzedFile.heightMm),
                     ].join(" x ") + " mm"
                   : "Pending analysis"
               }
             />
             <Metric
               label="Mesh"
-              value={uploadedFile ? formatNumber(uploadedFile.triangleCount, 0) + " triangles" : "Server verified"}
+              value={analyzedFile ? formatNumber(analyzedFile.triangleCount, 0) + " triangles" : "Pending analysis"}
             />
             <Metric
               label="Volume"
-              value={uploadedFile ? formatNumber(uploadedFile.volumeMm3 / 1000) + " cm3" : "Pending analysis"}
+              value={analyzedFile ? formatNumber(analyzedFile.volumeMm3 / 1000) + " cm3" : "Pending analysis"}
               last
             />
           </div>
@@ -302,34 +375,89 @@ export function ThreeDPrintingPage() {
         <aside className="min-w-0 bg-white">
           <div className="divide-y divide-zinc-200">
             <section className="p-5 sm:p-6">
-              <SectionTitle number="01" title="Model file" complete={Boolean(file)} />
-              <input
-                ref={inputRef}
-                type="file"
-                accept=".stl,.obj"
-                className="sr-only"
-                onChange={(event) => selectFile(event.target.files?.[0])}
-              />
+              <SectionTitle number="01" title="Model files" complete={files.length > 0} />
               <button
                 type="button"
                 onClick={() => inputRef.current?.click()}
                 onDragOver={(event) => event.preventDefault()}
                 onDrop={(event) => {
                   event.preventDefault();
-                  selectFile(event.dataTransfer.files[0]);
+                  selectFiles(Array.from(event.dataTransfer.files));
                 }}
                 className="flex w-full items-center gap-4 rounded-md border border-dashed border-zinc-300 px-4 py-5 text-left transition hover:border-emerald-600 hover:bg-emerald-50/40"
               >
                 <span className="grid h-11 w-11 shrink-0 place-items-center rounded-md bg-zinc-100">
-                  <FileUp className="h-5 w-5" />
+                  {files.length ? <FilePlus2 className="h-5 w-5" /> : <FileUp className="h-5 w-5" />}
                 </span>
                 <span className="min-w-0">
-                  <span className="block truncate text-sm font-bold">{file?.name ?? "Select model"}</span>
+                  <span className="block truncate text-sm font-bold">
+                    {files.length ? "Add more models" : "Select models"}
+                  </span>
                   <span className="mt-1 block text-xs text-zinc-500">
-                    STL or OBJ · {config?.maxFileSizeMb ?? 50} MB max
+                    STL or OBJ · {config?.maxFileSizeMb ?? 50} MB each · {files.length}/{maxFiles} files
                   </span>
                 </span>
               </button>
+              {files.length > 0 && (
+                <div className="mt-3 max-h-52 space-y-1.5 overflow-y-auto pr-1">
+                  {files.map((modelFile, index) => (
+                    <div
+                      key={`${modelFile.name}:${modelFile.size}:${modelFile.lastModified}`}
+                      className={clsx(
+                        "grid grid-cols-[1fr_34px] items-center overflow-hidden rounded-md border transition",
+                        activeFileIndex === index
+                          ? "border-emerald-700 bg-emerald-50"
+                          : "border-zinc-200 bg-white",
+                      )}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => setActiveFileIndex(index)}
+                        className="min-w-0 px-3 py-2.5 text-left"
+                      >
+                        <span className="block truncate text-xs font-bold">{modelFile.name}</span>
+                        <span className="mt-0.5 block text-[10px] text-zinc-500">
+                          Model {index + 1} · {(modelFile.size / 1024 / 1024).toFixed(2)} MB
+                        </span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => removeFile(index)}
+                        className="grid h-full place-items-center text-zinc-400 transition hover:bg-red-50 hover:text-red-600"
+                        aria-label={`Remove ${modelFile.name}`}
+                        title="Remove model"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {files.length > 1 && (
+                <div className="mt-3 flex h-9 items-center justify-between rounded-md border border-zinc-200 bg-zinc-50 px-1">
+                  <button
+                    type="button"
+                    onClick={() => setActiveFileIndex((current) => (current - 1 + files.length) % files.length)}
+                    className="grid h-7 w-7 place-items-center rounded text-zinc-500 transition hover:bg-white hover:text-zinc-950"
+                    aria-label="Preview previous model"
+                    title="Previous model"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </button>
+                  <span className="text-[11px] font-bold text-zinc-600">
+                    Previewing {activeFileIndex + 1} of {files.length}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setActiveFileIndex((current) => (current + 1) % files.length)}
+                    className="grid h-7 w-7 place-items-center rounded text-zinc-500 transition hover:bg-white hover:text-zinc-950"
+                    aria-label="Preview next model"
+                    title="Next model"
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </button>
+                </div>
+              )}
             </section>
 
             <section className="p-5 sm:p-6">
@@ -443,7 +571,7 @@ export function ThreeDPrintingPage() {
                   </select>
                 </label>
                 <div>
-                  <span className="text-xs font-bold">Quantity</span>
+                  <span className="text-xs font-bold">Set quantity</span>
                   <div className="mt-2 grid h-11 grid-cols-[36px_1fr_36px] overflow-hidden rounded-md border border-zinc-300">
                     <button
                       type="button"
@@ -480,24 +608,43 @@ export function ThreeDPrintingPage() {
               >
                 {isQuoting ? (
                   <LoaderCircle className="h-4 w-4 animate-spin" />
-                ) : isAuthenticated ? (
-                  <Sparkles className="h-4 w-4" />
                 ) : (
-                  <LockKeyhole className="h-4 w-4" />
+                  <Sparkles className="h-4 w-4" />
                 )}
                 {isQuoting
-                  ? uploadedFile
+                  ? uploadedFiles.length === files.length && files.length > 0
                     ? "Calculating..."
                     : "Uploading and analysing..."
-                  : isAuthenticated
-                    ? "Get instant price"
-                    : "Sign in for price"}
+                  : "Get instant price"}
               </button>
             </section>
 
             {quote ? <QuoteSummary quote={quote} /> : <TrustStrip />}
 
-            {quote && (
+            {quote && !isAuthenticated && (
+              <section className="p-5 sm:p-6">
+                <div className="flex items-start gap-3">
+                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-zinc-100">
+                    <LockKeyhole className="h-4 w-4" aria-hidden="true" />
+                  </span>
+                  <div>
+                    <h2 className="text-base font-bold">Ready to print?</h2>
+                    <p className="mt-1 text-xs leading-5 text-zinc-500">
+                      Sign in only when you are ready to add delivery details and place the order.
+                    </p>
+                  </div>
+                </div>
+                <Link
+                  href="/login?redirect=/3d-printing"
+                  className="mt-5 flex h-12 w-full items-center justify-center gap-2 rounded-md bg-emerald-800 px-5 text-sm font-bold text-white transition hover:bg-emerald-900"
+                >
+                  Sign in to place order
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </Link>
+              </section>
+            )}
+
+            {quote && isAuthenticated && (
               <section className="p-5 sm:p-6">
                 <div className="flex items-center gap-2">
                   <MapPin className="h-4 w-4 text-emerald-700" />
@@ -557,10 +704,29 @@ export function ThreeDPrintingPage() {
                   />
                 </label>
 
+                <label className={`mt-4 flex cursor-pointer items-start gap-3 rounded-md border p-3 text-xs leading-5 transition ${
+                  legalAccepted ? "border-emerald-700 bg-emerald-50" : "border-zinc-300 bg-white"
+                }`}>
+                  <input
+                    type="checkbox"
+                    checked={legalAccepted}
+                    onChange={(event) => setLegalAccepted(event.target.checked)}
+                    className="mt-0.5 h-4 w-4 shrink-0 accent-emerald-800"
+                  />
+                  <span className="font-medium text-zinc-600">
+                    I accept the{" "}
+                    <Link href={LEGAL_POLICY_LINKS.termsAndConditions} target="_blank" className="font-bold text-emerald-800 hover:underline">Terms</Link>,{" "}
+                    <Link href={LEGAL_POLICY_LINKS.shippingPolicy} target="_blank" className="font-bold text-emerald-800 hover:underline">Shipping</Link>,{" "}
+                    <Link href={LEGAL_POLICY_LINKS.refundPolicy} target="_blank" className="font-bold text-emerald-800 hover:underline">Refund</Link>, and{" "}
+                    <Link href={LEGAL_POLICY_LINKS.cancellationPolicy} target="_blank" className="font-bold text-emerald-800 hover:underline">Cancellation</Link>{" "}
+                    policies for this custom print order.
+                  </span>
+                </label>
+
                 <button
                   type="button"
                   onClick={() => void handlePlaceOrder()}
-                  disabled={isOrdering}
+                  disabled={isOrdering || !legalAccepted}
                   className="mt-5 flex h-12 w-full items-center justify-center gap-2 rounded-md bg-emerald-800 px-5 text-sm font-bold text-white transition hover:bg-emerald-900 disabled:bg-zinc-300"
                 >
                   {isOrdering ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <ArrowRight className="h-4 w-4" />}
@@ -629,6 +795,7 @@ function QuoteSummary({ quote }: { quote: PrintQuote }) {
         </span>
       </div>
       <div className="mt-5 divide-y divide-zinc-200 border-y border-zinc-200 text-sm">
+        <QuoteRow label="Models" value={`${quote.files.length} file${quote.files.length === 1 ? "" : "s"}`} />
         <QuoteRow label="Estimated weight" value={formatNumber(quote.totalWeightGrams) + " g"} />
         <QuoteRow label="Print subtotal" value={formatPrice(quote.subtotalCents)} />
         <QuoteRow label="Delivery" value={quote.shippingCents ? formatPrice(quote.shippingCents) : "Free"} />

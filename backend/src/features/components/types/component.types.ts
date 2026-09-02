@@ -133,3 +133,19 @@ export interface ComponentCategoryNode {
     products: ComponentResponse[];
   }[];
 }
+
+export interface ComponentCategorySummaryNode {
+  category: string;
+  imageUrl?: string | null;
+  description?: string | null;
+  count: number;
+  subcategories: {
+    name: string;
+    count: number;
+    products: {
+      id: string;
+      name: string;
+      imageUrl: string | null;
+    }[];
+  }[];
+}

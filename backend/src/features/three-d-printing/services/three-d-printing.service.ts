@@ -10,6 +10,7 @@ import {
   PrintOrderStatus,
   PrintQuality,
   PrintStorageProvider,
+  ConsentSource,
   type Prisma,
 } from "../../../generated/prisma/client.js";
 import { prisma } from "../../../lib/prisma.js";
@@ -24,6 +25,10 @@ import {
   getDeliverySettings,
 } from "../../settings/services/store-settings.service.js";
 import { analyzeModel } from "./model-analysis.service.js";
+import {
+  recordCheckoutAcceptance,
+  type ConsentAuditContext,
+} from "../../legal/legal.service.js";
 
 type ShippingAddressInput = {
   name: string;
@@ -38,7 +43,7 @@ type ShippingAddressInput = {
 
 export type PrintQuoteInput = {
   userId: string;
-  fileId: string;
+  fileIds: string[];
   materialId: string;
   color: string;
   quality: PrintQuality;
@@ -47,10 +52,14 @@ export type PrintQuoteInput = {
   quantity: number;
 };
 
+export type PrintPreviewQuoteInput = Omit<PrintQuoteInput, "userId" | "fileIds">;
+
 type CreatePrintOrderInput = PrintQuoteInput & {
   shippingAddressId?: string;
   shippingAddress?: ShippingAddressInput;
   customerNotes?: string;
+  legalConsent: unknown;
+  consentAudit?: ConsentAuditContext;
 };
 
 type AdminPricingInput = {
@@ -70,6 +79,7 @@ type AdminPricingInput = {
   standardLeadDays: number;
   fineLeadDays: number;
   maxFileSizeMb: number;
+  maxFilesPerOrder: number;
   materials: Array<{
     id?: string;
     code: string;
@@ -96,8 +106,15 @@ const safeFileSelect = {
   createdAt: true,
 } satisfies Prisma.ThreeDPrintFileSelect;
 
+type SafePrintModelFile = Prisma.ThreeDPrintFileGetPayload<{
+  select: typeof safeFileSelect;
+}>;
+
 const printOrderInclude = {
-  modelFile: { select: safeFileSelect },
+  modelFiles: {
+    select: safeFileSelect,
+    orderBy: { sortOrder: "asc" as const },
+  },
   material: true,
   commerceOrder: {
     include: {
@@ -187,11 +204,13 @@ export async function getPrintPricingSettings(includeInactive = false) {
   return settings;
 }
 
-export async function createModelFile(userId: string, file: Express.Multer.File) {
-  const settings = await getPrintPricingSettings();
-  const maximumBytes = settings.maxFileSizeMb * 1024 * 1024;
+async function persistModelFile(
+  userId: string,
+  file: Express.Multer.File,
+  maximumBytes: number,
+) {
   if (file.size > maximumBytes) {
-    throw serviceError(`Model files must be ${settings.maxFileSizeMb} MB or smaller`, 400);
+    throw serviceError(`Model files must be ${Math.floor(maximumBytes / 1024 / 1024)} MB or smaller`, 400);
   }
 
   const analysis = analyzeModel(file.buffer, file.originalname);
@@ -225,18 +244,31 @@ export async function createModelFile(userId: string, file: Express.Multer.File)
   });
 }
 
-export async function calculatePrintQuote(input: PrintQuoteInput) {
-  const [settings, modelFile, deliverySettings] = await Promise.all([
-    getPrintPricingSettings(),
-    prisma.threeDPrintFile.findFirst({
-      where: { id: input.fileId, userId: input.userId, order: null },
-      select: safeFileSelect,
-    }),
-    getDeliverySettings(),
-  ]);
+export async function createModelFile(userId: string, file: Express.Multer.File) {
+  const settings = await getPrintPricingSettings();
+  return persistModelFile(userId, file, settings.maxFileSizeMb * 1024 * 1024);
+}
 
+export async function createModelFiles(userId: string, files: Express.Multer.File[]) {
+  const settings = await getPrintPricingSettings();
+  if (files.length > settings.maxFilesPerOrder) {
+    throw serviceError(`A print order can contain up to ${settings.maxFilesPerOrder} model files`, 400);
+  }
+  const maximumBytes = settings.maxFileSizeMb * 1024 * 1024;
+  return Promise.all(files.map((file) => persistModelFile(userId, file, maximumBytes)));
+}
+
+function buildPrintQuote(
+  input: PrintPreviewQuoteInput,
+  modelFiles: SafePrintModelFile[],
+  settings: Awaited<ReturnType<typeof getPrintPricingSettings>>,
+  deliverySettings: Awaited<ReturnType<typeof getDeliverySettings>>,
+) {
   if (!settings.isEnabled) throw serviceError("3D printing orders are temporarily paused", 503);
-  if (!modelFile) throw serviceError("Model file not found or already ordered", 404);
+  if (modelFiles.length === 0) throw serviceError("Select at least one model file", 400);
+  if (modelFiles.length > settings.maxFilesPerOrder) {
+    throw serviceError(`A print order can contain up to ${settings.maxFilesPerOrder} model files`, 400);
+  }
 
   const material = settings.materials.find((item) => item.id === input.materialId);
   if (!material) throw serviceError("Selected material is unavailable", 400);
@@ -244,8 +276,9 @@ export async function calculatePrintQuote(input: PrintQuoteInput) {
     throw serviceError("Selected color is unavailable for this material", 400);
   }
 
+  const combinedVolumeMm3 = modelFiles.reduce((sum, file) => sum + file.volumeMm3, 0);
   const solidWeightGrams =
-    (modelFile.volumeMm3 / 1000) * material.densityGramsPerCm3;
+    (combinedVolumeMm3 / 1000) * material.densityGramsPerCm3;
   const shellRatio = settings.shellMaterialPercent / 100;
   const effectiveMaterialRatio =
     shellRatio + (1 - shellRatio) * (input.infillPercent / 100);
@@ -257,7 +290,8 @@ export async function calculatePrintQuote(input: PrintQuoteInput) {
     (materialCostCents * (multiplierPercent - 100)) / 100,
   );
   const baseFeeCents = settings.baseFeeCents;
-  const selectedFinishFeeCents = finishFee(input.finish, settings) * input.quantity;
+  const selectedFinishFeeCents =
+    finishFee(input.finish, settings) * modelFiles.length * input.quantity;
   const calculatedSubtotalCents =
     baseFeeCents + materialCostCents + qualityMarkupCents + selectedFinishFeeCents;
   const subtotalCents = Math.max(settings.minimumOrderCents, calculatedSubtotalCents);
@@ -267,7 +301,7 @@ export async function calculatePrintQuote(input: PrintQuoteInput) {
   const estimatedDays = leadDays(input.quality, input.finish, settings);
 
   return {
-    file: modelFile,
+    files: modelFiles,
     material: {
       id: material.id,
       code: material.code,
@@ -295,6 +329,64 @@ export async function calculatePrintQuote(input: PrintQuoteInput) {
     disclaimer:
       "Instant pricing is based on enclosed mesh volume. The team may contact you if the model needs repair, supports, or orientation changes.",
   };
+}
+
+export async function calculatePrintQuote(input: PrintQuoteInput) {
+  const uniqueFileIds = Array.from(new Set(input.fileIds));
+  if (uniqueFileIds.length !== input.fileIds.length) {
+    throw serviceError("Each model file can only be included once", 400);
+  }
+
+  const [settings, storedFiles, deliverySettings] = await Promise.all([
+    getPrintPricingSettings(),
+    prisma.threeDPrintFile.findMany({
+      where: { id: { in: uniqueFileIds }, userId: input.userId, orderId: null },
+      select: safeFileSelect,
+    }),
+    getDeliverySettings(),
+  ]);
+
+  if (storedFiles.length !== uniqueFileIds.length) {
+    throw serviceError("One or more model files were not found or are already ordered", 404);
+  }
+  const filesById = new Map(storedFiles.map((file) => [file.id, file]));
+  const modelFiles = uniqueFileIds.map((id) => filesById.get(id)!);
+  return buildPrintQuote(input, modelFiles, settings, deliverySettings);
+}
+
+export async function calculatePreviewPrintQuote(
+  input: PrintPreviewQuoteInput,
+  files: Express.Multer.File[],
+) {
+  const [settings, deliverySettings] = await Promise.all([
+    getPrintPricingSettings(),
+    getDeliverySettings(),
+  ]);
+  const maximumBytes = settings.maxFileSizeMb * 1024 * 1024;
+  if (files.length > settings.maxFilesPerOrder) {
+    throw serviceError(`A print order can contain up to ${settings.maxFilesPerOrder} model files`, 400);
+  }
+  const previewFiles = files.map((file, index): SafePrintModelFile => {
+    if (file.size > maximumBytes) {
+      throw serviceError(`Model files must be ${settings.maxFileSizeMb} MB or smaller`, 400);
+    }
+    const analysis = analyzeModel(file.buffer, file.originalname);
+    return {
+      id: `preview-${index + 1}`,
+      originalName: file.originalname,
+      mimeType: file.mimetype || "application/octet-stream",
+      format: analysis.format,
+      sizeBytes: file.size,
+      volumeMm3: analysis.volumeMm3,
+      widthMm: analysis.widthMm,
+      heightMm: analysis.heightMm,
+      depthMm: analysis.depthMm,
+      triangleCount: analysis.triangleCount,
+      createdAt: new Date(),
+    };
+  });
+
+  return buildPrintQuote(input, previewFiles, settings, deliverySettings);
 }
 
 function createReference() {
@@ -340,7 +432,7 @@ export async function createPrintOrder(input: CreatePrintOrderInput) {
         items: {
           create: {
             itemType: OrderItemType.SERVICE,
-            description: `3D print: ${quote.file.originalName} · ${quote.material.name} · Qty ${quote.quantity}`,
+            description: `3D print: ${quote.files.length} model${quote.files.length === 1 ? "" : "s"} - ${quote.material.name} - Qty ${quote.quantity}`,
             quantity: 1,
             unitPriceCents: quote.subtotalCents,
             subtotalCents: quote.subtotalCents,
@@ -364,11 +456,10 @@ export async function createPrintOrder(input: CreatePrintOrderInput) {
       },
     });
 
-    const printOrder = await tx.threeDPrintOrder.create({
+    const createdPrintOrder = await tx.threeDPrintOrder.create({
       data: {
         reference,
         userId: input.userId,
-        modelFileId: input.fileId,
         materialId: input.materialId,
         commerceOrderId: commerceOrder.id,
         status: PrintOrderStatus.PAYMENT_PENDING,
@@ -402,7 +493,30 @@ export async function createPrintOrder(input: CreatePrintOrderInput) {
           },
         },
       },
+    });
+
+    for (const [sortOrder, fileId] of input.fileIds.entries()) {
+      const claimed = await tx.threeDPrintFile.updateMany({
+        where: { id: fileId, userId: input.userId, orderId: null },
+        data: { orderId: createdPrintOrder.id, sortOrder },
+      });
+      if (claimed.count !== 1) {
+        throw serviceError("One or more model files could not be attached to this order", 409);
+      }
+    }
+
+    const printOrder = await tx.threeDPrintOrder.findUniqueOrThrow({
+      where: { id: createdPrintOrder.id },
       include: printOrderInclude,
+    });
+
+    await recordCheckoutAcceptance({
+      userId: input.userId,
+      orderId: commerceOrder.id,
+      source: ConsentSource.THREE_D_PRINTING_CHECKOUT,
+      payload: input.legalConsent,
+      ...(input.consentAudit ? { audit: input.consentAudit } : {}),
+      client: tx,
     });
 
     return { printOrder, commerceOrderId: commerceOrder.id };
@@ -422,7 +536,7 @@ export async function createPrintOrder(input: CreatePrintOrderInput) {
           total: quote.totalAmountCents / 100,
           items: [
             {
-              name: `3D printing: ${quote.file.originalName}`,
+              name: `3D printing: ${quote.files.length} model${quote.files.length === 1 ? "" : "s"}`,
               quantity: quote.quantity,
               price: quote.subtotalCents / 100,
             },
@@ -498,7 +612,7 @@ export async function getAdminPrintOrders(input: {
       ? {
           OR: [
             { reference: { contains: input.search, mode: "insensitive" } },
-            { modelFile: { originalName: { contains: input.search, mode: "insensitive" } } },
+            { modelFiles: { some: { originalName: { contains: input.search, mode: "insensitive" } } } },
             { user: { name: { contains: input.search, mode: "insensitive" } } },
             { user: { email: { contains: input.search, mode: "insensitive" } } },
           ],
@@ -641,6 +755,7 @@ export async function updatePrintPricingSettings(input: AdminPricingInput) {
         standardLeadDays: input.standardLeadDays,
         fineLeadDays: input.fineLeadDays,
         maxFileSizeMb: input.maxFileSizeMb,
+        maxFilesPerOrder: input.maxFilesPerOrder,
       },
       update: {
         isEnabled: input.isEnabled,
@@ -659,6 +774,7 @@ export async function updatePrintPricingSettings(input: AdminPricingInput) {
         standardLeadDays: input.standardLeadDays,
         fineLeadDays: input.fineLeadDays,
         maxFileSizeMb: input.maxFileSizeMb,
+        maxFilesPerOrder: input.maxFilesPerOrder,
       },
     });
 

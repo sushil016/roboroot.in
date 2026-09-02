@@ -25,6 +25,9 @@ import {
 } from "../services/github-auth.service.js";
 import { validateSignupRequest, validateLoginRequest } from "../utils/validation.js";
 import { AuthError, ValidationError } from "../utils/types.js";
+import { getConsentAuditContext } from "../features/legal/legal.controller.js";
+import { claimAnonymousConsents } from "../features/legal/legal.service.js";
+import { LEGAL_POLICY_VERSION } from "../features/legal/legal.constants.js";
 
 const defaultFrontendUrl =
   process.env.VERCEL_URL
@@ -63,7 +66,9 @@ export async function signupController(req: Request, res: Response): Promise<voi
     const validatedData = validateSignupRequest(req.body);
 
     // Create user
-    const result = await signupWithEmail(validatedData);
+    const audit = getConsentAuditContext(req);
+    const result = await signupWithEmail(validatedData, audit);
+    await claimAnonymousConsents(audit.anonymousId, result.user.id);
 
     // Set httpOnly cookies (tokens never exposed in JSON body)
     setAuthCookies(res, result.accessToken, result.refreshToken);
@@ -142,7 +147,9 @@ export async function loginController(req: Request, res: Response): Promise<void
     const validatedData = validateLoginRequest(req.body);
 
     // Authenticate user
-    const result = await loginWithEmail(validatedData);
+    const audit = getConsentAuditContext(req);
+    const result = await loginWithEmail(validatedData, audit);
+    await claimAnonymousConsents(audit.anonymousId, result.user.id);
 
     // Set httpOnly cookies (XSS-safe — tokens never exposed in JSON body)
     setAuthCookies(res, result.accessToken, result.refreshToken);
@@ -382,7 +389,10 @@ function getDynamicRedirectUri(req: Request, provider: "google" | "github"): str
  */
 export async function googleAuthController(req: Request, res: Response): Promise<void> {
   try {
-    const { redirect } = req.query;
+    const { redirect, consentVersion } = req.query;
+    if (consentVersion !== LEGAL_POLICY_VERSION) {
+      throw new ValidationError("Review and accept the current Terms and Privacy Policy before continuing");
+    }
     const redirectUri = getDynamicRedirectUri(req, "google");
     const authUrl = getGoogleAuthUrl(typeof redirect === "string" ? redirect : undefined, redirectUri);
     res.redirect(authUrl);
@@ -418,6 +428,7 @@ export async function googleCallbackController(req: Request, res: Response): Pro
 
     const redirectUri = getDynamicRedirectUri(req, "google");
     const result = await handleGoogleCallback(code, redirectUri);
+    await claimAnonymousConsents(getConsentAuditContext(req).anonymousId, result.user.id);
 
     // Set httpOnly cookies instead of exposing tokens in URL
     setAuthCookies(res, result.accessToken, result.refreshToken);
@@ -444,7 +455,10 @@ export async function googleCallbackController(req: Request, res: Response): Pro
  */
 export async function githubAuthController(req: Request, res: Response): Promise<void> {
   try {
-    const { redirect } = req.query;
+    const { redirect, consentVersion } = req.query;
+    if (consentVersion !== LEGAL_POLICY_VERSION) {
+      throw new ValidationError("Review and accept the current Terms and Privacy Policy before continuing");
+    }
     const redirectUri = getDynamicRedirectUri(req, "github");
     const authUrl = getGitHubAuthUrl(typeof redirect === "string" ? redirect : undefined, redirectUri);
     res.redirect(authUrl);
@@ -480,6 +494,7 @@ export async function githubCallbackController(req: Request, res: Response): Pro
 
     const redirectUri = getDynamicRedirectUri(req, "github");
     const result = await handleGitHubCallback(code, redirectUri);
+    await claimAnonymousConsents(getConsentAuditContext(req).anonymousId, result.user.id);
 
     // Set httpOnly cookies instead of exposing tokens in URL
     setAuthCookies(res, result.accessToken, result.refreshToken);

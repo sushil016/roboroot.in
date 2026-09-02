@@ -7,6 +7,7 @@ import api from '@/lib/api-client';
 import type {
   Component,
   ComponentCategoryNode,
+  ComponentCategorySummaryNode,
   ComponentFilters,
   ComponentListResponse,
   ProductMedia,
@@ -80,6 +81,11 @@ export const componentApi = {
    */
   getCategoryTree: async (): Promise<ComponentCategoryNode[]> => {
     const response = await api.get('/api/components/categories/tree');
+    return response.data.data;
+  },
+
+  getCategorySummary: async (): Promise<ComponentCategorySummaryNode[]> => {
+    const response = await api.get('/api/components/categories/summary');
     return response.data.data;
   },
 

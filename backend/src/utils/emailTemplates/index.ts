@@ -13,6 +13,7 @@ export { orderShippedTemplate } from "./orderShipped.js";
 export { mentorSessionBookedTemplate } from "./mentorSessionBooked.js";
 export { aiProjectGeneratedTemplate } from "./aiProjectGenerated.js";
 export { cartAbandonedTemplate } from "./cartAbandoned.js";
+export { supportTicketTemplate } from "./supportTicket.js";
 
 import { EmailEventType } from "../../generated/prisma/client.js";
 import type { EmailTemplate } from "./base.js";
@@ -25,6 +26,7 @@ import { orderShippedTemplate } from "./orderShipped.js";
 import { mentorSessionBookedTemplate } from "./mentorSessionBooked.js";
 import { aiProjectGeneratedTemplate } from "./aiProjectGenerated.js";
 import { cartAbandonedTemplate } from "./cartAbandoned.js";
+import { supportTicketTemplate } from "./supportTicket.js";
 
 /**
  * Type for email template data
@@ -107,6 +109,15 @@ export function getEmailTemplate(
 
     case EmailEventType.CART_ABANDONED:
       return cartAbandonedTemplate(data);
+
+    case EmailEventType.SUPPORT_TICKET_CREATED:
+      return supportTicketTemplate(data, "CREATED");
+
+    case EmailEventType.SUPPORT_TICKET_UPDATED:
+      return supportTicketTemplate(data, "UPDATED");
+
+    case EmailEventType.SUPPORT_TICKET_REPLY:
+      return supportTicketTemplate(data, "REPLY");
 
     default:
       return {

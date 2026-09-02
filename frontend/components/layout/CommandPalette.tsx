@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
 import {
   ArrowRight,
   BookOpen,
@@ -30,7 +29,7 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
-import { componentApi } from "@/features/products/services/product.service";
+import { useCategorySummary } from "@/features/products/hooks/useCategorySummary";
 
 const NAV_ITEMS = [
   { label: "Home", href: "/", icon: Home, group: "nav" },
@@ -70,11 +69,7 @@ export function CommandPalette() {
     };
   }, []);
 
-  const { data: categoryTree = [] } = useQuery({
-    queryKey: ["component-category-tree"],
-    queryFn: componentApi.getCategoryTree,
-    staleTime: 5 * 60 * 1000,
-  });
+  const { data: categoryTree } = useCategorySummary();
 
   const run = useCallback((fn: () => void) => {
     setOpen(false);

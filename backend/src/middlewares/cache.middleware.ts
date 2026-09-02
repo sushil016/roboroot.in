@@ -9,6 +9,10 @@ import { cacheGet, cacheSet } from "../lib/redis.js";
 export function cacheResponse(ttlSeconds = 60) {
   return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const cacheKey = `http:${req.originalUrl}`;
+    res.setHeader(
+      "Cache-Control",
+      `public, max-age=${ttlSeconds}, stale-while-revalidate=${ttlSeconds * 6}`,
+    );
     const cached = await cacheGet<{ status: number; body: unknown }>(cacheKey);
 
     if (cached) {

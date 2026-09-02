@@ -19,6 +19,7 @@ import {
   DEFAULT_DELIVERY_SETTINGS,
   getDeliverySettings,
 } from "@/features/checkout/services/delivery-settings.service";
+import { createLegalAcceptance, LEGAL_POLICY_LINKS } from "@/features/legal/constants";
 
 const initialAddress = {
   name: "",
@@ -54,6 +55,7 @@ export function CheckoutPage() {
   const [appliedCoupon, setAppliedCoupon] = useState<CouponValidationResponse | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
+  const [legalAccepted, setLegalAccepted] = useState(false);
 
   const subtotal = getSubtotal();
   const addressesQuery = useQuery({
@@ -95,6 +97,7 @@ export function CheckoutPage() {
     event.preventDefault();
     if (!isAuthenticated) { router.push("/login?redirect=/checkout"); return; }
     if (!canCheckout) { toast.error("Please fill shipping details"); return; }
+    if (!legalAccepted) { toast.error("Accept the order policies before payment"); return; }
     setIsSubmitting(true);
     try {
       const payload = await orderApi.createOrder({
@@ -104,6 +107,7 @@ export function CheckoutPage() {
         paymentGateway: PaymentGateway.ZOHO,
         couponCode: appliedCoupon?.code,
         notes: notes || undefined,
+        legalConsent: createLegalAcceptance(),
       });
       clearCart();
       if (payload.paymentUrl) {
@@ -422,8 +426,28 @@ export function CheckoutPage() {
                 <p className="mt-1 pl-6 text-xs text-zinc-500">Secure hosted payment with UPI and cards.</p>
               </div>
 
+              <label className={`flex cursor-pointer items-start gap-3 rounded-xl border p-3.5 transition-colors ${
+                legalAccepted ? "border-[var(--brand-primary)] bg-[var(--brand-primary)]/5" : "border-zinc-200 bg-white"
+              }`}>
+                <input
+                  type="checkbox"
+                  checked={legalAccepted}
+                  onChange={(event) => setLegalAccepted(event.target.checked)}
+                  className="mt-0.5 h-4 w-4 shrink-0 accent-[var(--brand-primary)]"
+                />
+                <span className="text-xs font-medium leading-5 text-zinc-600">
+                  I agree to the{" "}
+                  <Link href={LEGAL_POLICY_LINKS.termsAndConditions} target="_blank" className="font-bold text-[var(--brand-primary)] hover:underline">Terms</Link>,{" "}
+                  <Link href={LEGAL_POLICY_LINKS.shippingPolicy} target="_blank" className="font-bold text-[var(--brand-primary)] hover:underline">Shipping</Link>,{" "}
+                  <Link href={LEGAL_POLICY_LINKS.refundPolicy} target="_blank" className="font-bold text-[var(--brand-primary)] hover:underline">Refund</Link>, and{" "}
+                  <Link href={LEGAL_POLICY_LINKS.cancellationPolicy} target="_blank" className="font-bold text-[var(--brand-primary)] hover:underline">Cancellation</Link>{" "}
+                  policies and have read the{" "}
+                  <Link href={LEGAL_POLICY_LINKS.privacyPolicy} target="_blank" className="font-bold text-[var(--brand-primary)] hover:underline">Privacy Policy</Link>.
+                </span>
+              </label>
+
               <button
-                disabled={isSubmitting || !canCheckout || !isAuthenticated}
+                disabled={isSubmitting || !canCheckout || !isAuthenticated || !legalAccepted}
                 className="w-full h-12 rounded-xl bg-[#222222] text-sm font-bold text-white hover:bg-[var(--brand-primary)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
               >
                 {isSubmitting ? "Opening secure payment..." : (

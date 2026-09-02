@@ -20,6 +20,10 @@ export type CreatePrintOrderPayload = PrintConfiguration & {
     country?: string;
   };
   customerNotes?: string;
+  legalConsent: {
+    accepted: true;
+    policyVersion: string;
+  };
 };
 
 export const threeDPrintingApi = {
@@ -28,10 +32,10 @@ export const threeDPrintingApi = {
     return response.data.data;
   },
 
-  uploadModel: async (file: File): Promise<PrintModelFile> => {
+  uploadModels: async (files: File[]): Promise<PrintModelFile[]> => {
     const formData = new FormData();
-    formData.append("model", file);
-    const response = await apiClient.post("/api/3d-printing/files", formData, {
+    files.forEach((file) => formData.append("models", file));
+    const response = await apiClient.post("/api/3d-printing/files/batch", formData, {
       headers: { "Content-Type": "multipart/form-data" },
       timeout: 120_000,
     });
@@ -40,6 +44,20 @@ export const threeDPrintingApi = {
 
   calculateQuote: async (configuration: PrintConfiguration): Promise<PrintQuote> => {
     const response = await apiClient.post("/api/3d-printing/quote", configuration);
+    return response.data.data;
+  },
+
+  calculatePreviewQuote: async (
+    files: File[],
+    configuration: Omit<PrintConfiguration, "fileIds">,
+  ): Promise<PrintQuote> => {
+    const formData = new FormData();
+    files.forEach((file) => formData.append("models", file));
+    formData.append("configuration", JSON.stringify(configuration));
+    const response = await apiClient.post("/api/3d-printing/preview-quote", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+      timeout: 120_000,
+    });
     return response.data.data;
   },
 

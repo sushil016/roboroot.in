@@ -12,9 +12,14 @@ import {
   type AuthResponse,
   type JWTPayload,
 } from "../utils/types.js";
-import { UserRole } from "../generated/prisma/client.js";
+import { ConsentSource, UserRole } from "../generated/prisma/client.js";
 import { queueEmailNotification } from "./email-notification.service.js";
 import { sendVerificationEmail } from "./email-verification.service.js";
+import {
+  recordTermsAndPrivacyAcceptance,
+  validateLegalAcceptance,
+  type ConsentAuditContext,
+} from "../features/legal/legal.service.js";
 
 const MAX_FAILED_ATTEMPTS = 5;
 const LOCKOUT_WINDOW_SECONDS = 15 * 60; // 15 minutes
@@ -48,7 +53,11 @@ async function clearLoginFailures(email: string): Promise<void> {
 /**
  * Register a new user with email and password
  */
-export async function signupWithEmail(data: SignupRequest): Promise<AuthResponse> {
+export async function signupWithEmail(
+  data: SignupRequest,
+  audit?: ConsentAuditContext,
+): Promise<AuthResponse> {
+  validateLegalAcceptance(data.legalConsent);
   // Check if user already exists
   const existingUser = await prisma.user.findUnique({
     where: { email: data.email },
@@ -82,11 +91,19 @@ export async function signupWithEmail(data: SignupRequest): Promise<AuthResponse
       },
     });
 
+    await recordTermsAndPrivacyAcceptance({
+      userId: newUser.id,
+      source: ConsentSource.REGISTRATION,
+      payload: data.legalConsent,
+      ...(audit ? { audit } : {}),
+      client: tx,
+    });
+
     return newUser;
   });
 
   // Create session
-  const session = await createSession(user.id);
+  const session = await createSession(user.id, audit?.userAgent, audit?.ipAddress);
 
   // Generate tokens
   const tokens = generateTokenPair({
@@ -124,7 +141,10 @@ export async function signupWithEmail(data: SignupRequest): Promise<AuthResponse
 /**
  * Login with email and password
  */
-export async function loginWithEmail(data: LoginRequest): Promise<AuthResponse> {
+export async function loginWithEmail(
+  data: LoginRequest,
+  audit?: ConsentAuditContext,
+): Promise<AuthResponse> {
   await checkLoginLock(data.email);
 
   // Find user
@@ -156,10 +176,24 @@ export async function loginWithEmail(data: LoginRequest): Promise<AuthResponse> 
     throw new UnauthorizedError("Account has been deactivated");
   }
 
+  const isAdmin = user.role === UserRole.ADMIN || user.role === UserRole.SUPER_ADMIN;
+  if (!isAdmin) {
+    validateLegalAcceptance(data.legalConsent);
+  }
+
   await clearLoginFailures(data.email);
 
+  if (!isAdmin) {
+    await recordTermsAndPrivacyAcceptance({
+      userId: user.id,
+      source: ConsentSource.LOGIN,
+      payload: data.legalConsent,
+      ...(audit ? { audit } : {}),
+    });
+  }
+
   // Create session
-  const session = await createSession(user.id);
+  const session = await createSession(user.id, audit?.userAgent, audit?.ipAddress);
 
   // Generate tokens
   const tokens = generateTokenPair({

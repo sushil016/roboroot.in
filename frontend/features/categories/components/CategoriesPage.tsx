@@ -1,12 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import { PackageSearch, Layers, ChevronRight } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
-import { componentApi } from "@/features/products/services/product.service";
+import { useCategorySummary } from "@/features/products/hooks/useCategorySummary";
 import { CategoryCard } from "@/features/categories/components/CategoryCard";
 import Text3DFlip from "@/components/ui/text-3d-flip";
 import type { CategoryCardProps } from "@/features/categories/components/CategoryCard";
@@ -15,14 +14,10 @@ export function CategoriesPage() {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [expandedSidebar, setExpandedSidebar] = useState<string | null>(null);
 
-  const { data: apiCategories, isLoading } = useQuery({
-    queryKey: ["component-category-tree"],
-    queryFn: componentApi.getCategoryTree,
-    staleTime: 5 * 60 * 1000,
-  });
+  const { data: apiCategories, isLoading } = useCategorySummary();
 
   const allCategories: (CategoryCardProps & { productImages: string[] })[] = (
-    apiCategories ?? []
+    apiCategories
   ).map((c, index) => {
     const productImages = c.subcategories
       .flatMap((s) => s.products)
@@ -50,7 +45,7 @@ export function CategoriesPage() {
     ? allCategories.filter((c) => c.name === activeCategory)
     : allCategories;
 
-  const totalProducts = apiCategories?.reduce((a, c) => a + c.count, 0) ?? 0;
+  const totalProducts = apiCategories.reduce((a, c) => a + c.count, 0);
 
   return (
     <div className="min-h-screen bg-[#f2f2f0]" style={{ fontFamily: "Inter, system-ui, sans-serif" }}>

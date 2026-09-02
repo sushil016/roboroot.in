@@ -2,6 +2,8 @@ import type { Request, Response } from "express";
 import { OrderStatus, PaymentGateway } from "../../../generated/prisma/client.js";
 import { logAdminAction } from "../../../services/admin-action-log.service.js";
 import { initiatePayment as initiateZohoPayment } from "../../payments/services/zoho.service.js";
+import { getConsentAuditContext } from "../../legal/legal.controller.js";
+import { validateLegalAcceptance } from "../../legal/legal.service.js";
 import {
   cancelUserOrder,
   confirmUserOrderPayment,
@@ -30,6 +32,7 @@ function isOrderStatus(value: unknown): value is OrderStatus {
 export async function createOrderHandler(req: Request, res: Response) {
   try {
     const userId = userIdFromRequest(req);
+    validateLegalAcceptance(req.body.legalConsent);
     const paymentGateway = req.body.paymentGateway || PaymentGateway.ZOHO;
     const payload = await createOrder({
       userId,
@@ -39,6 +42,8 @@ export async function createOrderHandler(req: Request, res: Response) {
       paymentGateway,
       couponCode: req.body.couponCode,
       notes: req.body.notes,
+      legalConsent: req.body.legalConsent,
+      consentAudit: getConsentAuditContext(req),
     });
 
     let paymentUrl = payload.paymentUrl;

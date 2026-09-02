@@ -15,6 +15,7 @@ interface UploadMiddlewares {
   uploadMultipleImages: (maxCount?: number) => RequestHandler;
   uploadPDFs: (maxCount?: number) => RequestHandler;
   uploadThreeDModel: RequestHandler;
+  uploadThreeDModels: RequestHandler;
 }
 
 // Configure multer to use memory storage
@@ -71,6 +72,18 @@ export const uploadThreeDModel: RequestHandler = multer({
     files: 1,
   },
 }).single("model");
+
+export const uploadThreeDModels: RequestHandler = multer({
+  storage,
+  fileFilter: threeDModelFileFilter,
+  limits: {
+    fileSize: Math.max(1, Number(process.env.MAX_3D_MODEL_FILE_SIZE_MB) || 100) * 1024 * 1024,
+    files: 10,
+  },
+}).fields([
+  { name: "models", maxCount: 10 },
+  { name: "model", maxCount: 1 },
+]);
 
 /**
  * Upload middleware for project creation
@@ -169,6 +182,7 @@ const uploadMiddlewares: UploadMiddlewares = {
   uploadMultipleImages,
   uploadPDFs,
   uploadThreeDModel,
+  uploadThreeDModels,
 };
 
 export default uploadMiddlewares;

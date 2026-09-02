@@ -5,9 +5,8 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useAuthStore } from '@/store/user.store';
 import { useCartStore } from '@/store/cart.store';
-import { useQuery } from '@tanstack/react-query';
-import { componentApi } from '@/features/products/services/product.service';
-import type { ComponentCategoryNode } from '@/types/marketplace.types';
+import type { ComponentCategorySummaryNode } from '@/types/marketplace.types';
+import { useCategorySummary } from '@/features/products/hooks/useCategorySummary';
 import { UserMenu } from '@/components/layout/UserMenu';
 import { Button } from '@/components/ui/button';
 import {
@@ -261,11 +260,7 @@ export function Header() {
     return () => window.cancelAnimationFrame(frame);
   }, []);
 
-  const { data: categoryTree = [] } = useQuery({
-    queryKey: ['component-category-tree'],
-    queryFn: componentApi.getCategoryTree,
-    staleTime: 5 * 60 * 1000,
-  });
+  const { data: categoryTree } = useCategorySummary();
 
   return (
     <header className="sticky top-0 z-50 w-full  border-[#e7e7e5] bg-background text-zinc-950">
@@ -578,7 +573,7 @@ function CatalogMegaMenu({
   categories,
   onClose,
 }: {
-  categories: ComponentCategoryNode[];
+  categories: ComponentCategorySummaryNode[];
   onClose: () => void;
 }) {
   const totalSubcategories = categories.reduce((acc, c) => acc + c.subcategories.length, 0);

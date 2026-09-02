@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { LEGAL_POLICY_VERSION } from "../../legal/legal.constants.js";
 
 export const printQualitySchema = z.enum(["DRAFT", "STANDARD", "FINE"]);
 export const printFinishSchema = z.enum([
@@ -25,7 +26,7 @@ export const printOrderStatusSchema = z.enum([
 ]);
 
 export const printQuoteBodySchema = z.object({
-  fileId: z.string().trim().min(1),
+  fileIds: z.array(z.string().trim().min(1)).min(1).max(10),
   materialId: z.string().trim().min(1),
   color: z.string().trim().min(1).max(60),
   quality: printQualitySchema,
@@ -33,6 +34,8 @@ export const printQuoteBodySchema = z.object({
   infillPercent: z.number().int().min(10).max(100),
   quantity: z.number().int().min(1).max(100),
 });
+
+export const printPreviewQuoteBodySchema = printQuoteBodySchema.omit({ fileIds: true });
 
 const shippingAddressSchema = z.object({
   name: z.string().trim().min(2).max(100),
@@ -50,6 +53,10 @@ export const createPrintOrderBodySchema = printQuoteBodySchema
     shippingAddressId: z.string().trim().min(1).optional(),
     shippingAddress: shippingAddressSchema.optional(),
     customerNotes: z.string().trim().max(2000).optional(),
+    legalConsent: z.object({
+      accepted: z.literal(true),
+      policyVersion: z.literal(LEGAL_POLICY_VERSION),
+    }),
   })
   .refine((body) => Boolean(body.shippingAddressId || body.shippingAddress), {
     message: "A shipping address is required",
@@ -108,5 +115,6 @@ export const adminPrintPricingUpdateSchema = z.object({
   standardLeadDays: z.number().int().min(1).max(90),
   fineLeadDays: z.number().int().min(1).max(90),
   maxFileSizeMb: z.number().int().min(1).max(100),
+  maxFilesPerOrder: z.number().int().min(1).max(10),
   materials: z.array(printMaterialSchema).min(1).max(20),
 });

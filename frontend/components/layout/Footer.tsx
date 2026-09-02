@@ -5,7 +5,19 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Github, Linkedin, Twitter, Mail } from 'lucide-react';
+import {
+  CreditCard,
+  Github,
+  Landmark,
+  Linkedin,
+  LockKeyhole,
+  Mail,
+  ShieldCheck,
+  Smartphone,
+  Twitter,
+  WalletCards,
+} from 'lucide-react';
+import { CookieSettingsButton } from '@/components/ui/cookie-settings-button';
 
 const footerGroups = [
   {
@@ -35,19 +47,30 @@ const footerGroups = [
     title: "Support",
     links: [
       ["Help Center", "/help"],
-      ["Shipping Info", "/shipping"],
-      ["Returns & Refunds", "/returns"],
-      ["FAQs", "/faq"],
+      ["Submit a Ticket", "/support/new"],
+      ["Track a Ticket", "/support/tickets"],
+
     ],
   },
   {
     title: "Legal",
     links: [
-      ["Privacy Policy", "/privacy"],
-      ["Terms of Service", "/terms"],
+      ["Privacy Policy", "/privacy-policy"],
+      ["Terms & Conditions", "/terms-and-conditions"],
       ["Refund Policy", "/refund-policy"],
+      ["Shipping Policy", "/shipping-policy"],
+      ["Cancellation Policy", "/cancellation-policy"],
+      ["Cookie Policy", "/cookie-policy"],
+      ["Disclaimer", "/disclaimer"],
     ],
   },
+];
+
+const paymentMethods = [
+  { label: "UPI", icon: Smartphone, images: ["/homepage/payment_icons/upi2.png"] },
+  { label: "Cards", icon: CreditCard, images: ["/homepage/payment_icons/mastercard.png", "/homepage/payment_icons/visa.png", "/homepage/payment_icons/rupay.png", "/homepage/payment_icons/discover.png"] },
+  { label: "Net Banking", icon: Landmark, images: [] },
+  { label: "Wallets", icon: WalletCards, images: [] },
 ];
 
 export function Footer() {
@@ -69,7 +92,7 @@ export function Footer() {
         />
       </svg>
       <div className="container mx-auto px-4 pb-12 pt-6">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-[1.2fr_repeat(4,minmax(0,1fr))]">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-[1.4fr_repeat(5,minmax(0,1fr))]">
           <div className="space-y-4">
             <Link href="/">
               <Image
@@ -101,11 +124,16 @@ export function Footer() {
                     </Link>
                   </li>
                 ))}
+                {group.title === "Legal" ? (
+                  <li>
+                    <CookieSettingsButton className="footer-link-underline pb-0.5 text-left text-sm text-zinc-400 transition-colors hover:text-[#F2F2F0]" />
+                  </li>
+                ) : null}
               </ul>
             </div>
           ))}
 
-          <div className="md:col-start-5">
+          <div>
             <h4 className="mb-3 font-semibold text-[#F2F2F0]">Connect With Us</h4>
             <div className="flex space-x-3">
               <a href="https://twitter.com/roboroot" target="_blank" rel="noopener noreferrer"
@@ -127,6 +155,64 @@ export function Footer() {
             </div>
           </div>
         </div>
+
+        <section
+          aria-labelledby="footer-payment-heading"
+          className="mt-10 grid gap-6 border-y border-zinc-800 py-6 lg:grid-cols-[1.15fr_1.5fr_auto] lg:items-center"
+        >
+          <div className="flex items-start gap-3">
+            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-md border border-emerald-800/70 bg-emerald-950/50 text-emerald-400">
+              <ShieldCheck className="h-5 w-5" aria-hidden="true" />
+            </span>
+            <div>
+              <h3 id="footer-payment-heading" className="font-semibold text-[#F2F2F0]">
+                Security &amp; payments
+              </h3>
+              <p className="mt-1 flex items-center gap-1.5 text-xs leading-5 text-zinc-400">
+                <LockKeyhole className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                Encrypted checkout. Payment credentials are never stored by us.
+              </p>
+            </div>
+          </div>
+
+          <div>
+            <p className="mb-2 text-xs font-semibold uppercase text-zinc-500">
+              Accepted methods
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {paymentMethods.map(({ label, icon: Icon, images }) => (
+                <span
+                  key={label}
+                  className="inline-flex h-9 items-center gap-2 rounded-md border border-zinc-800 bg-zinc-900 px-3 text-xs font-medium text-zinc-300"
+                >
+                  <Icon className="h-4 w-4 text-zinc-400" aria-hidden="true" />
+                  {label}
+                  {images.map((src) => (
+                    <Image key={src} src={src} alt="" width={75} height={30} className="h-6 w-auto object-contain" />
+                  ))}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <p className="mb-2 text-xs font-semibold uppercase text-zinc-500">
+              Payment partners
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <span className="inline-flex h-10 items-center gap-2.5 rounded-md border border-zinc-800 px-3 text-zinc-900">
+                <div>
+                  <Image src="/homepage/payment_icons/zoho.png" alt="Zoho Payments" width={120} height={45} />
+                </div>
+              </span>
+              <span className="inline-flex h-10 items-center gap-2.5 rounded-md border border-zinc-800 px-3 text-zinc-900">
+                <div>
+                  <Image src="/homepage/payment_icons/razorpay.png" alt="Razorpay" width={120} height={45} />
+                </div>
+              </span>
+            </div>
+          </div>
+        </section>
 
         {/* Stepped diagonal divider */}
         <div className="mt-12">
@@ -150,7 +236,10 @@ export function Footer() {
 
         <div className="pt-6">
           <div className="flex flex-col items-center justify-between space-y-4 md:flex-row md:space-y-0">
-            <p className="text-sm text-zinc-500">© {currentYear} RoboRoot. All rights reserved.</p>
+            <p className="text-sm text-zinc-500">
+              © {currentYear} <span className="font-semibold">Roboroot.in</span> is a registered trademark of{" "}
+              <span className="font-semibold">ROB0MANIAC TECH LLP</span>. All rights reserved.
+            </p>
             <p className="text-sm text-zinc-500">Built with ❤️ for makers and innovators</p>
           </div>
         </div>

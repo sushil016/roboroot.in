@@ -1,6 +1,10 @@
-import { SiteInfoPage } from "@/features/static-pages/components/SiteInfoPage";
-import { staticPages } from "@/features/static-pages/data/static-pages";
+import { LegalPolicyPage } from "@/features/legal/components/LegalPolicyPage";
+import { legalPolicies } from "@/features/legal/data/legal-policies";
+import { legalMetadata } from "@/features/legal/metadata";
+
+const policy = legalPolicies.refundPolicy;
+export const metadata = legalMetadata(policy);
 
 export default function RefundPolicyPage() {
-  return <SiteInfoPage {...staticPages.refundPolicy} />;
+  return <LegalPolicyPage policy={policy} />;
 }

@@ -11,6 +11,7 @@ import type {
   ComponentFilters,
   ComponentResponse,
   ComponentCategoryNode,
+  ComponentCategorySummaryNode,
   PaginatedComponentsResponse,
 } from "../types/component.types.js";
 
@@ -392,6 +393,99 @@ export async function getComponentCategoryTree(): Promise<ComponentCategoryNode[
   }
 
   return categoryTree;
+}
+
+/**
+ * Lightweight category data for navigation and category cards.
+ * Keeps only three image candidates per subcategory instead of serializing
+ * every product and every product field in the catalog.
+ */
+export async function getComponentCategorySummary(): Promise<ComponentCategorySummaryNode[]> {
+  const [dbCategories, components] = await Promise.all([
+    prisma.category.findMany({
+      where: { isActive: true },
+      select: {
+        name: true,
+        imageUrl: true,
+        description: true,
+        subcategories: {
+          where: { isActive: true },
+          select: { name: true },
+          orderBy: { name: "asc" },
+        },
+      },
+      orderBy: { name: "asc" },
+    }),
+    prisma.component.findMany({
+      where: { isActive: true },
+      select: {
+        id: true,
+        name: true,
+        imageUrl: true,
+        category: true,
+        subcategory: true,
+      },
+      orderBy: { name: "asc" },
+    }),
+  ]);
+
+  const summary: ComponentCategorySummaryNode[] = dbCategories.map((category) => ({
+    category: category.name,
+    imageUrl: category.imageUrl,
+    description: category.description,
+    count: 0,
+    subcategories: category.subcategories.map((subcategory) => ({
+      name: subcategory.name,
+      count: 0,
+      products: [],
+    })),
+  }));
+  const categoryLookup = new Map(
+    summary.map((category) => [category.category.toLowerCase(), category]),
+  );
+
+  for (const component of components) {
+    const categoryName = component.category || "Electronics Components";
+    const subcategoryName = component.subcategory || "General";
+    const categoryKey = categoryName.toLowerCase();
+    let category = categoryLookup.get(categoryKey);
+
+    if (!category) {
+      category = {
+        category: categoryName,
+        imageUrl: null,
+        description: null,
+        count: 0,
+        subcategories: [],
+      };
+      categoryLookup.set(categoryKey, category);
+      summary.push(category);
+    }
+
+    let subcategory = category.subcategories.find(
+      (item) => item.name.toLowerCase() === subcategoryName.toLowerCase(),
+    );
+    if (!subcategory) {
+      subcategory = { name: subcategoryName, count: 0, products: [] };
+      category.subcategories.push(subcategory);
+    }
+
+    category.count += 1;
+    subcategory.count += 1;
+    if (component.imageUrl && subcategory.products.length < 3) {
+      subcategory.products.push({
+        id: component.id,
+        name: component.name,
+        imageUrl: component.imageUrl,
+      });
+    }
+  }
+
+  summary.sort((a, b) => a.category.localeCompare(b.category));
+  for (const category of summary) {
+    category.subcategories.sort((a, b) => a.name.localeCompare(b.name));
+  }
+  return summary;
 }
 
 /**

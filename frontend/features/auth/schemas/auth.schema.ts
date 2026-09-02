@@ -17,6 +17,9 @@ export const loginSchema = z.object({
     .string()
     .min(1, 'Password is required')
     .min(6, 'Password must be at least 6 characters'),
+  legalAccepted: z.boolean().refine(Boolean, {
+    message: 'Please acknowledge the Terms and Privacy Policy',
+  }),
 });
 
 export type LoginFormData = z.infer<typeof loginSchema>;
@@ -37,7 +40,7 @@ export const signupSchema = z.object({
   password: z
     .string()
     .min(1, 'Password is required')
-    .min(6, 'Password must be at least 6 characters')
+    .min(8, 'Password must be at least 8 characters')
     .max(100, 'Password must be less than 100 characters'),
   confirmPassword: z
     .string()
@@ -46,6 +49,9 @@ export const signupSchema = z.object({
     .string()
     .max(200, 'College name must be less than 200 characters')
     .optional(),
+  legalAccepted: z.boolean().refine(Boolean, {
+    message: 'Please accept the Terms and Privacy Policy',
+  }),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords don't match",
   path: ['confirmPassword'],

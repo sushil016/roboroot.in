@@ -234,8 +234,141 @@ export type AdminSection =
   | "3d-printing"
   | "coupons"
   | "careers"
+  | "support"
+  | "consents"
   | "media"
   | "settings";
+
+export type ConsentType = "TERMS_AND_PRIVACY" | "CHECKOUT_POLICIES" | "COOKIE_PREFERENCES";
+export type ConsentAction = "GRANTED" | "UPDATED" | "WITHDRAWN";
+export type ConsentSource =
+  | "REGISTRATION"
+  | "LOGIN"
+  | "OAUTH"
+  | "CHECKOUT"
+  | "THREE_D_PRINTING_CHECKOUT"
+  | "COOKIE_BANNER"
+  | "COOKIE_SETTINGS";
+
+export type ConsentRecord = {
+  id: string;
+  userId: string | null;
+  orderId: string | null;
+  anonymousId: string | null;
+  type: ConsentType;
+  action: ConsentAction;
+  source: ConsentSource;
+  policyVersion: string;
+  policyVersions: Record<string, string>;
+  preferences: Record<string, boolean> | null;
+  metadata: Record<string, unknown> | null;
+  ipAddress: string | null;
+  userAgent: string | null;
+  createdAt: string;
+  user: { id: string; name: string | null; email: string } | null;
+  order: { id: string; totalAmountCents: number; status: string } | null;
+};
+
+export type ConsentFilters = {
+  page: number;
+  limit: number;
+  search?: string;
+  type?: ConsentType;
+  source?: ConsentSource;
+  action?: ConsentAction;
+  from?: string;
+  to?: string;
+};
+
+export type ConsentListData = {
+  records: ConsentRecord[];
+  pagination: { page: number; limit: number; total: number; totalPages: number };
+  summary: { total: number; byType: Partial<Record<ConsentType, number>> };
+};
+
+export type SupportTicketPriority = "URGENT" | "HIGH" | "MEDIUM" | "LOW";
+export type SupportTicketStatus = "OPEN" | "IN_PROGRESS" | "WAITING_FOR_CUSTOMER" | "RESOLVED" | "CLOSED";
+export type SupportTicketCategory = "ORDER" | "SHIPPING" | "RETURNS_REFUNDS" | "PRODUCT" | "TECHNICAL" | "OTHER";
+
+export type AdminSupportMessage = {
+  id: string;
+  authorId: string | null;
+  authorName: string | null;
+  sender: "CUSTOMER" | "SUPPORT" | "SYSTEM";
+  body: string;
+  isInternal: boolean;
+  createdAt: string;
+};
+
+export type AdminSupportTicket = {
+  id: string;
+  ticketNumber: string;
+  userId: string | null;
+  orderId: string | null;
+  assignedToId: string | null;
+  requesterName: string;
+  requesterEmail: string;
+  category: SupportTicketCategory;
+  subject: string;
+  description: string;
+  priority: SupportTicketPriority;
+  status: SupportTicketStatus;
+  firstResponseDueAt: string;
+  resolutionDueAt: string;
+  firstRespondedAt: string | null;
+  resolvedAt: string | null;
+  lastActivityAt: string;
+  createdAt: string;
+  updatedAt: string;
+  user: { id: string; name: string | null; email: string } | null;
+  assignedTo: { id: string; name: string | null; email: string } | null;
+  order: { id: string; status: string; totalAmountCents: number } | null;
+  messages: AdminSupportMessage[];
+};
+
+export type SupportTicketFilters = {
+  page: number;
+  limit: number;
+  search?: string;
+  status?: SupportTicketStatus;
+  priority?: SupportTicketPriority;
+  category?: SupportTicketCategory;
+  sla?: "BREACHED" | "DUE_SOON";
+};
+
+export type SupportTicketListData = {
+  tickets: AdminSupportTicket[];
+  summary: { total: number; open: number; breached: number; unassigned: number };
+  pagination: { page: number; limit: number; total: number; totalPages: number };
+};
+
+export type SupportAgent = { id: string; name: string | null; email: string };
+
+export type KnowledgeBaseCategory = "GENERAL" | "SHIPPING" | "RETURNS" | "PRODUCT" | "TROUBLESHOOTING";
+export type KnowledgeBaseStatus = "DRAFT" | "PUBLISHED";
+
+export type AdminKnowledgeArticle = {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  category: KnowledgeBaseCategory;
+  status: KnowledgeBaseStatus;
+  isFeatured: boolean;
+  sortOrder: number;
+  viewCount: number;
+  createdById: string | null;
+  updatedById: string | null;
+  publishedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type KnowledgeArticleInput = Pick<
+  AdminKnowledgeArticle,
+  "title" | "slug" | "excerpt" | "content" | "category" | "status" | "isFeatured" | "sortOrder"
+>;
 
 export type DiscountType = "PERCENTAGE" | "FLAT" | "FREE_SHIPPING";
 

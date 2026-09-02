@@ -38,10 +38,15 @@ import careerRoutes from "./features/careers/routes/career.routes.js";
 import bulkRoutes from "./routes/bulkRoutes.js";
 import storeSettingsRoutes from "./features/settings/routes/store-settings.routes.js";
 import threeDPrintingRoutes from "./features/three-d-printing/routes/three-d-printing.routes.js";
+import legalRoutes from "./features/legal/legal.routes.js";
+import supportRoutes from "./features/support/support.routes.js";
 import { errorHandler, notFoundHandler } from "./middlewares/error.middleware.js";
 import { csrfProtection, csrfTokenHandler } from "./middlewares/csrf.middleware.js";
 
 const app = express();
+
+// Preserve the originating client IP behind the production reverse proxy.
+app.set("trust proxy", 1);
 
 // Rewrite /_/backend prefix if requests come via Vercel proxy
 app.use((req: Request, res: Response, next) => {
@@ -309,6 +314,8 @@ app.use("/api/auth/forgot-password", authLimiter);
 
 // API routes
 app.use("/api/auth", authRoutes);
+app.use("/api/legal", legalRoutes);
+app.use("/api/support", supportRoutes);
 app.use("/api/store-settings", storeSettingsRoutes);
 app.use("/api/3d-printing", orderLimiter, threeDPrintingRoutes);
 app.use("/api/emails", emailRoutes);

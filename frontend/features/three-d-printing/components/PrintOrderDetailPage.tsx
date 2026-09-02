@@ -26,7 +26,7 @@ export function PrintOrderDetailPage({ orderId }: { orderId: string }) {
   const router = useRouter();
   const { isAuthenticated, isLoading: authLoading } = useAuthStore();
   const [isPaying, setIsPaying] = useState(false);
-  const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadingFileId, setDownloadingFileId] = useState("");
   const orderQuery = useQuery({
     queryKey: ["3d-print-order", orderId],
     queryFn: () => threeDPrintingApi.getOrder(orderId),
@@ -81,7 +81,9 @@ export function PrintOrderDetailPage({ orderId }: { orderId: string }) {
           <div className="mt-6 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="font-mono text-xs font-bold text-emerald-400">{order.reference}</p>
-              <h1 className="mt-2 max-w-3xl break-words text-3xl font-bold">{order.modelFile.originalName}</h1>
+              <h1 className="mt-2 max-w-3xl break-words text-3xl font-bold">
+                {order.modelFiles.length} model{order.modelFiles.length === 1 ? "" : "s"} in this print job
+              </h1>
               <div className="mt-3"><PrintStatusBadge status={order.status} /></div>
             </div>
             {canPay && (
@@ -107,7 +109,7 @@ export function PrintOrderDetailPage({ orderId }: { orderId: string }) {
               <Detail label="Quality" value={order.quality.replace(/_/g, " ")} />
               <Detail label="Infill" value={order.infillPercent + "%"} />
               <Detail label="Finish" value={order.finish.replace(/_/g, " ")} />
-              <Detail label="Quantity" value={String(order.quantity)} />
+              <Detail label="Set quantity" value={String(order.quantity)} />
               <Detail label="Estimated weight" value={order.totalWeightGrams.toFixed(1) + " g"} />
             </div>
           </section>
@@ -137,39 +139,52 @@ export function PrintOrderDetailPage({ orderId }: { orderId: string }) {
           </section>
 
           <section>
-            <div className="flex items-center justify-between border-b border-zinc-300 pb-4">
+            <div className="border-b border-zinc-300 pb-4">
               <div className="flex items-center gap-3">
                 <Box className="h-5 w-5" />
                 <div>
-                  <h2 className="font-bold">Original model</h2>
-                  <p className="text-xs text-zinc-500">{order.modelFile.format} · {(order.modelFile.sizeBytes / 1024 / 1024).toFixed(2)} MB</p>
+                  <h2 className="font-bold">Original models</h2>
+                  <p className="text-xs text-zinc-500">Review and download every source file in this job.</p>
                 </div>
               </div>
-              <button
-                type="button"
-                disabled={isDownloading}
-                onClick={async () => {
-                  setIsDownloading(true);
-                  try {
-                    await threeDPrintingApi.downloadModel(order.modelFile.id, order.modelFile.originalName);
-                  } catch (error) {
-                    toast.error(error instanceof Error ? error.message : "Download failed");
-                  } finally {
-                    setIsDownloading(false);
-                  }
-                }}
-                className="grid h-10 w-10 place-items-center rounded-md border border-zinc-300 bg-white hover:border-zinc-950"
-                aria-label="Download original model"
-                title="Download original model"
-              >
-                {isDownloading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
-              </button>
             </div>
-            <div className="grid grid-cols-2 divide-x divide-zinc-300 border-b border-zinc-300 sm:grid-cols-4">
-              <Detail label="Width" value={order.modelFile.widthMm.toFixed(1) + " mm"} compact />
-              <Detail label="Depth" value={order.modelFile.depthMm.toFixed(1) + " mm"} compact />
-              <Detail label="Height" value={order.modelFile.heightMm.toFixed(1) + " mm"} compact />
-              <Detail label="Volume" value={(order.modelFile.volumeMm3 / 1000).toFixed(1) + " cm3"} compact />
+            <div className="divide-y divide-zinc-200 border-b border-zinc-300">
+              {order.modelFiles.map((modelFile, index) => (
+                <article key={modelFile.id} className="bg-white p-4 sm:p-5">
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="min-w-0">
+                      <p className="text-[10px] font-black uppercase text-emerald-800">Model {index + 1}</p>
+                      <h3 className="mt-1 truncate text-sm font-bold">{modelFile.originalName}</h3>
+                      <p className="mt-1 text-xs text-zinc-500">{modelFile.format} · {(modelFile.sizeBytes / 1024 / 1024).toFixed(2)} MB</p>
+                    </div>
+                    <button
+                      type="button"
+                      disabled={Boolean(downloadingFileId)}
+                      onClick={async () => {
+                        setDownloadingFileId(modelFile.id);
+                        try {
+                          await threeDPrintingApi.downloadModel(modelFile.id, modelFile.originalName);
+                        } catch (error) {
+                          toast.error(error instanceof Error ? error.message : "Download failed");
+                        } finally {
+                          setDownloadingFileId("");
+                        }
+                      }}
+                      className="grid h-10 w-10 shrink-0 place-items-center rounded-md border border-zinc-300 bg-white hover:border-zinc-950 disabled:opacity-50"
+                      aria-label={`Download ${modelFile.originalName}`}
+                      title="Download original model"
+                    >
+                      {downloadingFileId === modelFile.id ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+                    </button>
+                  </div>
+                  <div className="mt-4 grid grid-cols-2 divide-x divide-zinc-200 border-y border-zinc-200 sm:grid-cols-4">
+                    <Detail label="Width" value={modelFile.widthMm.toFixed(1) + " mm"} compact />
+                    <Detail label="Depth" value={modelFile.depthMm.toFixed(1) + " mm"} compact />
+                    <Detail label="Height" value={modelFile.heightMm.toFixed(1) + " mm"} compact />
+                    <Detail label="Volume" value={(modelFile.volumeMm3 / 1000).toFixed(1) + " cm3"} compact />
+                  </div>
+                </article>
+              ))}
             </div>
           </section>
         </div>

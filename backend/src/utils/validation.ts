@@ -17,7 +17,7 @@ export function validateSignupRequest(data: unknown): SignupRequest {
     throw new ValidationError("Invalid request body");
   }
 
-  const { email, password, name, college } = data as Record<string, unknown>;
+  const { email, password, name, college, legalConsent } = data as Record<string, unknown>;
 
   if (!email || typeof email !== "string") {
     throw new ValidationError("Email is required and must be a string");
@@ -43,9 +43,14 @@ export function validateSignupRequest(data: unknown): SignupRequest {
     throw new ValidationError("College must be a string");
   }
 
+  if (!legalConsent || typeof legalConsent !== "object") {
+    throw new ValidationError("Legal policy acceptance is required");
+  }
+
   const result: SignupRequest = {
     email: email.toLowerCase().trim(),
     password,
+    legalConsent: legalConsent as SignupRequest["legalConsent"],
   };
 
   if (name && typeof name === "string") {
@@ -67,7 +72,7 @@ export function validateLoginRequest(data: unknown): LoginRequest {
     throw new ValidationError("Invalid request body");
   }
 
-  const { email, password } = data as Record<string, unknown>;
+  const { email, password, legalConsent } = data as Record<string, unknown>;
 
   if (!email || typeof email !== "string") {
     throw new ValidationError("Email is required and must be a string");
@@ -81,10 +86,19 @@ export function validateLoginRequest(data: unknown): LoginRequest {
     throw new ValidationError("Password is required and must be a string");
   }
 
-  return {
+  const result: LoginRequest = {
     email: email.toLowerCase().trim(),
     password,
   };
+
+  if (legalConsent !== undefined) {
+    if (!legalConsent || typeof legalConsent !== "object") {
+      throw new ValidationError("Invalid legal policy acknowledgement");
+    }
+    result.legalConsent = legalConsent as NonNullable<LoginRequest["legalConsent"]>;
+  }
+
+  return result;
 }
 
 /**

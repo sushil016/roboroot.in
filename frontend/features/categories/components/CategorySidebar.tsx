@@ -4,19 +4,14 @@ import { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight, LayoutGrid, Loader2 } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
-import { componentApi } from "@/features/products/services/product.service";
+import { useCategorySummary } from "@/features/products/hooks/useCategorySummary";
 
 interface CategorySidebarProps {
   activeCategory?: string;
 }
 
 export function CategorySidebar({ activeCategory }: CategorySidebarProps) {
-  const { data: categoryTree = [], isLoading } = useQuery({
-    queryKey: ["component-category-tree"],
-    queryFn: componentApi.getCategoryTree,
-    staleTime: 5 * 60 * 1000,
-  });
+  const { data: categoryTree, isLoading } = useCategorySummary();
 
   const [expanded, setExpanded] = useState<string | null>(
     activeCategory ?? null

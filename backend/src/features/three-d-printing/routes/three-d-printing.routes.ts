@@ -1,6 +1,9 @@
 import { Router, type Router as RouterType } from "express";
 import { authenticate, authorize } from "../../../middlewares/auth.middleware.js";
-import { uploadThreeDModel } from "../../../middlewares/upload.middleware.js";
+import {
+  uploadThreeDModel,
+  uploadThreeDModels,
+} from "../../../middlewares/upload.middleware.js";
 import { validate } from "../../../middlewares/validate.middleware.js";
 import {
   adminPrintOrderQuerySchema,
@@ -12,6 +15,7 @@ import {
 } from "../validators/three-d-printing.validator.js";
 import {
   calculateQuoteHandler,
+  calculatePreviewQuoteHandler,
   createPrintOrderHandler,
   downloadModelHandler,
   getAdminPrintOrdersHandler,
@@ -22,15 +26,18 @@ import {
   updateAdminPrintOrderHandler,
   updateAdminPrintSettingsHandler,
   uploadModelHandler,
+  uploadModelsHandler,
 } from "../controllers/three-d-printing.controller.js";
 
 const router: RouterType = Router();
 
 router.get("/config", getPrintConfigHandler);
+router.post("/preview-quote", uploadThreeDModels, calculatePreviewQuoteHandler);
 
 router.use(authenticate);
 
 router.post("/files", uploadThreeDModel, uploadModelHandler);
+router.post("/files/batch", uploadThreeDModels, uploadModelsHandler);
 router.get("/files/:id/download", validate({ params: printIdParamsSchema }), downloadModelHandler);
 router.post("/quote", validate({ body: printQuoteBodySchema }), calculateQuoteHandler);
 router.post("/orders", validate({ body: createPrintOrderBodySchema }), createPrintOrderHandler);

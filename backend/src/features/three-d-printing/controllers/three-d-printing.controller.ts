@@ -5,6 +5,8 @@ import type {
   PrintQuality,
 } from "../../../generated/prisma/client.js";
 import * as printService from "../services/three-d-printing.service.js";
+import { getConsentAuditContext } from "../../legal/legal.controller.js";
+import { printPreviewQuoteBodySchema } from "../validators/three-d-printing.validator.js";
 
 function sendError(res: Response, error: unknown) {
   const typedError = error as Error & { statusCode?: number };
@@ -17,7 +19,7 @@ function sendError(res: Response, error: unknown) {
 function quoteInput(req: Request): printService.PrintQuoteInput {
   return {
     userId: req.user!.userId,
-    fileId: req.body.fileId,
+    fileIds: req.body.fileIds,
     materialId: req.body.materialId,
     color: req.body.color,
     quality: req.body.quality as PrintQuality,
@@ -25,6 +27,12 @@ function quoteInput(req: Request): printService.PrintQuoteInput {
     infillPercent: req.body.infillPercent,
     quantity: req.body.quantity,
   };
+}
+
+function requestModelFiles(req: Request): Express.Multer.File[] {
+  if (Array.isArray(req.files)) return req.files;
+  const grouped = req.files as Record<string, Express.Multer.File[]> | undefined;
+  return [...(grouped?.models ?? []), ...(grouped?.model ?? [])];
 }
 
 export async function getPrintConfigHandler(_req: Request, res: Response): Promise<void> {
@@ -49,9 +57,55 @@ export async function uploadModelHandler(req: Request, res: Response): Promise<v
   }
 }
 
+export async function uploadModelsHandler(req: Request, res: Response): Promise<void> {
+  const files = requestModelFiles(req);
+  if (files.length === 0) {
+    res.status(400).json({ success: false, error: "Select at least one STL or OBJ model file" });
+    return;
+  }
+  try {
+    const models = await printService.createModelFiles(req.user!.userId, files);
+    res.status(201).json({ success: true, data: models });
+  } catch (error) {
+    sendError(res, error);
+  }
+}
+
 export async function calculateQuoteHandler(req: Request, res: Response): Promise<void> {
   try {
     const quote = await printService.calculatePrintQuote(quoteInput(req));
+    res.json({ success: true, data: quote });
+  } catch (error) {
+    sendError(res, error);
+  }
+}
+
+export async function calculatePreviewQuoteHandler(req: Request, res: Response): Promise<void> {
+  const files = requestModelFiles(req);
+  if (files.length === 0) {
+    res.status(400).json({ success: false, error: "Select at least one STL or OBJ model file" });
+    return;
+  }
+
+  let rawConfiguration: unknown;
+  try {
+    rawConfiguration = JSON.parse(String(req.body.configuration ?? "{}"));
+  } catch {
+    res.status(400).json({ success: false, error: "Invalid print configuration" });
+    return;
+  }
+
+  try {
+    const parsed = printPreviewQuoteBodySchema.safeParse(rawConfiguration);
+    if (!parsed.success) {
+      res.status(400).json({
+        success: false,
+        error: parsed.error.issues[0]?.message ?? "Invalid print configuration",
+      });
+      return;
+    }
+
+    const quote = await printService.calculatePreviewPrintQuote(parsed.data, files);
     res.json({ success: true, data: quote });
   } catch (error) {
     sendError(res, error);
@@ -65,6 +119,8 @@ export async function createPrintOrderHandler(req: Request, res: Response): Prom
       shippingAddressId: req.body.shippingAddressId,
       shippingAddress: req.body.shippingAddress,
       customerNotes: req.body.customerNotes,
+      legalConsent: req.body.legalConsent,
+      consentAudit: getConsentAuditContext(req),
     });
     res.status(201).json({ success: true, data: order });
   } catch (error) {

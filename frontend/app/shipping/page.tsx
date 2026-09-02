@@ -1,6 +1,5 @@
-import { SiteInfoPage } from "@/features/static-pages/components/SiteInfoPage";
-import { staticPages } from "@/features/static-pages/data/static-pages";
+import { redirect } from "next/navigation";
 
 export default function ShippingPage() {
-  return <SiteInfoPage {...staticPages.shipping} />;
+  redirect("/shipping-policy");
 }

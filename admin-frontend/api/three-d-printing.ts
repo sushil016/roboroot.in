@@ -45,6 +45,7 @@ export type PrintPricingSettings = {
   standardLeadDays: number;
   fineLeadDays: number;
   maxFileSizeMb: number;
+  maxFilesPerOrder: number;
   materials: PrintMaterial[];
   updatedAt: string;
 };
@@ -81,7 +82,7 @@ export type AdminPrintOrder = {
   createdAt: string;
   updatedAt: string;
   user: { id: string; name: string | null; email: string };
-  modelFile: {
+  modelFiles: Array<{
     id: string;
     originalName: string;
     format: "STL" | "OBJ";
@@ -91,7 +92,7 @@ export type AdminPrintOrder = {
     heightMm: number;
     depthMm: number;
     triangleCount: number;
-  };
+  }>;
   material: PrintMaterial;
   statusHistory: PrintStatusEvent[];
   commerceOrder: {

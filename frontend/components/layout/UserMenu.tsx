@@ -18,7 +18,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { User as UserIcon, Settings, LogOut, ShoppingBag, Heart, Printer } from 'lucide-react';
+import { User as UserIcon, Settings, LogOut, ShoppingBag, Heart, Printer, LifeBuoy } from 'lucide-react';
 
 interface UserMenuProps {
   user: User;
@@ -85,6 +85,10 @@ export function UserMenu({ user }: UserMenuProps) {
         <DropdownMenuItem onClick={() => router.push('/3d-printing/orders')}>
           <Printer className="mr-2 h-4 w-4" />
           <span>3D Print Orders</span>
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => router.push('/support/tickets')}>
+          <LifeBuoy className="mr-2 h-4 w-4" />
+          <span>Support Tickets</span>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => router.push('/wishlist')}>
           <Heart className="mr-2 h-4 w-4" />

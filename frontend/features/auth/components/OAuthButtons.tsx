@@ -13,27 +13,44 @@
 
 'use client';
 
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { API_BASE_URL } from '@/lib/api/config';
+import { legalApi } from '@/features/legal/services/legal.service';
+import { LEGAL_POLICY_VERSION } from '@/features/legal/constants';
+import { toast } from 'sonner';
 
 interface OAuthButtonsProps {
   isLoading?: boolean;
+  legalAccepted?: boolean;
 }
 
-export function OAuthButtons({ isLoading = false }: OAuthButtonsProps) {
-  const handleGoogleLogin = () => {
+export function OAuthButtons({ isLoading = false, legalAccepted = false }: OAuthButtonsProps) {
+  const [isRedirecting, setIsRedirecting] = useState(false);
+
+  const beginOAuth = async (provider: 'google' | 'github') => {
+    if (!legalAccepted) {
+      toast.error('Accept the Terms and Privacy Policy to continue');
+      return;
+    }
+
+    setIsRedirecting(true);
+    try {
+      await legalApi.recordOAuthAcceptance();
+    } catch {
+      setIsRedirecting(false);
+      toast.error('Could not record your policy acceptance. Please try again.');
+      return;
+    }
+
     const searchParams = new URLSearchParams(window.location.search);
     const redirectTo = searchParams.get("redirect");
-    const redirectQuery = redirectTo ? `?redirect=${encodeURIComponent(redirectTo)}` : "";
-    window.location.href = `${API_BASE_URL}/api/auth/google${redirectQuery}`;
+    const query = new URLSearchParams({ consentVersion: LEGAL_POLICY_VERSION });
+    if (redirectTo) query.set('redirect', redirectTo);
+    window.location.href = `${API_BASE_URL}/api/auth/${provider}?${query.toString()}`;
   };
 
-  const handleGitHubLogin = () => {
-    const searchParams = new URLSearchParams(window.location.search);
-    const redirectTo = searchParams.get("redirect");
-    const redirectQuery = redirectTo ? `?redirect=${encodeURIComponent(redirectTo)}` : "";
-    window.location.href = `${API_BASE_URL}/api/auth/github${redirectQuery}`;
-  };
+  const disabled = isLoading || isRedirecting;
 
   return (
     <div className="space-y-3">
@@ -54,8 +71,8 @@ export function OAuthButtons({ isLoading = false }: OAuthButtonsProps) {
         <Button
           type="button"
           variant="outline"
-          onClick={handleGoogleLogin}
-          disabled={isLoading}
+          onClick={() => void beginOAuth('google')}
+          disabled={disabled}
           className="w-full"
         >
           <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
@@ -82,8 +99,8 @@ export function OAuthButtons({ isLoading = false }: OAuthButtonsProps) {
         <Button
           type="button"
           variant="outline"
-          onClick={handleGitHubLogin}
-          disabled={isLoading}
+          onClick={() => void beginOAuth('github')}
+          disabled={disabled}
           className="w-full"
         >
           <svg className="mr-2 h-4 w-4" fill="currentColor" viewBox="0 0 24 24">

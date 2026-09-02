@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { useQuery } from "@tanstack/react-query";
-import { componentApi } from "@/features/products/services/product.service";
+import { useCategorySummary } from "@/features/products/hooks/useCategorySummary";
+import type { ComponentCategorySummaryNode } from "@/types/marketplace.types";
 import { CategoryCard } from "@/features/categories/components/CategoryCard";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -30,12 +30,13 @@ function CategoryCardSkeleton() {
   );
 }
 
-export function CategorySection() {
-  const { data: categoryTree, isLoading } = useQuery({
-    queryKey: ["component-category-tree"],
-    queryFn: componentApi.getCategoryTree,
-    staleTime: 5 * 60 * 1000,
-  });
+export function CategorySection({
+  initialCategories,
+}: {
+  initialCategories?: ComponentCategorySummaryNode[];
+}) {
+  const { data: categoryTree, isLoading, isError, refetch, isFetching } =
+    useCategorySummary(initialCategories);
 
   return (
     <section className="mx-auto max-w-7xl px-4 py-8">
@@ -73,7 +74,8 @@ export function CategorySection() {
                 <CategoryCardSkeleton />
               </motion.div>
             ))
-          : (categoryTree ?? []).slice(0, 8).map((node, i) => {
+          : categoryTree.length > 0
+            ? categoryTree.slice(0, 8).map((node, i) => {
               const productImages = node.subcategories
                 .flatMap((s) => s.products)
                 .filter((p) => p.imageUrl)
@@ -98,11 +100,28 @@ export function CategorySection() {
                   />
                 </motion.div>
               );
-            })}
+              })
+            : (
+              <div className="col-span-full flex min-h-44 flex-col items-center justify-center rounded-xl border border-[#D2D2D0] bg-white px-5 text-center">
+                <p className="text-sm font-semibold text-zinc-600">
+                  {isError ? "Categories could not be loaded." : "No categories are available yet."}
+                </p>
+                {isError ? (
+                  <button
+                    type="button"
+                    onClick={() => void refetch()}
+                    disabled={isFetching}
+                    className="mt-3 inline-flex h-9 items-center rounded-md border border-zinc-300 px-4 text-xs font-bold text-zinc-800 transition hover:border-zinc-900 disabled:opacity-50"
+                  >
+                    {isFetching ? "Loading..." : "Try again"}
+                  </button>
+                ) : null}
+              </div>
+            )}
       </motion.div>
 
       {/* Browse All button */}
-      {!isLoading && (categoryTree ?? []).length > 0 && (
+      {!isLoading && categoryTree.length > 0 && (
         <div className="mt-8 flex justify-center">
           <Link
             href="/categories"

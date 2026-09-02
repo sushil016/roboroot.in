@@ -19,11 +19,19 @@ export interface SignupRequest {
   password: string;
   name?: string;
   college?: string;
+  legalConsent: {
+    accepted: true;
+    policyVersion: string;
+  };
 }
 
 export interface LoginRequest {
   email: string;
   password: string;
+  legalConsent: {
+    accepted: true;
+    policyVersion: string;
+  };
 }
 
 export interface UpdateProfileRequest {

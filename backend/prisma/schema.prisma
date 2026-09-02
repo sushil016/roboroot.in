@@ -42,6 +42,52 @@ enum EmailEventType {
   PAYMENT_FAILED
   LOW_STOCK_ALERT
   CART_ABANDONED
+  SUPPORT_TICKET_CREATED
+  SUPPORT_TICKET_UPDATED
+  SUPPORT_TICKET_REPLY
+}
+
+enum SupportTicketPriority {
+  URGENT
+  HIGH
+  MEDIUM
+  LOW
+}
+
+enum SupportTicketStatus {
+  OPEN
+  IN_PROGRESS
+  WAITING_FOR_CUSTOMER
+  RESOLVED
+  CLOSED
+}
+
+enum SupportTicketCategory {
+  ORDER
+  SHIPPING
+  RETURNS_REFUNDS
+  PRODUCT
+  TECHNICAL
+  OTHER
+}
+
+enum SupportMessageSender {
+  CUSTOMER
+  SUPPORT
+  SYSTEM
+}
+
+enum KnowledgeBaseCategory {
+  GENERAL
+  SHIPPING
+  RETURNS
+  PRODUCT
+  TROUBLESHOOTING
+}
+
+enum KnowledgeBaseStatus {
+  DRAFT
+  PUBLISHED
 }
 
 enum ProjectType {
@@ -130,6 +176,28 @@ enum PaymentStatus {
   SUCCESS
   FAILED
   REFUNDED
+}
+
+enum ConsentType {
+  TERMS_AND_PRIVACY
+  CHECKOUT_POLICIES
+  COOKIE_PREFERENCES
+}
+
+enum ConsentAction {
+  GRANTED
+  UPDATED
+  WITHDRAWN
+}
+
+enum ConsentSource {
+  REGISTRATION
+  LOGIN
+  OAUTH
+  CHECKOUT
+  THREE_D_PRINTING_CHECKOUT
+  COOKIE_BANNER
+  COOKIE_SETTINGS
 }
 
 enum PrintModelFormat {
@@ -339,6 +407,13 @@ model User {
   reviews            Review[]
   bulkOrderRequests  BulkOrderRequest[]
   careerApplications CareerApplication[]
+
+  // Legal consent audit trail
+  consentRecords ConsentRecord[]
+
+  // Customer support
+  supportTickets         SupportTicket[] @relation("SupportTicketRequester")
+  assignedSupportTickets SupportTicket[] @relation("SupportTicketAssignee")
 }
 
 // OAuth / provider accounts (Google, GitHub, etc.)
@@ -891,6 +966,8 @@ model Order {
   items            OrderItem[]
   payments         Payment[]
   threeDPrintOrder ThreeDPrintOrder?
+  consentRecords   ConsentRecord[]
+  supportTickets   SupportTicket[]
 
   @@index([userId])
   @@index([status])
@@ -1098,6 +1175,7 @@ model PrintPricingSetting {
   standardLeadDays          Int             @default(5)
   fineLeadDays              Int             @default(7)
   maxFileSizeMb             Int             @default(50)
+  maxFilesPerOrder          Int             @default(10)
   materials                 PrintMaterial[]
   updatedAt                 DateTime        @updatedAt @db.Timestamptz(6)
 }
@@ -1122,6 +1200,8 @@ model PrintMaterial {
 model ThreeDPrintFile {
   id              String               @id @default(cuid())
   userId          String
+  orderId         String?
+  sortOrder       Int                  @default(0)
   originalName    String
   storageProvider PrintStorageProvider
   storageKey      String               @unique
@@ -1137,9 +1217,10 @@ model ThreeDPrintFile {
   createdAt       DateTime             @default(now()) @db.Timestamptz(6)
 
   user  User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  order ThreeDPrintOrder?
+  order ThreeDPrintOrder? @relation(fields: [orderId], references: [id], onDelete: SetNull)
 
   @@index([userId, createdAt])
+  @@index([orderId, sortOrder])
   @@index([checksumSha256])
 }
 
@@ -1147,7 +1228,6 @@ model ThreeDPrintOrder {
   id                 String           @id @default(cuid())
   reference          String           @unique
   userId             String
-  modelFileId        String           @unique
   materialId         String
   commerceOrderId    String           @unique
   status             PrintOrderStatus @default(PAYMENT_PENDING)
@@ -1174,7 +1254,7 @@ model ThreeDPrintOrder {
   updatedAt          DateTime         @updatedAt @db.Timestamptz(6)
 
   user          User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  modelFile     ThreeDPrintFile          @relation(fields: [modelFileId], references: [id], onDelete: Restrict)
+  modelFiles    ThreeDPrintFile[]
   material      PrintMaterial            @relation(fields: [materialId], references: [id], onDelete: Restrict)
   commerceOrder Order                    @relation(fields: [commerceOrderId], references: [id], onDelete: Restrict)
   statusHistory ThreeDPrintStatusEvent[]
@@ -1197,6 +1277,76 @@ model ThreeDPrintStatusEvent {
   @@index([printOrderId, createdAt])
 }
 
+model SupportTicket {
+  id                 String                @id @default(cuid())
+  ticketNumber       String                @unique
+  userId             String?
+  orderId            String?
+  assignedToId       String?
+  requesterName      String
+  requesterEmail     String
+  category           SupportTicketCategory
+  subject            String
+  description        String                @db.Text
+  priority           SupportTicketPriority @default(MEDIUM)
+  status             SupportTicketStatus   @default(OPEN)
+  firstResponseDueAt DateTime              @db.Timestamptz(6)
+  resolutionDueAt    DateTime              @db.Timestamptz(6)
+  firstRespondedAt   DateTime?             @db.Timestamptz(6)
+  resolvedAt         DateTime?             @db.Timestamptz(6)
+  lastActivityAt     DateTime              @default(now()) @db.Timestamptz(6)
+  createdAt          DateTime              @default(now()) @db.Timestamptz(6)
+  updatedAt          DateTime              @updatedAt @db.Timestamptz(6)
+
+  user       User?                  @relation("SupportTicketRequester", fields: [userId], references: [id], onDelete: SetNull)
+  order      Order?                 @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  assignedTo User?                  @relation("SupportTicketAssignee", fields: [assignedToId], references: [id], onDelete: SetNull)
+  messages   SupportTicketMessage[]
+
+  @@index([userId, createdAt])
+  @@index([requesterEmail, createdAt])
+  @@index([status, priority, lastActivityAt])
+  @@index([assignedToId, status])
+  @@index([firstResponseDueAt])
+  @@index([resolutionDueAt])
+}
+
+model SupportTicketMessage {
+  id         String               @id @default(cuid())
+  ticketId   String
+  authorId   String?
+  authorName String?
+  sender     SupportMessageSender
+  body       String               @db.Text
+  isInternal Boolean              @default(false)
+  createdAt  DateTime             @default(now()) @db.Timestamptz(6)
+
+  ticket SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  @@index([ticketId, createdAt])
+}
+
+model KnowledgeBaseArticle {
+  id          String                @id @default(cuid())
+  slug        String                @unique
+  title       String
+  excerpt     String
+  content     String                @db.Text
+  category    KnowledgeBaseCategory
+  status      KnowledgeBaseStatus   @default(DRAFT)
+  isFeatured  Boolean               @default(false)
+  sortOrder   Int                   @default(0)
+  viewCount   Int                   @default(0)
+  createdById String?
+  updatedById String?
+  publishedAt DateTime?             @db.Timestamptz(6)
+  createdAt   DateTime              @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime              @updatedAt @db.Timestamptz(6)
+
+  @@index([status, category, sortOrder])
+  @@index([isFeatured, status])
+}
+
 model AdminActionLog {
   id         String  @id @default(cuid())
   adminId    String
@@ -1211,6 +1361,33 @@ model AdminActionLog {
 
   @@index([adminId])
   @@index([targetType, targetId])
+  @@index([createdAt])
+}
+
+model ConsentRecord {
+  id             String        @id @default(cuid())
+  userId         String?
+  orderId        String?
+  anonymousId    String?
+  type           ConsentType
+  action         ConsentAction @default(GRANTED)
+  source         ConsentSource
+  policyVersion  String
+  policyVersions Json
+  preferences    Json?
+  metadata       Json?
+  ipAddress      String?
+  userAgent      String?
+  createdAt      DateTime      @default(now()) @db.Timestamptz(6)
+
+  user  User?  @relation(fields: [userId], references: [id], onDelete: SetNull)
+  order Order? @relation(fields: [orderId], references: [id], onDelete: SetNull)
+
+  @@index([userId, createdAt])
+  @@index([orderId])
+  @@index([anonymousId, createdAt])
+  @@index([type, createdAt])
+  @@index([source, createdAt])
   @@index([createdAt])
 }
 

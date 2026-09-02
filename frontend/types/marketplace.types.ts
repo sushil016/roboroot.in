@@ -223,6 +223,18 @@ export enum PaymentGateway {
   TEST = 'TEST',
 }
 
+export interface ComponentCategorySummaryNode {
+  category: string;
+  imageUrl?: string | null;
+  description?: string | null;
+  count: number;
+  subcategories: {
+    name: string;
+    count: number;
+    products: Pick<Component, 'id' | 'name' | 'imageUrl'>[];
+  }[];
+}
+
 export enum PaymentStatus {
   CREATED = 'CREATED',
   SUCCESS = 'SUCCESS',
@@ -249,6 +261,10 @@ export interface CreateOrderRequest {
   paymentGateway?: PaymentGateway;
   couponCode?: string;
   notes?: string;
+  legalConsent: {
+    accepted: true;
+    policyVersion: string;
+  };
 }
 
 export interface CreateOrderResponse {

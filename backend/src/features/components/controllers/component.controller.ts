@@ -100,6 +100,23 @@ export async function getCategoryTreeHandler(
 }
 
 /**
+ * GET /api/components/categories/summary
+ * Compact category payload for cards and navigation.
+ */
+export async function getCategorySummaryHandler(
+  _req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    const categories = await componentService.getComponentCategorySummary();
+    res.status(200).json({ success: true, data: categories });
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
  * Get a single component by ID
  * GET /api/components/:id
  * Access: Public

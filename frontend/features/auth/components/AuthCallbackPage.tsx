@@ -7,6 +7,7 @@ import { useAuthStore } from "@/store/user.store";
 import { useCartStore } from "@/store/cart.store";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { legalApi } from "@/features/legal/services/legal.service";
 
 function OAuthCallbackContent() {
   const router = useRouter();
@@ -31,6 +32,7 @@ function OAuthCallbackContent() {
         // Backend already set the httpOnly cookies before redirecting here.
         // Just fetch the current user — if cookies are valid, this succeeds.
         const user = await authApi.getCurrentUser();
+        await legalApi.claimAnonymousConsents().catch(() => undefined);
 
         setAuth(user);
         syncCartToServer();

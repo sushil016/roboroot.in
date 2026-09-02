@@ -35,12 +35,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // 3. Legal pages (low priority, monthly)
   const legalPages = [
-    "/privacy",
-    "/terms",
-    "/shipping",
+    "/privacy-policy",
+    "/terms-and-conditions",
+    "/shipping-policy",
     "/refund-policy",
-    "/returns",
+    "/cancellation-policy",
+    "/cookie-policy",
+    "/disclaimer",
     "/help",
+    "/support/new",
+    "/support/tickets",
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),

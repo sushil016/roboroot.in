@@ -11,6 +11,8 @@ export type AdminIconName =
   | "threeDPrinting"
   | "coupons"
   | "careers"
+  | "support"
+  | "consents"
   | "media"
   | "settings"
   | "menu"
@@ -46,6 +48,8 @@ export const sectionItems: SidebarItem[] = [
   { id: "3d-printing", label: "3D Printing", icon: "threeDPrinting" },
   { id: "coupons", label: "Coupons", icon: "coupons" },
   { id: "careers", label: "Careers", icon: "careers" },
+  { id: "support", label: "Customer Support", icon: "support" },
+  { id: "consents", label: "Consent Logs", icon: "consents" },
   { id: "media", label: "Images & Media", icon: "media" },
   { id: "settings", label: "Settings", icon: "settings" },
 ];

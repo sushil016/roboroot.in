@@ -49,6 +49,7 @@ export type PrintConfig = {
   standardLeadDays: number;
   fineLeadDays: number;
   maxFileSizeMb: number;
+  maxFilesPerOrder: number;
   materials: PrintMaterial[];
   updatedAt: string;
 };
@@ -68,7 +69,7 @@ export type PrintModelFile = {
 };
 
 export type PrintConfiguration = {
-  fileId: string;
+  fileIds: string[];
   materialId: string;
   color: string;
   quality: PrintQuality;
@@ -78,7 +79,7 @@ export type PrintConfiguration = {
 };
 
 export type PrintQuote = {
-  file: PrintModelFile;
+  files: PrintModelFile[];
   material: Pick<
     PrintMaterial,
     "id" | "code" | "name" | "densityGramsPerCm3" | "pricePerGramCents"
@@ -135,7 +136,7 @@ export type PrintOrder = {
   quotedAt: string;
   createdAt: string;
   updatedAt: string;
-  modelFile: PrintModelFile;
+  modelFiles: PrintModelFile[];
   material: PrintMaterial;
   statusHistory: PrintStatusEvent[];
   commerceOrder: {

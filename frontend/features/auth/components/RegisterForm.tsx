@@ -9,6 +9,7 @@ import { Loader2, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { OAuthButtons } from "@/features/auth/components/OAuthButtons";
 import { cn } from "@/lib/utils";
+import { createLegalAcceptance, LEGAL_POLICY_LINKS } from "@/features/legal/constants";
 
 export function RegisterForm() {
   const { signup, isLoading } = useAuth();
@@ -17,14 +18,23 @@ export function RegisterForm() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
-    defaultValues: { name: "", email: "", password: "", confirmPassword: "", college: "" },
+    defaultValues: { name: "", email: "", password: "", confirmPassword: "", college: "", legalAccepted: false },
   });
 
+  const legalAccepted = watch("legalAccepted");
+
   const onSubmit = (data: SignupFormData) => {
-    signup({ name: data.name, email: data.email, password: data.password, college: data.college });
+    signup({
+      name: data.name,
+      email: data.email,
+      password: data.password,
+      college: data.college,
+      legalConsent: createLegalAcceptance(),
+    });
   };
 
   return (
@@ -132,6 +142,33 @@ export function RegisterForm() {
           )}
         </div>
 
+        <div>
+          <label className={cn(
+            "flex cursor-pointer items-start gap-3 rounded-xl border bg-white p-3.5 transition-colors",
+            legalAccepted ? "border-[var(--brand-primary)]" : "border-[#D2D2D0]",
+          )}>
+            <input
+              {...register("legalAccepted")}
+              type="checkbox"
+              className="mt-0.5 h-4 w-4 shrink-0 accent-[var(--brand-primary)]"
+              disabled={isLoading}
+            />
+            <span className="text-xs font-medium leading-5 text-zinc-600">
+              I agree to the{" "}
+              <Link href={LEGAL_POLICY_LINKS.termsAndConditions} target="_blank" className="font-bold text-[var(--brand-primary)] hover:underline">
+                Terms and Conditions
+              </Link>{" "}
+              and confirm that I have read the{" "}
+              <Link href={LEGAL_POLICY_LINKS.privacyPolicy} target="_blank" className="font-bold text-[var(--brand-primary)] hover:underline">
+                Privacy Policy
+              </Link>.
+            </span>
+          </label>
+          {errors.legalAccepted && (
+            <p className="mt-1.5 text-xs font-medium text-red-500">{errors.legalAccepted.message}</p>
+          )}
+        </div>
+
         {/* Submit */}
         <button
           type="submit"
@@ -142,9 +179,6 @@ export function RegisterForm() {
           {isLoading ? "Creating account…" : "Create Account"}
         </button>
 
-        <p className="text-center text-xs text-zinc-400">
-          By signing up, you agree to our Terms of Service and Privacy Policy.
-        </p>
       </form>
 
       {/* Divider */}
@@ -154,7 +188,7 @@ export function RegisterForm() {
         <div className="h-px flex-1 bg-[#D2D2D0]" />
       </div>
 
-      <OAuthButtons isLoading={isLoading} />
+      <OAuthButtons isLoading={isLoading} legalAccepted={legalAccepted} />
 
       <p className="mt-6 text-center text-sm text-zinc-500">
         Already have an account?{" "}

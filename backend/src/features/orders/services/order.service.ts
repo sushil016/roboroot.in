@@ -6,6 +6,7 @@ import {
   OrderType,
   PaymentGateway,
   PaymentStatus,
+  ConsentSource,
 } from "../../../generated/prisma/client.js";
 import { queueEmailNotification } from "../../../services/email-notification.service.js";
 import { validateAndApplyCoupon, type CouponDiscount } from "../../coupons/services/coupon.service.js";
@@ -14,6 +15,10 @@ import {
   calculateDeliveryFee,
   getDeliverySettings,
 } from "../../settings/services/store-settings.service.js";
+import {
+  recordCheckoutAcceptance,
+  type ConsentAuditContext,
+} from "../../legal/legal.service.js";
 
 type CheckoutAddress = {
   name: string;
@@ -37,6 +42,8 @@ type CreateOrderInput = {
   paymentGateway?: PaymentGateway;
   couponCode?: string;
   notes?: string;
+  legalConsent?: unknown;
+  consentAudit?: ConsentAuditContext;
 };
 
 export type CouponValidation = {
@@ -269,6 +276,17 @@ export async function createOrder(input: CreateOrderInput) {
         payments: true,
       },
     });
+
+    if (input.legalConsent) {
+      await recordCheckoutAcceptance({
+        userId: input.userId,
+        orderId: order.id,
+        source: ConsentSource.CHECKOUT,
+        payload: input.legalConsent,
+        ...(input.consentAudit ? { audit: input.consentAudit } : {}),
+        client: tx,
+      });
+    }
 
     return {
       order,

@@ -5,7 +5,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
 import { STLLoader } from "three/examples/jsm/loaders/STLLoader.js";
-import { Box, LoaderCircle, Rotate3D } from "lucide-react";
+import { FileUp, LoaderCircle, Rotate3D } from "lucide-react";
 
 const COLOR_HEX: Record<string, number> = {
   black: 0x242424,
@@ -31,9 +31,11 @@ function disposeObject(object: THREE.Object3D) {
 export default function ModelPreview({
   file,
   color,
+  onUpload,
 }: {
   file: File | null;
   color: string;
+  onUpload: () => void;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -42,6 +44,12 @@ export default function ModelPreview({
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
+    if (!file) {
+      setError("");
+      setIsLoading(false);
+      return;
+    }
+    const selectedFile = file;
 
     let disposed = false;
     let frameId = 0;
@@ -95,12 +103,12 @@ export default function ModelPreview({
       new THREE.MeshStandardMaterial({ color: 0x202124, roughness: 0.95 }),
     );
     floor.rotation.x = -Math.PI / 2;
-    floor.position.y = -0.8;
+    floor.position.y = 0;
     floor.receiveShadow = true;
     scene.add(floor);
 
     const grid = new THREE.GridHelper(1000, 50, 0x3f454a, 0x292c2f);
-    grid.position.y = -0.5;
+    grid.position.y = 0.02;
     scene.add(grid);
 
     function resize() {
@@ -112,21 +120,30 @@ export default function ModelPreview({
     }
 
     function frameObject(object: THREE.Object3D) {
-      object.updateMatrixWorld(true);
-      const bounds = new THREE.Box3().setFromObject(object);
-      const center = bounds.getCenter(new THREE.Vector3());
-      const size = bounds.getSize(new THREE.Vector3());
-      object.position.sub(center);
-      object.rotation.x = -Math.PI / 2;
+      const extension = selectedFile.name.split(".").pop()?.toLowerCase();
+      if (extension === "stl") object.rotation.x = -Math.PI / 2;
       object.updateMatrixWorld(true);
 
+      let bounds = new THREE.Box3().setFromObject(object);
+      const initialCenter = bounds.getCenter(new THREE.Vector3());
+      object.position.x -= initialCenter.x;
+      object.position.z -= initialCenter.z;
+      object.position.y += 0.8 - bounds.min.y;
+      object.updateMatrixWorld(true);
+
+      bounds = new THREE.Box3().setFromObject(object);
+      const center = bounds.getCenter(new THREE.Vector3());
+      const size = bounds.getSize(new THREE.Vector3());
       const maximum = Math.max(size.x, size.y, size.z, 10);
-      const distance = maximum / (2 * Math.tan((camera.fov * Math.PI) / 360));
-      camera.position.set(distance * 0.85, distance * 0.65, distance * 1.15);
+      const verticalDistance = size.y / (2 * Math.tan((camera.fov * Math.PI) / 360));
+      const horizontalFov = 2 * Math.atan(Math.tan((camera.fov * Math.PI) / 360) * camera.aspect);
+      const horizontalDistance = Math.max(size.x, size.z) / (2 * Math.tan(horizontalFov / 2));
+      const distance = Math.max(verticalDistance, horizontalDistance, maximum) * 1.35;
+      camera.position.set(distance * 0.82, center.y + distance * 0.62, distance * 1.08);
       camera.near = Math.max(0.1, distance / 100);
       camera.far = Math.max(2000, distance * 20);
       camera.updateProjectionMatrix();
-      controls.target.set(0, Math.max(0, maximum * 0.08), 0);
+      controls.target.copy(center);
       controls.minDistance = maximum * 0.55;
       controls.maxDistance = maximum * 8;
       controls.update();
@@ -142,33 +159,25 @@ export default function ModelPreview({
       setError("");
       setIsLoading(Boolean(file));
       try {
-        if (file) {
-          const extension = file.name.split(".").pop()?.toLowerCase();
-          if (extension === "stl") {
-            const geometry = new STLLoader().parse(await file.arrayBuffer());
-            geometry.computeVertexNormals();
-            const mesh = new THREE.Mesh(geometry, material);
-            mesh.castShadow = true;
-            mesh.receiveShadow = true;
-            modelRoot = mesh;
-          } else if (extension === "obj") {
-            const object = new OBJLoader().parse(await file.text());
-            object.traverse((child) => {
-              if (!(child instanceof THREE.Mesh)) return;
-              child.material = material;
-              child.castShadow = true;
-              child.receiveShadow = true;
-            });
-            modelRoot = object;
-          } else {
-            throw new Error("Only STL and OBJ files can be previewed.");
-          }
-        } else {
-          const geometry = new THREE.TorusKnotGeometry(42, 13, 160, 24, 2, 3);
+        const extension = selectedFile.name.split(".").pop()?.toLowerCase();
+        if (extension === "stl") {
+          const geometry = new STLLoader().parse(await selectedFile.arrayBuffer());
+          geometry.computeVertexNormals();
           const mesh = new THREE.Mesh(geometry, material);
           mesh.castShadow = true;
-          mesh.position.y = 48;
+          mesh.receiveShadow = true;
           modelRoot = mesh;
+        } else if (extension === "obj") {
+          const object = new OBJLoader().parse(await selectedFile.text());
+          object.traverse((child) => {
+            if (!(child instanceof THREE.Mesh)) return;
+            child.material = material;
+            child.castShadow = true;
+            child.receiveShadow = true;
+          });
+          modelRoot = object;
+        } else {
+          throw new Error("Only STL and OBJ files can be previewed.");
         }
 
         if (disposed || !modelRoot) return;
@@ -218,14 +227,36 @@ export default function ModelPreview({
 
   return (
     <div ref={containerRef} className="relative h-[52vh] min-h-[420px] w-full overflow-hidden bg-zinc-900 lg:h-[calc(100vh-13rem)] lg:min-h-[560px]">
-      <div className="pointer-events-none absolute left-5 top-5 z-10 flex items-center gap-2 text-xs font-bold text-white">
-        <span className="grid h-8 w-8 place-items-center rounded-md border border-white/15 bg-black/30 backdrop-blur">
-          {file ? <Rotate3D className="h-4 w-4" /> : <Box className="h-4 w-4" />}
-        </span>
-        <span className="rounded-md border border-white/15 bg-black/30 px-3 py-2 backdrop-blur">
-          {file ? file.name : "Model preview"}
-        </span>
-      </div>
+      {file ? (
+        <div className="pointer-events-none absolute left-5 top-5 z-10 flex items-center gap-2 text-xs font-bold text-white">
+          <span className="grid h-8 w-8 place-items-center rounded-md border border-white/15 bg-black/30 backdrop-blur">
+            <Rotate3D className="h-4 w-4" />
+          </span>
+          <span className="max-w-[min(60vw,420px)] truncate rounded-md border border-white/15 bg-black/30 px-3 py-2 backdrop-blur">
+            {file.name}
+          </span>
+        </div>
+      ) : (
+        <div className="absolute inset-0 grid place-items-center px-6 text-center text-white">
+          <div>
+            <span className="mx-auto grid h-12 w-12 place-items-center rounded-md border border-zinc-700 bg-zinc-800">
+              <FileUp className="h-5 w-5" aria-hidden="true" />
+            </span>
+            <h2 className="mt-5 text-xl font-bold">Upload to preview your model</h2>
+            <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-zinc-400">
+              Select an STL or OBJ file to open the interactive build view.
+            </p>
+            <button
+              type="button"
+              onClick={onUpload}
+              className="mt-5 inline-flex h-11 items-center gap-2 rounded-md bg-white px-5 text-sm font-bold text-zinc-950 transition hover:bg-emerald-400"
+            >
+              <FileUp className="h-4 w-4" aria-hidden="true" />
+              Select model
+            </button>
+          </div>
+        </div>
+      )}
       {isLoading && (
         <div className="pointer-events-none absolute inset-0 z-20 grid place-items-center bg-zinc-900/65 text-white">
           <LoaderCircle className="h-6 w-6 animate-spin" />

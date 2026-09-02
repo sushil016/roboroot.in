@@ -104,6 +104,21 @@ const iconPaths: Record<AdminIconName, React.ReactNode> = {
       <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
     </>
   ),
+  support: (
+    <>
+      <path d="M4 13a8 8 0 0 1 16 0" />
+      <path d="M4 13v4a2 2 0 0 0 2 2h2v-7H6a2 2 0 0 0-2 1Z" />
+      <path d="M20 13v4a2 2 0 0 1-2 2h-2v-7h2a2 2 0 0 1 2 1Z" />
+      <path d="M16 19c0 1.1-.9 2-2 2h-2" />
+    </>
+  ),
+  consents: (
+    <>
+      <rect x="4" y="3" width="16" height="18" rx="2" />
+      <path d="M9 3.5h6v3H9z" />
+      <path d="m8 13 2.2 2.2L16 9.5" />
+    </>
+  ),
   media: (
     <>
       <rect x="3" y="5" width="18" height="14" rx="2" />
