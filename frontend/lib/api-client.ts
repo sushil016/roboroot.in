@@ -14,7 +14,10 @@ import { getAuthState } from "@/store/user.store";
 
 const isServer = typeof window === "undefined";
 const baseURL = isServer
-  ? (process.env.NODE_ENV === "production" ? "https://roboroot.in/_/backend" : "http://localhost:4000")
+  ? (process.env.NODE_ENV === "production" ? 
+    // "https://roboroot.in/_/backend",
+    "https://api.robomaniac.in"  
+    : "http://localhost:4000")
   : env.apiUrl;
 
 const apiClient = axios.create({

@@ -7,12 +7,14 @@ export const API_BASE_URL =
   configuredApiUrl && !(isProduction && isLocalhostUrl(configuredApiUrl))
     ? configuredApiUrl
     : isProduction
-      ? "https://www.roboroot.in/_/backend"
+      ? 
+      // "https://www.roboroot.in/_/backend"
+      "https://api.robomaniac.in"
       : "http://localhost:4000";
 
 export const STOREFRONT_URL =
   configuredAppUrl && !(isProduction && isLocalhostUrl(configuredAppUrl))
     ? configuredAppUrl
     : isProduction
-      ? "https://www.roboroot.in"
+      ? "https://shop.robomaniac.in"
       : "http://localhost:3000";

@@ -1,9 +1,9 @@
 import { initSentry, Sentry } from "./lib/sentry.js";
 initSentry(); // Must be first
 
-import express, { type Express, type Request, type Response } from "express";
+import { createRequire } from "node:module";
+import express, { type Express, type Request, type RequestHandler, type Response } from "express";
 import cors, { type CorsOptions } from "cors";
-import * as helmetModule from "helmet";
 import cookieParser from "cookie-parser";
 import { rateLimit } from "express-rate-limit";
 import cron from "node-cron";
@@ -44,7 +44,10 @@ import { errorHandler, notFoundHandler } from "./middlewares/error.middleware.js
 import { csrfProtection, csrfTokenHandler } from "./middlewares/csrf.middleware.js";
 
 const app: Express = express();
-const helmet = helmetModule.default;
+const helmet = createRequire(import.meta.url)("helmet") as (options?: {
+  contentSecurityPolicy?: boolean;
+  crossOriginEmbedderPolicy?: boolean;
+}) => RequestHandler;
 
 // Preserve the originating client IP behind the production reverse proxy.
 app.set("trust proxy", 1);
