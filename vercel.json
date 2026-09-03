@@ -6,10 +6,7 @@
     "backend": {
       "root": "backend",
       "entrypoint": "src/server.mts",
-      "framework": "express",
-      "includeFiles": [
-        "package.json"
-      ]
+      "framework": "express"
     }
   },
   "rewrites": [
