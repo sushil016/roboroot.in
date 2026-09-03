@@ -15,6 +15,7 @@ import { startWebhookRetryWorker, stopWebhookRetryWorker } from "./workers/webho
 import { startStockSyncWorker, stopStockSyncWorker } from "./workers/stock-sync-worker.js";
 import { startTrackingPollWorker, stopTrackingPollWorker } from "./workers/tracking-poll-worker.js";
 import { getStockQueue, getTrackingQueue } from "./lib/queue.js";
+import { processAbandonedCarts } from "./services/abandoned-cart.service.js";
 import authRoutes from "./routes/authRoutes.js";
 import emailRoutes from "./routes/emailRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
@@ -349,6 +350,7 @@ if (process.env.SENTRY_DSN) {
 // Global error handler
 app.use(errorHandler);
 
+function registerScheduledJobs() {
 // Auto-cancel stale PENDING_PAYMENT orders after 30 minutes + restore stock
 cron.schedule("*/5 * * * *", async () => {
   try {
@@ -449,7 +451,6 @@ cron.schedule("*/30 * * * *", async () => {
 });
 
 // Abandoned cart reminder — scan every 30 minutes for carts idle 2+ hours
-import { processAbandonedCarts } from "./services/abandoned-cart.service.js";
 cron.schedule("*/30 * * * *", async () => {
   try {
     await processAbandonedCarts();
@@ -457,24 +458,31 @@ cron.schedule("*/30 * * * *", async () => {
     logger.error("abandoned cart cron failed", { error: err });
   }
 });
+}
 
-// Keep the entrypoint explicitly ESM so deployment runtimes do not load it as CommonJS.
-const server = app.listen(PORT, () => {
-  logger.info("server started", {
-    port: PORT,
-    environment: NODE_ENV,
-    authBasePath: `/api/auth`,
+let server: ReturnType<typeof app.listen> | undefined;
+
+if (!process.env.VERCEL) {
+  registerScheduledJobs();
+  server = app.listen(PORT, () => {
+    logger.info("server started", {
+      port: PORT,
+      environment: NODE_ENV,
+      authBasePath: `/api/auth`,
+    });
+
+    startEmailWorker();
+    startWebhookRetryWorker();
+    startStockSyncWorker();
+    startTrackingPollWorker();
   });
-
-  startEmailWorker();
-  startWebhookRetryWorker();
-  startStockSyncWorker();
-  startTrackingPollWorker();
-});
+}
 
 // Graceful shutdown — drain email worker before exit
 async function shutdown(signal: string) {
   logger.info("server shutdown requested", { signal });
+  if (!server) return;
+
   server.close(async () => {
     await Promise.all([
       stopEmailWorker(),
@@ -487,5 +495,9 @@ async function shutdown(signal: string) {
   });
 }
 
-process.on("SIGTERM", () => void shutdown("SIGTERM"));
-process.on("SIGINT", () => void shutdown("SIGINT"));
+if (!process.env.VERCEL) {
+  process.on("SIGTERM", () => void shutdown("SIGTERM"));
+  process.on("SIGINT", () => void shutdown("SIGINT"));
+}
+
+export default app;
