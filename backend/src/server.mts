@@ -3,9 +3,9 @@ initSentry(); // Must be first
 
 import express, { type Express, type Request, type Response } from "express";
 import cors, { type CorsOptions } from "cors";
-import helmet from "helmet";
+import * as helmetModule from "helmet";
 import cookieParser from "cookie-parser";
-import rateLimit from "express-rate-limit";
+import { rateLimit } from "express-rate-limit";
 import cron from "node-cron";
 import { logger } from "./lib/logger.js";
 import { prisma } from "./lib/prisma.js";
@@ -44,6 +44,7 @@ import { errorHandler, notFoundHandler } from "./middlewares/error.middleware.js
 import { csrfProtection, csrfTokenHandler } from "./middlewares/csrf.middleware.js";
 
 const app: Express = express();
+const helmet = helmetModule.default;
 
 // Preserve the originating client IP behind the production reverse proxy.
 app.set("trust proxy", 1);
@@ -79,6 +80,8 @@ const allowedOrigins = Array.from(new Set([
   "https://asp-admin.roboroot.in",
   "https://roboroot.in",
   "https://www.roboroot.in",
+  "https://shop.robomaniac.in",
+  "https://www.robomaniac.in",
   vercelOrigin,
   ...configuredOrigins,
   "http://localhost:3000",

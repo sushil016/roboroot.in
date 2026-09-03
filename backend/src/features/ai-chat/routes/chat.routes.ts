@@ -1,5 +1,5 @@
 import { Router, type Router as RouterType } from "express";
-import rateLimit from "express-rate-limit";
+import { rateLimit } from "express-rate-limit";
 import { authenticate } from "../../../middlewares/auth.middleware.js";
 import { asyncHandler } from "../../../utils/async-handler.js";
 import { chatHandler } from "../controllers/chat.controller.js";
