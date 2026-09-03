@@ -1,7 +1,7 @@
 import { initSentry, Sentry } from "./lib/sentry.js";
 initSentry(); // Must be first
 
-import express, { type Request, type Response } from "express";
+import express, { type Express, type Request, type Response } from "express";
 import cors, { type CorsOptions } from "cors";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
@@ -43,7 +43,7 @@ import supportRoutes from "./features/support/support.routes.js";
 import { errorHandler, notFoundHandler } from "./middlewares/error.middleware.js";
 import { csrfProtection, csrfTokenHandler } from "./middlewares/csrf.middleware.js";
 
-const app = express();
+const app: Express = express();
 
 // Preserve the originating client IP behind the production reverse proxy.
 app.set("trust proxy", 1);
