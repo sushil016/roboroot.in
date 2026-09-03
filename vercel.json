@@ -6,7 +6,7 @@
     },
     "backend": {
       "root": "backend",
-      "entrypoint": "src/server.mts",
+      "entrypoint": "vercel-entrypoint.mjs",
       "framework": "express",
       "installCommand": "pnpm install --frozen-lockfile --config.node-linker=hoisted",
       "buildCommand": "pnpm run build"
