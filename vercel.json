@@ -6,7 +6,7 @@
     },
     "backend": {
       "root": "backend",
-      "entrypoint": "src/server.mts",
+      "entrypoint": "backend/src/server.mts",
       "framework": "express",
       "installCommand": "pnpm install --frozen-lockfile",
       "buildCommand": "pnpm run build"
